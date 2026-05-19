@@ -1,0 +1,8 @@
+{
+  "name": "Shift: Network+ Master",
+  "description": "High-intensity N10-009 simulator featuring adaptive SRS drills, Syslog PBQs, Audio Commute Mode, and a 5-minute Braindump whiteboard simulator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
