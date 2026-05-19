@@ -439,18 +439,18 @@ export default function App() {
         if (window.navigator.vibrate) window.navigator.vibrate(50);
         if (direction) setExitX(direction === 'left' ? -1000 : 1000);
         
-        // As requested: 5 second delay then flip to explanation even if correct
+        // Unified as requested: 3 second delay then flip to explanation even if correct
         setTimeout(() => {
           setIsFlipped(true);
-        }, 5000);
+        }, 3000);
       } else {
         persistData(newPool, score);
         setFeedback('incorrect');
         if (window.navigator.vibrate) window.navigator.vibrate([100, 50, 100]);
-        // As requested: 5 second delay then flip
+        // Unified as requested: 3 second delay then flip
         setTimeout(() => {
           setIsFlipped(true);
-        }, 5000);
+        }, 3000);
       }
     } else {
       // Mock Exam Mode logic
@@ -967,8 +967,7 @@ export default function App() {
                 animate={{ 
                   opacity: 1, 
                   scale: 1, 
-                  y: 0,
-                  rotateY: isFlipped ? 180 : 0
+                  y: 0
                 }}
                 exit={{ 
                   opacity: 0, 
@@ -977,17 +976,23 @@ export default function App() {
                   rotate: exitX > 0 ? 45 : exitX < 0 ? -45 : 0
                 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className={`w-full min-h-[580px] sm:min-h-[640px] rounded-[3.5rem] shadow-2xl flex flex-col border ${getCardStyles()} relative overflow-hidden ${view !== 'mock' && !isFlipped ? 'cursor-grab active:cursor-grabbing' : ''}`}
+                className={`w-full min-h-[580px] sm:min-h-[640px] rounded-[3.5rem] shadow-2xl flex flex-col border ${getCardStyles()} relative ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? '' : 'overflow-hidden'} ${view !== 'mock' && !isFlipped ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 id="active-card"
               >
                 {/* FRONT OF CARD */}
-                <div 
-                  className={`absolute inset-0 p-7 sm:p-9 flex flex-col rounded-[3.5rem] ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? 'bg-gray-950' : 'bg-white'}`}
-                  style={{ 
-                    backfaceVisibility: 'hidden',
-                    WebkitBackfaceVisibility: 'hidden',
-                    pointerEvents: isFlipped ? 'none' : 'auto'
-                  }}
+                <motion.div 
+                   animate={{ 
+                     rotateY: isFlipped ? -180 : 0,
+                     opacity: isFlipped ? 0 : 1,
+                     zIndex: isFlipped ? 0 : 10
+                   }}
+                   transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                   className={`absolute inset-0 p-7 sm:p-9 flex flex-col rounded-[3.5rem] ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? 'bg-gray-950' : 'bg-white'}`}
+                   style={{ 
+                     backfaceVisibility: 'hidden',
+                     WebkitBackfaceVisibility: 'hidden',
+                     pointerEvents: isFlipped ? 'none' : 'auto'
+                   }}
                 >
                   {/* CLI Traffic Lights */}
                   {(currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive') && (
@@ -1246,17 +1251,23 @@ export default function App() {
                       </div>
                     )}
                   </div>
-                </div>
+                </motion.div>
 
                 {/* BACK OF CARD */}
-                <div 
-                  className="absolute inset-0 flex flex-col bg-white rounded-[3.5rem] overflow-hidden"
-                  style={{ 
-                    backfaceVisibility: 'hidden', 
-                    WebkitBackfaceVisibility: 'hidden',
-                    transform: 'rotateY(180deg)',
-                    pointerEvents: isFlipped ? 'auto' : 'none'
-                  }}
+                <motion.div 
+                   initial={{ rotateY: 180, opacity: 0 }}
+                   animate={{ 
+                     rotateY: isFlipped ? 0 : 180,
+                     opacity: isFlipped ? 1 : 0,
+                     zIndex: isFlipped ? 20 : 0
+                   }}
+                   transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                   className="absolute inset-0 flex flex-col bg-white rounded-[3.5rem] overflow-hidden"
+                   style={{ 
+                     backfaceVisibility: 'hidden', 
+                     WebkitBackfaceVisibility: 'hidden',
+                     pointerEvents: isFlipped ? 'auto' : 'none'
+                   }}
                 >
                   <div className="flex-1 flex flex-col min-h-0">
                     {/* Header of explanation */}
@@ -1279,7 +1290,7 @@ export default function App() {
                        </div>
 
                        <div className="space-y-4 pb-12">
-                          {currentQuestion.explanation.split('\n\n').map((section, idx) => {
+                          {(currentQuestion.explanation || "No logical breakdown available for this specific scenario.").split('\n\n').map((section, idx) => {
                             const isCorrectPart = section.toLowerCase().includes('correct') || section.toLowerCase().includes('why') || section.startsWith('Correct:');
                             const isIncorrectPart = section.toLowerCase().includes('incorrect') || section.toLowerCase().includes('others') || section.startsWith('Incorrect:');
 
@@ -1324,7 +1335,7 @@ export default function App() {
                        <div className="w-12 h-1 bg-gray-100 rounded-full" />
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
             </AnimatePresence>
 
