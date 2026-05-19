@@ -92,11 +92,23 @@ For a professional portfolio look, I recommend deploying this app using one of t
 2. Drag and drop your `dist/` folder (after running `npm run build`) onto the Netlify dashboard.
 3. Or connect your GitHub repo for automatic deployments.
 
-### Option 3: GitHub Pages
-1. Go to your repo **Settings** > **Pages**.
-2. Under **Build and deployment**, set **Source** to **"GitHub Actions"**.
-3. Select the **"Static HTML"** or **"Vite"** template (GitHub will suggest it).
-4. Every time you push to `main`, your site will update.
+### Option 3: GitHub Pages (Recommended for this setup)
+I have added a specialized GitHub Action workflow to your project to automate this.
+
+1. **Check Config**: I have updated your `vite.config.ts` with `base: '/shift-network-plus/'`.
+2. **Push Code**: Push the new `.github/workflows/deploy.yml` file to your GitHub repository.
+3. **Configure GitHub Settings**:
+   - Go to your repository on GitHub.
+   - Click **Settings** (top tab).
+   - Click **Pages** (on the left sidebar).
+   - Under **Build and deployment > Source**, change the dropdown from "Deploy from a branch" to **"GitHub Actions"**.
+4. **Trigger Deployment**:
+   - Go to the **Actions** tab in your GitHub repo.
+   - You should see a workflow named "Deploy static content to Pages".
+   - If it didn't start automatically, click on it and select **Run workflow**.
+
+**Why was it blank?** 
+Vite projects generate relative paths. Without the `base` configuration and a proper build step (GitHub Actions), the browser looks for your styles and scripts at the root domain (`carolineratuolivia.com/`) instead of inside your subfolder (`/shift-network-plus/`).
 
 ---
 
