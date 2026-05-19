@@ -28,6 +28,7 @@ const COMMON_COMMANDS = [
 export default function App() {
   const [view, setView] = useState<'home' | 'drill' | 'dashboard' | 'mock' | 'braindump' | 'tips'>('home');
   const [questionsPool, setQuestionsPool] = useState<Question[]>([]);
+  const [recentQuestionIds, setRecentQuestionIds] = useState<string[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [score, setScore] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
@@ -292,15 +293,23 @@ export default function App() {
   }, [questionsPool, currentQuestion]);
 
   // Weighted Random Selection Algorithm
-  const pickWeightedQuestion = (pool: Question[]): Question => {
-    const totalWeight = pool.reduce((sum, q) => sum + q.weight, 0);
+  const pickWeightedQuestion = (pool: Question[], excludeIds: string[] = []): Question => {
+    // Filter pool to exclude recent IDs
+    let filteredPool = pool.filter(q => !excludeIds.includes(q.id));
+    
+    // Fallback if everyone is excluded (shouldn't happen with pool size > recent limit)
+    if (filteredPool.length === 0) {
+      filteredPool = pool;
+    }
+
+    const totalWeight = filteredPool.reduce((sum, q) => sum + q.weight, 0);
     let random = Math.random() * totalWeight;
     
-    for (const q of pool) {
+    for (const q of filteredPool) {
       if (random < q.weight) return q;
       random -= q.weight;
     }
-    return pool[0];
+    return filteredPool[0];
   };
 
   const persistData = (newPool: Question[], newScore: number) => {
@@ -353,13 +362,16 @@ export default function App() {
           setQuestionsAnsweredSinceCheck(0);
           checkAndTriggerQuarantine();
         } else {
-          // Prevent immediate repeats with a safety fallback
-          let nextQ = pickWeightedQuestion(questionsPool);
-          if (currentQuestion && nextQ.id === currentQuestion.id && questionsPool.length > 1) {
-            const others = questionsPool.filter(q => q.id !== currentQuestion.id);
-            nextQ = others[Math.floor(Math.random() * others.length)];
-          }
-          setCurrentQuestion({ ...nextQ }); // Spread to force fresh object for React key detection
+          // Exclude recent questions (last 15)
+          const nextQ = pickWeightedQuestion(questionsPool, recentQuestionIds);
+          
+          // Update recent IDs history
+          setRecentQuestionIds(prev => {
+            const nextBatch = [nextQ.id, ...prev];
+            return nextBatch.slice(0, 15); // Keep history of 15
+          });
+
+          setCurrentQuestion({ ...nextQ }); 
           setQuestionsAnswered(q => q + 1);
           setQuestionsAnsweredSinceCheck(c => c + 1);
         }
@@ -1076,8 +1088,10 @@ export default function App() {
 
                     {currentQuestion.type === 'acronym' ? (
                       <div className="flex-1 flex items-center justify-center">
-                        <h2 className={`font-display font-black leading-none text-gray-900 tracking-tighter text-center uppercase ${
-                          currentQuestion.question.length > 8 ? 'text-4xl sm:text-5xl' : 'text-6xl sm:text-7xl'
+                        <h2 className={`font-display font-black leading-tight text-gray-900 tracking-tighter text-center uppercase px-4 ${
+                          currentQuestion.question.length > 25 ? 'text-2xl sm:text-3xl' : 
+                          currentQuestion.question.length > 15 ? 'text-3xl sm:text-4xl' : 
+                          'text-5xl sm:text-6xl'
                         }`}>
                           {currentQuestion.question.includes(': ') ? currentQuestion.question.split(': ')[1] : currentQuestion.question}
                         </h2>
