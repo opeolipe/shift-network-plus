@@ -438,12 +438,19 @@ export default function App() {
         setFeedback('correct');
         if (window.navigator.vibrate) window.navigator.vibrate(50);
         if (direction) setExitX(direction === 'left' ? -1000 : 1000);
-        setTimeout(advanceNext, 800);
+        
+        // As requested: 5 second delay then flip to explanation even if correct
+        setTimeout(() => {
+          setIsFlipped(true);
+        }, 5000);
       } else {
         persistData(newPool, score);
         setFeedback('incorrect');
         if (window.navigator.vibrate) window.navigator.vibrate([100, 50, 100]);
-        setTimeout(() => setIsFlipped(true), 400);
+        // As requested: 5 second delay then flip
+        setTimeout(() => {
+          setIsFlipped(true);
+        }, 5000);
       }
     } else {
       // Mock Exam Mode logic
@@ -975,7 +982,7 @@ export default function App() {
               >
                 {/* FRONT OF CARD */}
                 <div 
-                  className={`absolute inset-0 p-7 sm:p-9 flex flex-col backface-hidden rounded-[3.5rem] transition-opacity duration-500 ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? 'bg-gray-950' : 'bg-white'} ${isFlipped ? 'opacity-0' : 'opacity-100'}`}
+                  className={`absolute inset-0 p-7 sm:p-9 flex flex-col rounded-[3.5rem] ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? 'bg-gray-950' : 'bg-white'}`}
                   style={{ 
                     backfaceVisibility: 'hidden',
                     WebkitBackfaceVisibility: 'hidden',
@@ -1243,13 +1250,12 @@ export default function App() {
 
                 {/* BACK OF CARD */}
                 <div 
-                  className="absolute inset-0 flex flex-col bg-[#F9F9FB] rounded-[3.5rem] backface-hidden overflow-hidden"
+                  className="absolute inset-0 flex flex-col bg-white rounded-[3.5rem] overflow-hidden"
                   style={{ 
                     backfaceVisibility: 'hidden', 
                     WebkitBackfaceVisibility: 'hidden',
                     transform: 'rotateY(180deg)',
-                    pointerEvents: isFlipped ? 'auto' : 'none',
-                    zIndex: isFlipped ? 50 : 0
+                    pointerEvents: isFlipped ? 'auto' : 'none'
                   }}
                 >
                   <div className="flex-1 flex flex-col min-h-0">
