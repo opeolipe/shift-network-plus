@@ -306,6 +306,7 @@ export default function App() {
   };
 
   const advanceNext = () => {
+    // Immediate state resets to unblock UI
     setFeedback(null);
     setIsFlipped(false);
     setSliderValue(0);
@@ -316,41 +317,48 @@ export default function App() {
     x.set(0); 
     setExitX(0);
 
-    if (view === 'mock') {
-      const nextIdx = mockCurrentIndex + 1;
-      if (nextIdx < mockQuestions.length) {
-        setMockCurrentIndex(nextIdx);
-        setCurrentQuestion(mockQuestions[nextIdx]);
-      } else {
-        finishExam();
-      }
-    } else if (quarantine) {
-      if (quarantine.count >= 10) {
-        // Evaluate Quarantine
-        const passRate = quarantine.correct / quarantine.count;
-        if (passRate >= 0.8) {
-          setQuarantine(null);
+    const pickNext = () => {
+      if (view === 'mock') {
+        const nextIdx = mockCurrentIndex + 1;
+        if (nextIdx < mockQuestions.length) {
+          setMockCurrentIndex(nextIdx);
+          setCurrentQuestion(mockQuestions[nextIdx]);
         } else {
-          // Restart Quarantine
-          setQuarantine({ ...quarantine, count: 0, correct: 0 });
+          finishExam();
         }
-        // Force re-pick in next turn or here
-        const nextQ = pickQuarantineQuestion(quarantine.domainId);
-        setCurrentQuestion(nextQ);
+      } else if (quarantine) {
+        if (quarantine.count >= 10) {
+          const passRate = quarantine.correct / quarantine.count;
+          if (passRate >= 0.8) {
+            setQuarantine(null);
+            setCurrentQuestion(pickWeightedQuestion(questionsPool));
+          } else {
+            setQuarantine({ ...quarantine, count: 0, correct: 0 });
+            setCurrentQuestion(pickQuarantineQuestion(quarantine.domainId));
+          }
+        } else {
+          setCurrentQuestion(pickQuarantineQuestion(quarantine.domainId));
+        }
       } else {
-        setCurrentQuestion(pickQuarantineQuestion(quarantine.domainId));
+        if (questionsAnsweredSinceCheck >= 10) {
+          setQuestionsAnsweredSinceCheck(0);
+          checkAndTriggerQuarantine();
+        } else {
+          // Prevent immediate repeats
+          let nextQ = pickWeightedQuestion(questionsPool);
+          if (currentQuestion && nextQ.id === currentQuestion.id && questionsPool.length > 1) {
+            nextQ = questionsPool.find(q => q.id !== currentQuestion.id) || nextQ;
+          }
+          setCurrentQuestion(nextQ);
+          setQuestionsAnswered(q => q + 1);
+          setQuestionsAnsweredSinceCheck(c => c + 1);
+        }
       }
-    } else {
-      // Regular SRS flow
-      if (questionsAnsweredSinceCheck >= 10) {
-        setQuestionsAnsweredSinceCheck(0);
-        checkAndTriggerQuarantine();
-      } else {
-        setCurrentQuestion(pickWeightedQuestion(questionsPool));
-        setQuestionsAnswered(q => q + 1);
-        setQuestionsAnsweredSinceCheck(c => c + 1);
-      }
-    }
+    };
+
+    // Small delay to allow the card to flip back before changing content
+    // This makes the transition feel more intentional and avoids weird glitches
+    setTimeout(pickNext, 150);
   };
 
   const pickQuarantineQuestion = (domainId: string): Question => {
@@ -359,18 +367,21 @@ export default function App() {
   };
 
   const checkAndTriggerQuarantine = () => {
-    if (!readiness) return;
-    const weakDomain = readiness.stats.find(s => s.mastery < 65);
-    if (weakDomain) {
-      setQuarantine({ domain: weakDomain.name, domainId: weakDomain.id, count: 0, correct: 0 });
-      setShowQuarantineAlert(true);
-      setTimeout(() => setShowQuarantineAlert(false), 3000);
-      setCurrentQuestion(pickQuarantineQuestion(weakDomain.id));
-    } else {
-      setCurrentQuestion(pickWeightedQuestion(questionsPool));
-      setQuestionsAnswered(q => q + 1);
-      setQuestionsAnsweredSinceCheck(c => c + 1);
+    if (readiness) {
+      const weakDomain = readiness.stats.find(s => s.mastery < 65);
+      if (weakDomain) {
+        setQuarantine({ domain: weakDomain.name, domainId: weakDomain.id, count: 0, correct: 0 });
+        setShowQuarantineAlert(true);
+        setTimeout(() => setShowQuarantineAlert(false), 3000);
+        setCurrentQuestion(pickQuarantineQuestion(weakDomain.id));
+        return;
+      }
     }
+    
+    // Default fallback if no weak domain or readiness not available yet
+    setCurrentQuestion(pickWeightedQuestion(questionsPool));
+    setQuestionsAnswered(q => q + 1);
+    setQuestionsAnsweredSinceCheck(c => c + 1);
   };
 
   const handleAnswer = (answer: string | string[], direction?: 'left' | 'right') => {
@@ -888,12 +899,12 @@ export default function App() {
                   rotate: exitX > 0 ? 45 : exitX < 0 ? -45 : 0
                 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className={`w-full aspect-[3/4.2] rounded-[3rem] shadow-2xl flex flex-col border ${getCardStyles()} relative ${view !== 'mock' ? 'cursor-grab active:cursor-grabbing' : ''}`}
+                className={`w-full min-h-[580px] md:aspect-[3/4.2] rounded-[3rem] shadow-2xl flex flex-col border ${getCardStyles()} relative ${view !== 'mock' ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 id="active-card"
               >
                 {/* FRONT OF CARD */}
                 <div 
-                  className={`absolute inset-0 p-9 flex flex-col backface-hidden rounded-[3rem] ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? 'bg-gray-950' : 'bg-white'}`}
+                  className={`absolute inset-0 p-8 flex flex-col backface-hidden rounded-[3rem] ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? 'bg-gray-950' : 'bg-white'}`}
                   style={{ backfaceVisibility: 'hidden' }}
                 >
                   {/* CLI Traffic Lights */}
@@ -965,19 +976,25 @@ export default function App() {
                   {/* Question Text */}
                   <div className="flex-1 flex flex-col justify-center">
                     {currentQuestion.imageUrl && (
-                      <div className="mb-6 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
-                        <img src={currentQuestion.imageUrl} alt="PBQ Visual" className="w-full h-auto object-cover" />
+                      <div className="mb-4 rounded-2xl overflow-hidden border border-gray-100 shadow-sm max-h-[140px]">
+                        <img src={currentQuestion.imageUrl} alt="PBQ Visual" className="w-full h-full object-contain bg-gray-50" />
                       </div>
                     )}
                     {currentQuestion.type === 'acronym' ? (
-                      <h2 className="text-[4rem] font-black leading-none text-gray-900 tracking-tighter text-center uppercase">
+                      <h2 className={`font-black leading-none text-gray-900 tracking-tighter text-center uppercase ${
+                        currentQuestion.question.length > 10 ? 'text-[3rem]' : 'text-[4.5rem]'
+                      }`}>
                         {currentQuestion.question.includes(': ') ? currentQuestion.question.split(': ')[1] : currentQuestion.question}
                       </h2>
                     ) : (
                       <h2 
                         onClick={() => setShowBlurredText(true)}
-                        className={`text-[1.5rem] font-bold leading-[1.2] tracking-tight transition-all duration-500 ${
-                          currentQuestion.type === 'cli' ? 'text-green-400 font-mono' : 'text-gray-800'
+                        className={`font-bold leading-[1.2] tracking-tight transition-all duration-500 ${
+                          currentQuestion.type === 'cli' ? 'text-green-400 font-mono text-xl' : 'text-gray-800'
+                        } ${
+                          !currentQuestion.type || currentQuestion.type === 'architect' || currentQuestion.type === 'visual' || currentQuestion.type === 'multi-select' || currentQuestion.type === 'syslog' 
+                            ? (currentQuestion.question.length > 200 ? 'text-lg' : currentQuestion.question.length > 120 ? 'text-xl' : 'text-2xl') 
+                            : 'text-2xl'
                         } ${comptiaVision && currentQuestion.question.length > 100 && !showBlurredText ? 'cursor-pointer' : ''}`}
                       >
                         {(() => {
@@ -1183,7 +1200,7 @@ export default function App() {
                         ))}
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 gap-3 overflow-y-auto max-h-[220px] pr-2 custom-scrollbar">
+                      <div className="grid grid-cols-1 gap-2">
                         {currentQuestion.options.map((opt) => (
                           <button
                             key={opt}
@@ -1194,13 +1211,13 @@ export default function App() {
                                 : 'bg-gray-50 border-gray-100 text-gray-700 hover:bg-gray-100 hover:border-gray-200'
                             }`}
                           >
-                            <span className={currentQuestion.type === 'cli' ? 'font-mono' : ''}>{opt}</span>
-                            <div className={`w-6 h-6 rounded-full border flex items-center justify-center ${
+                            <span className={`text-sm ${currentQuestion.type === 'cli' ? 'font-mono' : ''}`}>{opt}</span>
+                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
                               currentQuestion.type === 'cli' 
                                 ? 'bg-gray-950 border-gray-700 group-hover:border-green-500/50' 
                                 : 'bg-white border-gray-200 group-hover:border-blue-300'
                             }`}>
-                              <div className={`w-2 h-2 rounded-full bg-transparent ${
+                              <div className={`w-1.5 h-1.5 rounded-full bg-transparent ${
                                 currentQuestion.type === 'cli' ? 'group-hover:bg-green-500' : 'group-hover:bg-blue-400'
                               }`} />
                             </div>
@@ -1213,10 +1230,10 @@ export default function App() {
 
                 {/* BACK OF CARD */}
                 <div 
-                  className="absolute inset-0 p-9 flex flex-col bg-white rounded-[3rem] rotate-y-180"
+                  className="absolute inset-0 p-8 flex flex-col bg-white rounded-[3rem] rotate-y-180"
                   style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                 >
-                  <div className="flex justify-between items-start mb-8">
+                  <div className="flex justify-between items-start mb-6">
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full w-fit text-orange-500 bg-orange-50">
                       <Shield size={14} />
                       <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Review Explanation</span>
@@ -1227,19 +1244,24 @@ export default function App() {
                     </div>
                   </div>
                   
-                  <div className="flex-1 overflow-y-auto">
-                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">The Solution</h3>
-                    <p className="text-2xl font-bold text-blue-600 mb-6">{Array.isArray(currentQuestion.correctAnswer) ? currentQuestion.correctAnswer.join(', ') : currentQuestion.correctAnswer}</p>
-                    
-                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Analysis</h3>
-                    <p className="text-lg text-gray-600 leading-relaxed font-medium">
-                      {currentQuestion.explanation}
+                  <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
+                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 text-center">The Solution</h3>
+                    <p className="text-2xl font-black text-blue-600 mb-8 text-center tracking-tighter">
+                      {Array.isArray(currentQuestion.correctAnswer) ? currentQuestion.correctAnswer.join(', ') : currentQuestion.correctAnswer}
                     </p>
+                    
+                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 text-center">Analysis</h3>
+                    <div className="text-base text-gray-600 leading-relaxed font-bold space-y-4">
+                      {currentQuestion.explanation}
+                    </div>
                   </div>
 
                   <button 
-                    onClick={advanceNext}
-                    className="mt-8 w-full py-5 rounded-2xl bg-gray-900 text-white font-bold text-lg hover:bg-black shadow-xl transition-all active:scale-95"
+                    onClick={() => {
+                      if (window.navigator.vibrate) window.navigator.vibrate(20);
+                      advanceNext();
+                    }}
+                    className="mt-6 w-full py-6 rounded-[2rem] bg-gray-900 text-white font-black text-xl hover:bg-black shadow-2xl shadow-gray-200 transition-all active:scale-95"
                   >
                     Next Ticket
                   </button>

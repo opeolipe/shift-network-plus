@@ -4,6 +4,11 @@
 
 ---
 
+## 💡 Suggested GitHub Repository Name
+`shift-network-plus` or `comptia-shift-trainer`
+
+---
+
 ## 📖 The "Shift" Philosophy
 Most exam prep apps focus on rote memorization. **Shift** focuses on **Exam Instinct**. 
 By implementing features like "CompTIA Vision," the app trains users to identify the core question within the "wall of fluff" typical of CompTIA exams. It doesn't just teach you the content; it teaches you how to *take the test*.
