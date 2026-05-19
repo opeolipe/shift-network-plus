@@ -318,6 +318,12 @@ export default function App() {
     setExitX(0);
 
     const pickNext = () => {
+      // Ensure we have questions to pick from
+      if (!questionsPool || questionsPool.length === 0) {
+        console.error("Questions pool is empty");
+        return;
+      }
+
       if (view === 'mock') {
         const nextIdx = mockCurrentIndex + 1;
         if (nextIdx < mockQuestions.length) {
@@ -344,21 +350,21 @@ export default function App() {
           setQuestionsAnsweredSinceCheck(0);
           checkAndTriggerQuarantine();
         } else {
-          // Prevent immediate repeats
+          // Prevent immediate repeats with a safety fallback
           let nextQ = pickWeightedQuestion(questionsPool);
           if (currentQuestion && nextQ.id === currentQuestion.id && questionsPool.length > 1) {
-            nextQ = questionsPool.find(q => q.id !== currentQuestion.id) || nextQ;
+            const others = questionsPool.filter(q => q.id !== currentQuestion.id);
+            nextQ = others[Math.floor(Math.random() * others.length)];
           }
-          setCurrentQuestion(nextQ);
+          setCurrentQuestion({ ...nextQ }); // Spread to force fresh object for React key detection
           setQuestionsAnswered(q => q + 1);
           setQuestionsAnsweredSinceCheck(c => c + 1);
         }
       }
     };
 
-    // Small delay to allow the card to flip back before changing content
-    // This makes the transition feel more intentional and avoids weird glitches
-    setTimeout(pickNext, 150);
+    // Use a slightly longer delay to ensure the flip animation has started and UI is consistent
+    setTimeout(pickNext, 300);
   };
 
   const pickQuarantineQuestion = (domainId: string): Question => {
@@ -899,7 +905,7 @@ export default function App() {
                   rotate: exitX > 0 ? 45 : exitX < 0 ? -45 : 0
                 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className={`w-full min-h-[580px] md:aspect-[3/4.2] rounded-[3rem] shadow-2xl flex flex-col border ${getCardStyles()} relative ${view !== 'mock' ? 'cursor-grab active:cursor-grabbing' : ''}`}
+                className={`w-full min-h-[620px] rounded-[3rem] shadow-2xl flex flex-col border ${getCardStyles()} relative ${view !== 'mock' ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 id="active-card"
               >
                 {/* FRONT OF CARD */}
@@ -973,30 +979,38 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Question Text */}
-                  <div className="flex-1 flex flex-col justify-center">
-                    {currentQuestion.imageUrl && (
-                      <div className="mb-4 rounded-2xl overflow-hidden border border-gray-100 shadow-sm max-h-[140px]">
-                        <img src={currentQuestion.imageUrl} alt="PBQ Visual" className="w-full h-full object-contain bg-gray-50" />
-                      </div>
-                    )}
-                    {currentQuestion.type === 'acronym' ? (
-                      <h2 className={`font-black leading-none text-gray-900 tracking-tighter text-center uppercase ${
-                        currentQuestion.question.length > 10 ? 'text-[3rem]' : 'text-[4.5rem]'
-                      }`}>
-                        {currentQuestion.question.includes(': ') ? currentQuestion.question.split(': ')[1] : currentQuestion.question}
-                      </h2>
-                    ) : (
-                      <h2 
-                        onClick={() => setShowBlurredText(true)}
-                        className={`font-bold leading-[1.2] tracking-tight transition-all duration-500 ${
-                          currentQuestion.type === 'cli' ? 'text-green-400 font-mono text-xl' : 'text-gray-800'
-                        } ${
-                          !currentQuestion.type || currentQuestion.type === 'architect' || currentQuestion.type === 'visual' || currentQuestion.type === 'multi-select' || currentQuestion.type === 'syslog' 
-                            ? (currentQuestion.question.length > 200 ? 'text-lg' : currentQuestion.question.length > 120 ? 'text-xl' : 'text-2xl') 
-                            : 'text-2xl'
-                        } ${comptiaVision && currentQuestion.question.length > 100 && !showBlurredText ? 'cursor-pointer' : ''}`}
-                      >
+                    {/* Question Text */}
+                    <div className="flex-1 flex flex-col justify-center min-h-0">
+                      {currentQuestion.imageUrl && (
+                        <div className="mb-4 rounded-2xl overflow-hidden border border-gray-100 shadow-sm max-h-[140px] shrink-0">
+                          <img src={currentQuestion.imageUrl} alt="PBQ Visual" className="w-full h-full object-contain bg-gray-50" />
+                        </div>
+                      )}
+                      {currentQuestion.type === 'acronym' ? (
+                        <h2 className={`font-black leading-none text-gray-900 tracking-tighter text-center uppercase shrink ${
+                          currentQuestion.question.length > 10 ? 'text-[3rem]' : 'text-[4.5rem]'
+                        }`}>
+                          {currentQuestion.question.includes(': ') ? currentQuestion.question.split(': ')[1] : currentQuestion.question}
+                        </h2>
+                      ) : (
+                        <h2 
+                          onClick={() => setShowBlurredText(true)}
+                          className={`font-bold leading-[1.2] tracking-tight transition-all duration-500 overflow-hidden shrink ${
+                            currentQuestion.type === 'cli' ? 'text-green-400 font-mono' : 'text-gray-800'
+                          } ${
+                            // Dynamic font size based on question length AND number of options
+                            (() => {
+                              const qLen = currentQuestion.question.length;
+                              const optCount = currentQuestion.options.length;
+                              const hasLongOptions = currentQuestion.options.some(o => o.length > 40);
+                              
+                              if (qLen > 250 || (qLen > 150 && (optCount > 4 || hasLongOptions))) return 'text-base';
+                              if (qLen > 150 || (qLen > 100 && (optCount > 4 || hasLongOptions))) return 'text-lg';
+                              if (qLen > 80) return 'text-xl';
+                              return 'text-2xl';
+                            })()
+                          } ${comptiaVision && currentQuestion.question.length > 100 && !showBlurredText ? 'cursor-pointer' : ''}`}
+                        >
                         {(() => {
                           const text = currentQuestion.question;
                           if (currentQuestion.type === 'cli') {
@@ -1200,18 +1214,18 @@ export default function App() {
                         ))}
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 gap-2">
+                      <div className="grid grid-cols-1 gap-2 mt-4 shrink-0">
                         {currentQuestion.options.map((opt) => (
                           <button
                             key={opt}
                             onClick={() => handleAnswer(opt)}
-                            className={`w-full py-4 px-6 text-left rounded-2xl border transition-all font-bold flex justify-between items-center group active:scale-95 ${
+                            className={`w-full p-4 text-left rounded-2xl border transition-all font-bold flex justify-between items-center group active:scale-[0.98] ${
                               currentQuestion.type === 'cli'
                                 ? 'bg-gray-900 border-gray-800 text-green-500/80 hover:bg-gray-800 hover:border-green-500/30'
                                 : 'bg-gray-50 border-gray-100 text-gray-700 hover:bg-gray-100 hover:border-gray-200'
                             }`}
                           >
-                            <span className={`text-sm ${currentQuestion.type === 'cli' ? 'font-mono' : ''}`}>{opt}</span>
+                            <span className={`text-xs md:text-sm leading-tight break-words pr-2 ${currentQuestion.type === 'cli' ? 'font-mono' : ''}`}>{opt}</span>
                             <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
                               currentQuestion.type === 'cli' 
                                 ? 'bg-gray-950 border-gray-700 group-hover:border-green-500/50' 

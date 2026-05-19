@@ -227,7 +227,7 @@ export const questions: Question[] = [
     domain: '1.0 Concepts',
     objective: '1.6 Topology',
     question: 'Observe the data center layout in the image. Which topology is depicted, utilizing a non-blocking architecture that allows any leaf switch to talk to any other leaf switch via a single hop through the spine?',
-    imageUrl: 'https://raw.githubusercontent.com/CarolineRatuOlivia/shift-network-plus/main/public/spine-leaf.png',
+    imageUrl: 'https://images.unsplash.com/photo-1551703599-6b3e8379aa8c?auto=format&fit=crop&q=80&w=800',
     options: ['Spine-and-Leaf', 'Three-tier Hierarchical', 'Mesh', 'Ring'],
     correctAnswer: 'Spine-and-Leaf',
     explanation: 'Spine-and-Leaf is a two-tier architecture where every leaf switch connects to every spine switch, providing high bandwidth and low latency.',
