@@ -10,7 +10,7 @@ export const questions: Question[] = [
     question: 'A network administrator is designing a highly scalable data center fabric. They need to provide Layer 2 connectivity over a Layer 3 spine-leaf architecture while allowing for over 16 million segments. Which technology is BEST suited for this requirement?',
     options: ['VXLAN', 'STP', 'VLAN', '802.1Q'],
     correctAnswer: 'VXLAN',
-    explanation: 'VXLAN (Virtual Extensible LAN) uses a 24-bit VNI, allowing for up to 16 million IDs, and is designed to encapsulate Layer 2 over Layer 3, ideal for modern spine-leaf fabrics.',
+    explanation: 'Correct: VXLAN (Virtual Extensible LAN) is the industry standard for large data centers. It uses a 24-bit VNI (VXLAN Network Identifier), which supports over 16 million unique segments, far exceeding the 4,096-segment limit of traditional 802.1Q VLANs.\n\nIncorrect: STP (Spanning Tree Protocol) is for loop prevention. VLANs are limited to 4,096 IDs. 802.1Q is the standard trunking protocol, but doesn\'t provide the scale of VXLAN.',
     weight: 10,
   },
   {
@@ -21,7 +21,7 @@ export const questions: Question[] = [
     question: 'An organization needs to optimize cloud application performance for branch offices by dynamically routing traffic based on real-time link quality and application requirements. Which solution should be implemented?',
     options: ['SD-WAN', 'BGP', 'Site-to-Site VPN', 'Static Routing'],
     correctAnswer: 'SD-WAN',
-    explanation: 'SD-WAN (Software-Defined Wide Area Network) uses a centralized controller to manage traffic across various WAN links based on application needs and link health.',
+    explanation: 'Correct: SD-WAN (Software-Defined Wide Area Network) provides dynamic path selection (DPS), allowing traffic to be routed over MPLS, Broadband, or LTE based on performance metrics like jitter and latency.\n\nIncorrect: BGP is for path exchange between AS. Site-to-Site VPN provides a tunnel but doesn\'t typically include application-aware dynamic routing. Static routing is manual and non-dynamic.',
     weight: 10,
   },
   {
@@ -32,7 +32,7 @@ export const questions: Question[] = [
     question: 'A security engineer is configuring a stateful firewall. Which of the following ports should be allowed to facilitate secure remote administration and secure file transfer? (Select TWO).',
     options: ['22', '23', '443', '445', '990'],
     correctAnswer: ['22', '990'],
-    explanation: 'Port 22 is used for SSH (secure administration) and SFTP. Port 990 is used for FTPS (FTP over TLS/SSL).',
+    explanation: 'Correct: Port 22 is used for SSH (secure administration) and SFTP. Port 990 is used for FTPS (FTP over TLS/SSL) implicit mode.\n\nIncorrect: Port 23 is Telnet (plaintext). Port 443 is HTTPS. Port 445 is SMB/AD.',
     weight: 10,
   },
 

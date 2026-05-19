@@ -263,6 +263,9 @@ export default function App() {
     // Simplified for the mock length available
   };
 
+  const [showXpToast, setShowXpToast] = useState(false);
+  const [lastXpGain, setLastXpGain] = useState(0);
+
   // Initialize data from LocalStorage
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -428,6 +431,9 @@ export default function App() {
       if (isCorrect) {
         const newScore = score + 100;
         setScore(newScore);
+        setLastXpGain(100);
+        setShowXpToast(true);
+        setTimeout(() => setShowXpToast(false), 2000);
         persistData(newPool, newScore);
         setFeedback('correct');
         if (window.navigator.vibrate) window.navigator.vibrate(50);
@@ -471,9 +477,11 @@ export default function App() {
   };
 
   const resetProgress = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem('shift_score');
-    window.location.reload();
+    if (confirm("This will wipe all SRS progress and XP. Are you sure?")) {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem('shift_score');
+      window.location.reload();
+    }
   };
 
   // Motion values
@@ -526,56 +534,99 @@ export default function App() {
   const badge = getBadge();
 
   return (
-    <div className={`min-h-screen font-sans text-gray-900 flex flex-col items-center p-6 selection:bg-blue-100 overflow-hidden touch-none transition-colors duration-1000 ${
-      quarantine ? 'bg-amber-50' : 'bg-[#FBFBFD]'
+    <div className={`min-h-screen font-sans text-gray-900 flex flex-col items-center p-4 sm:p-6 selection:bg-blue-100 overflow-hidden touch-none transition-colors duration-1000 ${
+      quarantine ? 'bg-amber-50' : 'bg-[#F9F9FB]'
     }`}>
-      {/* Quarantine Alert */}
+      {/* Quarantine Alert - Premium Integrated */}
       <AnimatePresence>
         {showQuarantineAlert && (
           <motion.div 
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 20, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
-            className="fixed top-0 z-[100] w-full max-w-sm bg-orange-600 text-white p-5 rounded-3xl shadow-2xl flex items-center gap-4"
+            className="fixed top-0 z-[100] w-[calc(100%-2rem)] max-w-sm bg-orange-600 text-white p-6 rounded-[2.5rem] shadow-2xl flex items-center gap-5 border border-orange-500/50 backdrop-blur-xl"
           >
-            <div className="bg-white/20 p-2 rounded-xl">
-              <AlertCircle size={24} />
+            <div className="bg-white/20 p-3 rounded-2xl shadow-inner">
+              <AlertCircle size={28} />
             </div>
             <div>
-              <p className="text-[10px] uppercase font-black tracking-widest opacity-80">Weakness Detected</p>
-              <p className="text-sm font-bold">Initiating {quarantine?.domain} Hyper-Drill</p>
-              <p className="text-[10px] mt-1 opacity-90 font-medium leading-tight">Focusing on your weakest domain to improve overall N10-009 readiness.</p>
+              <p className="text-[10px] uppercase font-black tracking-widest opacity-70 mb-0.5">Weakness Detected</p>
+              <p className="text-base font-display font-black leading-tight tracking-tight">Initiating {quarantine?.domain} Hyper-Drill</p>
+              <p className="text-[10px] mt-1 opacity-80 font-medium leading-[1.4]">Precision focusing on identified knowledge gaps to boost N10-009 readiness.</p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
+      {/* XP Toast Notification */}
+      <AnimatePresence>
+        {showXpToast && (
+          <motion.div 
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: -20, opacity: 1 }}
+            exit={{ y: 20, opacity: 0 }}
+            className="fixed bottom-24 z-[110] bg-gray-900 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 border border-gray-800"
+          >
+            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+              <Activity size={12} className="text-white" />
+            </div>
+            <span className="text-sm font-black tracking-tight">+{lastXpGain} XP RECORDED</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {!currentQuestion ? (
-        <div className="flex-1 flex items-center justify-center font-bold text-gray-400">SHIFTING...</div>
+        <div className="flex-1 flex items-center justify-center">
+           <motion.div 
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-300"
+           >
+             Shifting Knowledge...
+           </motion.div>
+        </div>
       ) : (
         <>
           {/* Header */}
-      <header className="w-full max-w-md flex justify-between items-center mb-10 mt-2">
-        <div className="flex items-center gap-1.5" onClick={() => setView('home')}>
-          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center cursor-pointer">
-            <Activity size={18} className="text-white" />
+      <header className="w-full max-w-md flex justify-between items-center mb-6 sm:mb-8 mt-2 px-2">
+        <div 
+          className="flex items-center gap-3 cursor-pointer group" 
+          onClick={() => setView('home')}
+        >
+          <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-100 group-active:scale-95 transition-transform">
+            <Activity size={20} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Shift<span className="text-blue-500">.</span></h1>
+          <h1 className="text-2xl font-display font-black tracking-tight">Shift<span className="text-blue-500">.</span></h1>
         </div>
-        <div className="flex flex-col items-end gap-2">
-          {view === 'mock' ? (
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-red-500 font-black">Exam Timer</span>
-              <span className={`text-xl font-bold font-mono tracking-tighter ${examTimer < 300 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
-                {formatMockTime(examTimer)}
-              </span>
-            </div>
-          ) : (
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">XP Counter</span>
-              <span className="text-xl font-bold font-mono tracking-tighter text-gray-600">{score.toLocaleString()}</span>
-            </div>
-          )}
+        
+        <div className="flex flex-col items-end">
+          <AnimatePresence mode="wait">
+            {view === 'mock' ? (
+              <motion.div 
+                key="mock-timer"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="flex flex-col items-end"
+              >
+                <span className="text-[10px] uppercase tracking-[0.2em] text-red-500 font-black">Exam Timer</span>
+                <span className={`text-xl font-display font-bold tracking-tighter ${examTimer < 300 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
+                  {formatMockTime(examTimer)}
+                </span>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="score"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="flex flex-col items-end"
+              >
+                <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Total XP</span>
+                <span className="text-xl font-display font-bold tracking-tighter text-gray-700">{score.toLocaleString()}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </header>
 
@@ -583,105 +634,116 @@ export default function App() {
       <main className="flex-1 w-full max-w-md flex flex-col items-center justify-center relative perspective-1000">
         {view === 'home' ? (
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-full space-y-4"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-md space-y-6 px-2 pb-10"
           >
-            <div className="bg-white p-10 rounded-[3.5rem] shadow-2xl shadow-blue-100 border border-blue-50 text-center mb-6">
-              <div className="w-20 h-20 bg-blue-500 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-lg shadow-blue-200">
+            <div className="bg-white p-8 sm:p-10 rounded-[3rem] shadow-xl shadow-blue-50 border border-gray-100 text-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] scale-[4] rotate-12 pointer-events-none">
+                <Activity size={80} />
+              </div>
+              
+              <div className="w-20 h-20 bg-blue-600 rounded-[2rem] mx-auto mb-6 flex items-center justify-center shadow-2xl shadow-blue-200">
                 <Activity size={40} className="text-white" />
               </div>
-              <h2 className="text-3xl font-black tracking-tighter text-gray-900 mb-2">Ready to Shift?</h2>
-              <p className="text-gray-500 font-medium mb-8">Master the N10-009 with precision drilling or full simulation.</p>
+              <h2 className="text-3xl font-display font-black tracking-tight text-gray-900 mb-2">Master the Network.</h2>
+              <p className="text-gray-500 font-medium px-4 mb-10 leading-relaxed">Level up for CompTIA N10-009 with precision drilling and real-world sims.</p>
               
               <div className="space-y-4">
-                <div className="grid grid-cols-1 gap-4">
-                  <button 
-                    onClick={() => setView('drill')}
-                    className="group relative w-full py-8 bg-gray-900 text-white rounded-[2.5rem] font-black text-2xl shadow-2xl shadow-gray-200/50 hover:bg-black transition-all active:scale-95 flex flex-col items-center justify-center overflow-hidden"
-                  >
-                    <span className="relative z-10">Smart Review</span>
-                    <span className="relative z-10 text-[10px] uppercase tracking-[0.2em] opacity-40 font-bold mt-1">Adaptive Learning Engine</span>
-                    <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </button>
+                <button 
+                  onClick={() => setView('drill')}
+                  className="group relative w-full py-7 bg-blue-600 text-white rounded-[2rem] font-display font-black text-xl shadow-2xl shadow-blue-200 hover:bg-blue-700 transition-all active:scale-[0.97] flex flex-col items-center justify-center overflow-hidden"
+                >
+                  <span className="relative z-10">Smart Drill</span>
+                  <span className="relative z-10 text-[9px] uppercase tracking-[0.3em] opacity-50 font-bold mt-1">Adaptive Learning Mode</span>
+                  <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
 
-                  <button 
-                    onClick={generateMockExam}
-                    className="w-full py-6 bg-white text-gray-900 border-2 border-gray-100 rounded-[2.5rem] font-bold text-lg hover:border-gray-900 transition-all active:scale-95 flex flex-col items-center"
-                  >
-                    Full Mock Exam
-                    <span className="text-[9px] uppercase tracking-widest opacity-40">90 Questions • 90 Minutes</span>
-                  </button>
-                </div>
-
-                <div className="pt-8 space-y-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 text-center mb-2">Advanced Study Lab</p>
-                  
-                  <div className="grid grid-cols-2 gap-3">
-                    <button 
-                      onClick={startBraindump}
-                      className="py-4 px-2 bg-gray-50 text-gray-700 rounded-2xl font-bold text-xs hover:bg-gray-100 transition-all flex items-center justify-center gap-2"
-                    >
-                      <Terminal size={14} />
-                      Braindump
-                    </button>
-                    <button 
-                      onClick={() => setView('tips')}
-                      className="py-4 px-2 bg-gray-50 text-gray-700 rounded-2xl font-bold text-xs hover:bg-gray-100 transition-all flex items-center justify-center gap-2"
-                    >
-                      <Shield size={14} />
-                      Strategy
-                    </button>
-                  </div>
-
-                  {!isAudioActive ? (
-                    <button 
-                      onClick={startAudioMode}
-                      className="w-full py-4 bg-emerald-50/50 text-emerald-700 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-emerald-50 transition-all"
-                    >
-                      <Activity size={14} />
-                      Commute Mode (Audio)
-                    </button>
-                  ) : (
-                    <button 
-                      onClick={stopAudioMode}
-                      className="w-full py-4 bg-red-50 text-red-600 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 animate-pulse transition-all"
-                    >
-                      <Activity size={14} />
-                      Stop Audio Drill
-                    </button>
-                  )}
-
-                  <div className="flex items-center justify-between p-4 bg-gray-100/50 rounded-2xl mt-4">
-                    <div className="flex items-center gap-3">
-                      <Shield size={16} className="text-gray-400" />
-                      <span className="text-[10px] font-black uppercase tracking-tighter text-gray-500">CompTIA Vision (Anti-Fluff)</span>
-                    </div>
-                    <button 
-                      onClick={() => setComptiaVision(!comptiaVision)}
-                      className={`w-10 h-5 rounded-full transition-colors relative ${comptiaVision ? 'bg-blue-600' : 'bg-gray-300'}`}
-                    >
-                      <motion.div 
-                        animate={{ x: comptiaVision ? 20 : 2 }}
-                        className="absolute top-1 left-0 w-3 h-3 bg-white rounded-full"
-                      />
-                    </button>
-                  </div>
-                </div>
+                <button 
+                  onClick={generateMockExam}
+                  className="w-full py-5 bg-white text-gray-900 border-2 border-gray-100 rounded-[2rem] font-display font-bold text-lg hover:border-gray-900 transition-all active:scale-[0.97] flex flex-col items-center shadow-sm"
+                >
+                  Full Mock Exam
+                  <span className="text-[9px] uppercase tracking-widest opacity-40">90 Questions • 90 Minutes</span>
+                </button>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white p-6 rounded-[2.5rem] border border-gray-100 text-center" onClick={() => setView('dashboard')}>
-                <LayoutGrid size={24} className="mx-auto text-blue-500 mb-2" />
+              <button 
+                onClick={() => setView('dashboard')}
+                className="bg-white p-6 rounded-[2.5rem] border border-gray-100 text-center shadow-sm hover:shadow-md transition-shadow active:scale-95"
+              >
+                <div className="w-10 h-10 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                  <LayoutGrid size={20} className="text-blue-500" />
+                </div>
                 <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Readiness</span>
-                <div className="text-xl font-black text-gray-900">{readiness?.averageMastery}%</div>
+                <div className="text-xl font-display font-black text-gray-900">{readiness?.averageMastery}%</div>
+              </button>
+              
+              <button 
+                onClick={() => setView('tips')}
+                className="bg-white p-6 rounded-[2.5rem] border border-gray-100 text-center shadow-sm hover:shadow-md transition-shadow active:scale-95"
+              >
+                <div className="w-10 h-10 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                  <Shield size={20} className="text-amber-500" />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Vault</span>
+                <div className="text-xl font-display font-black text-gray-900">Strategy</div>
+              </button>
+            </div>
+
+            {/* Advanced Lab Section */}
+            <div className="space-y-3">
+              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-gray-400 px-4">Advanced Study Lab</p>
+              <div className="grid grid-cols-2 gap-3">
+                <button 
+                  onClick={startBraindump}
+                  className="group py-4 px-6 bg-white border border-gray-100 rounded-2xl font-display font-black text-xs flex items-center justify-center gap-3 hover:bg-gray-50 transition-all active:scale-95 shadow-sm"
+                >
+                  <Terminal size={16} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
+                  Braindump
+                </button>
+                <button 
+                  onClick={() => isAudioActive ? stopAudioMode() : startAudioMode()}
+                  className={`py-4 px-6 rounded-2xl font-display font-black text-xs flex items-center justify-center gap-3 transition-all active:scale-95 shadow-sm border ${
+                    isAudioActive 
+                      ? 'bg-blue-500 border-blue-400 text-white animate-pulse' 
+                      : 'bg-white border-gray-100 text-gray-900 hover:bg-gray-50'
+                  }`}
+                >
+                  <Activity size={16} className={isAudioActive ? 'text-white' : 'text-gray-400'} />
+                  {isAudioActive ? 'Living Audio' : 'Commute'}
+                </button>
               </div>
-              <div className="bg-white p-6 rounded-[2.5rem] border border-gray-100 text-center" onClick={resetProgress}>
-                <RefreshCcw size={24} className="mx-auto text-red-400 mb-2" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Reset</span>
-                <div className="text-xl font-black text-gray-900">Clear</div>
+            </div>
+
+            <div className="bg-gray-50/50 p-6 rounded-[2.5rem] border border-gray-100 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-gray-100/50">
+                  <Terminal size={20} className="text-gray-400" />
+                </div>
+                <div>
+                   <p className="text-xs font-bold text-gray-900 tracking-tight">Active Reference</p>
+                   <p className="text-[10px] font-medium text-gray-500">CompTIA Vision Anti-Fluff</p>
+                </div>
               </div>
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (window.navigator.vibrate) window.navigator.vibrate(10);
+                  setComptiaVision(prev => !prev);
+                }}
+                className={`w-12 h-6 rounded-full transition-all relative p-1 shadow-inner ${comptiaVision ? 'bg-blue-500' : 'bg-gray-200'}`}
+              >
+                <motion.div 
+                  initial={false}
+                  animate={{ x: comptiaVision ? 24 : 0 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  className="w-4 h-4 bg-white rounded-full shadow-md"
+                />
+              </button>
             </div>
           </motion.div>
         ) : view === 'braindump' ? (
@@ -699,7 +761,10 @@ export default function App() {
                 {formatTime(braindumpTimer)}
               </div>
               <button 
-                onClick={() => setView('home')}
+                onClick={() => {
+                  setIsBraindumpActive(false);
+                  setView('home');
+                }}
                 className="p-2 rounded-full bg-gray-100 text-gray-500"
               >
                 Exit
@@ -718,7 +783,7 @@ export default function App() {
                 <div className="absolute inset-x-0 bottom-10 flex justify-center gap-4">
                   <button 
                     onClick={() => setShowReference(!showReference)}
-                    className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold flex items-center gap-2 shadow-lg"
+                    className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-blue-200"
                   >
                     {showReference ? 'Hide Reference' : 'Show Reference Cheat Sheet'}
                   </button>
@@ -852,7 +917,7 @@ export default function App() {
 
             <button 
               onClick={() => setView('home')}
-              className="w-full py-6 bg-gray-900 text-white rounded-[2.5rem] font-black text-xl shadow-2xl active:scale-95 transition-all"
+              className="w-full py-6 bg-blue-600 text-white rounded-[2.5rem] font-display font-black text-xl shadow-2xl shadow-blue-200 hover:bg-blue-700 active:scale-95 transition-all"
             >
               Mastered. Back to Drill.
             </button>
@@ -877,7 +942,7 @@ export default function App() {
              </p>
              <button 
                onClick={() => setView('home')}
-               className="w-full py-5 bg-gray-900 text-white rounded-3xl font-bold text-lg"
+               className="w-full py-5 bg-blue-600 text-white rounded-3xl font-bold text-lg hover:bg-blue-700 shadow-xl shadow-blue-100 transition-all"
              >
                Return Home
              </button>
@@ -905,13 +970,17 @@ export default function App() {
                   rotate: exitX > 0 ? 45 : exitX < 0 ? -45 : 0
                 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className={`w-full min-h-[620px] rounded-[3rem] shadow-2xl flex flex-col border ${getCardStyles()} relative ${view !== 'mock' ? 'cursor-grab active:cursor-grabbing' : ''}`}
+                className={`w-full min-h-[580px] sm:min-h-[640px] rounded-[3.5rem] shadow-2xl flex flex-col border ${getCardStyles()} relative overflow-hidden ${view !== 'mock' && !isFlipped ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 id="active-card"
               >
                 {/* FRONT OF CARD */}
                 <div 
-                  className={`absolute inset-0 p-8 flex flex-col backface-hidden rounded-[3rem] ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? 'bg-gray-950' : 'bg-white'}`}
-                  style={{ backfaceVisibility: 'hidden' }}
+                  className={`absolute inset-0 p-7 sm:p-9 flex flex-col backface-hidden rounded-[3.5rem] transition-opacity duration-500 ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? 'bg-gray-950' : 'bg-white'} ${isFlipped ? 'opacity-0' : 'opacity-100'}`}
+                  style={{ 
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden',
+                    pointerEvents: isFlipped ? 'none' : 'auto'
+                  }}
                 >
                   {/* CLI Traffic Lights */}
                   {(currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive') && (
@@ -922,16 +991,21 @@ export default function App() {
                     </div>
                   )}
 
-                  {/* Feedback Overlay - Only in Drill Mode */}
-                  {view === 'drill' && feedback && (
+                  {/* Feedback Overlay - Enhanced */}
+                  {view === 'drill' && feedback && !isFlipped && (
                     <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className={`absolute inset-0 z-10 flex items-center justify-center backdrop-blur-[2px] rounded-[3rem] ${feedback === 'correct' ? 'bg-green-500/10' : 'bg-red-500/10'}`}
+                      key="feedback-overlay"
+                      initial={{ opacity: 0, scale: 1.1 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className={`absolute inset-0 z-50 flex items-center justify-center backdrop-blur-md rounded-[3.5rem] pointer-events-none ${feedback === 'correct' ? 'bg-green-500/10' : 'bg-red-500/10'}`}
                     >
-                      <div className={`p-4 rounded-full ${feedback === 'correct' ? 'bg-green-500' : 'bg-red-500'} text-white shadow-xl`}>
-                        {feedback === 'correct' ? <Shield size={40} /> : <AlertCircle size={40} />}
-                      </div>
+                      <motion.div 
+                        initial={{ scale: 0.5, rotate: -20 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        className={`p-6 rounded-[2rem] ${feedback === 'correct' ? 'bg-green-500' : 'bg-red-500'} text-white shadow-2xl`}
+                      >
+                        {feedback === 'correct' ? <Shield size={64} strokeWidth={3} /> : <AlertCircle size={64} strokeWidth={3} />}
+                      </motion.div>
                     </motion.div>
                   )}
 
@@ -965,278 +1039,203 @@ export default function App() {
                     </>
                   )}
 
-                  {/* Badge & Domain Info */}
-                  <div className="flex justify-between items-start mb-8">
-                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full w-fit ${badge.color}`}>
+                  {/* Header Area */}
+                  <div className="flex justify-between items-center mb-6">
+                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${badge.color} shadow-sm border border-black/5`}>
                       {badge.icon}
-                      <span className="text-[10px] font-bold uppercase tracking-widest leading-none tracking-wider">
-                        {view === 'mock' ? `Q ${mockCurrentIndex + 1}/${mockQuestions.length}` : badge.label}
+                      <span className="text-[10px] font-display font-black uppercase tracking-wider leading-none">
+                        {badge.label}
                       </span>
                     </div>
-                    <div className="text-right">
-                      <div className={`text-[9px] font-bold ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? 'text-gray-600' : 'text-gray-400'} uppercase tracking-tighter`}>{currentQuestion.domain}</div>
-                      <div className={`text-[10px] font-bold ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? 'text-green-500/40' : 'text-blue-500/60'} uppercase tracking-tighter`}>{currentQuestion.objective}</div>
+                    <div className="text-right flex flex-col">
+                       <span className="text-[10px] font-display font-black uppercase tracking-widest text-gray-400">
+                         {currentQuestion.domain}
+                       </span>
                     </div>
                   </div>
 
-                    {/* Question Text */}
-                    <div className="flex-1 flex flex-col justify-center min-h-0">
-                      {currentQuestion.imageUrl && (
-                        <div className="mb-4 rounded-2xl overflow-hidden border border-gray-100 shadow-sm max-h-[140px] shrink-0">
-                          <img src={currentQuestion.imageUrl} alt="PBQ Visual" className="w-full h-full object-contain bg-gray-50" />
-                        </div>
-                      )}
-                      {currentQuestion.type === 'acronym' ? (
-                        <h2 className={`font-black leading-none text-gray-900 tracking-tighter text-center uppercase shrink ${
-                          currentQuestion.question.length > 10 ? 'text-[3rem]' : 'text-[4.5rem]'
+                  {/* Question Scrollable Container */}
+                  <div className="flex-1 flex flex-col min-h-0 overflow-y-auto no-scrollbar pt-2">
+                    {currentQuestion.imageUrl && (
+                      <div className="mb-6 rounded-3xl overflow-hidden border border-gray-100 shadow-sm max-h-[160px] shrink-0 bg-gray-50 flex items-center justify-center">
+                        <img src={currentQuestion.imageUrl} alt="Scenario Visual" className="w-full h-full object-contain" />
+                      </div>
+                    )}
+
+                    {currentQuestion.type === 'acronym' ? (
+                      <div className="flex-1 flex items-center justify-center">
+                        <h2 className={`font-display font-black leading-none text-gray-900 tracking-tighter text-center uppercase ${
+                          currentQuestion.question.length > 8 ? 'text-4xl sm:text-5xl' : 'text-6xl sm:text-7xl'
                         }`}>
                           {currentQuestion.question.includes(': ') ? currentQuestion.question.split(': ')[1] : currentQuestion.question}
                         </h2>
-                      ) : (
+                      </div>
+                    ) : (
+                      <div className="flex-1 overflow-y-auto no-scrollbar px-1 pb-4">
                         <h2 
-                          onClick={() => setShowBlurredText(true)}
-                          className={`font-bold leading-[1.2] tracking-tight transition-all duration-500 overflow-hidden shrink ${
-                            currentQuestion.type === 'cli' ? 'text-green-400 font-mono' : 'text-gray-800'
+                          className={`font-display font-bold leading-[1.3] tracking-tight transition-all duration-300 ${
+                            currentQuestion.type === 'cli' ? 'text-green-400 font-mono text-lg' : 'text-gray-900'
                           } ${
-                            // Dynamic font size based on question length AND number of options
-                            (() => {
-                              const qLen = currentQuestion.question.length;
-                              const optCount = currentQuestion.options.length;
-                              const hasLongOptions = currentQuestion.options.some(o => o.length > 40);
-                              
-                              if (qLen > 250 || (qLen > 150 && (optCount > 4 || hasLongOptions))) return 'text-base';
-                              if (qLen > 150 || (qLen > 100 && (optCount > 4 || hasLongOptions))) return 'text-lg';
-                              if (qLen > 80) return 'text-xl';
-                              return 'text-2xl';
-                            })()
-                          } ${comptiaVision && currentQuestion.question.length > 100 && !showBlurredText ? 'cursor-pointer' : ''}`}
+                            currentQuestion.question.length > 200 ? 'text-lg' : currentQuestion.question.length > 100 ? 'text-xl' : 'text-2xl'
+                          }`}
                         >
-                        {(() => {
-                          const text = currentQuestion.question;
-                          if (currentQuestion.type === 'cli') {
-                            return (
-                              <>
-                                <span className="text-green-700 mr-2">$</span>
-                                {text}
-                              </>
-                            );
-                          }
-                          
-                          if (comptiaVision && text.length > 100 && !showBlurredText) {
-                            const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
-                            const lastSentence = sentences.pop();
-                            const fluff = sentences.join('');
-                            return (
-                              <>
-                                <span className="blur-[5px] select-none opacity-50">{fluff}</span>
-                                <span>{lastSentence}</span>
-                              </>
-                            );
-                          }
-                          return text;
-                        })()}
-                      </h2>
+                          {(() => {
+                            const text = currentQuestion.question;
+                            if (comptiaVision && !showBlurredText && text.length > 100) {
+                               const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+                               const lastSentence = sentences.pop();
+                               return (
+                                 <div className="relative group">
+                                   <span 
+                                     className="blur-[6px] opacity-20 transition-all duration-700 cursor-help select-none"
+                                     onClick={() => setShowBlurredText(true)}
+                                    >{sentences.join('')}</span>
+                                   <span className="bg-blue-50/50 text-blue-900 rounded-lg px-1">{lastSentence}</span>
+                                   {!showBlurredText && (
+                                     <div className="absolute top-0 right-0 p-1 opacity-20">
+                                       <AlertCircle size={12} />
+                                     </div>
+                                   )}
+                                 </div>
+                               );
+                            }
+                            return text;
+                          })()}
+                        </h2>
+                      </div>
                     )}
                   </div>
 
                   {/* Interactive Inputs */}
-                  <div className="mt-8 space-y-4">
+                  <div className="mt-4 sm:mt-6 space-y-2.5 pb-2 pt-4 border-t border-gray-50">
                     {currentQuestion.type === 'cli-interactive' ? (
-                      <div className="space-y-4">
-                        <div className="relative p-6 bg-gray-900 border border-gray-800 rounded-[2rem] font-mono text-sm shadow-inner group">
-                          <div className="flex items-start gap-3">
-                            <span className="text-green-700 font-bold">$</span>
-                            <div className="flex-1 relative">
-                              {/* Validation Overlay */}
-                              <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-all flex">
-                                {cliInput.split('').map((char, i) => {
-                                  const correctChar = (currentQuestion.correctAnswer as string)[i];
-                                  const isCorrect = correctChar && char.toLowerCase() === correctChar.toLowerCase();
-                                  return (
-                                    <span 
-                                      key={i} 
-                                      className={`${isCorrect ? 'text-green-400' : 'text-red-500 bg-red-500/20 underline decoration-red-500 decoration-2'}`}
-                                    >
-                                      {char}
-                                    </span>
-                                  );
-                                })}
+                        <div className="space-y-4">
+                          <div className="relative p-6 bg-gray-900 border border-gray-800 rounded-[2.5rem] font-mono text-sm shadow-inner group">
+                            <div className="flex items-start gap-3">
+                              <span className="text-green-700 font-bold">$</span>
+                              <div className="flex-1 relative">
+                                <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-all flex">
+                                  {cliInput.split('').map((char, i) => {
+                                    const correctChar = (currentQuestion.correctAnswer as string)[i];
+                                    const isCorrect = correctChar && char.toLowerCase() === correctChar.toLowerCase();
+                                    return (
+                                      <span 
+                                        key={i} 
+                                        className={`${isCorrect ? 'text-green-400' : 'text-red-500 bg-red-500/20 underline decoration-red-500 decoration-2'}`}
+                                      >
+                                        {char}
+                                      </span>
+                                    );
+                                  })}
+                                </div>
+                                <input 
+                                  autoFocus
+                                  type="text"
+                                  value={cliInput}
+                                  onChange={(e) => handleCliChange(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleAnswer(cliInput);
+                                    if (e.key === 'Tab' && cliSuggestions.length > 0) {
+                                      e.preventDefault();
+                                      applySuggestion(cliSuggestions[0]);
+                                    }
+                                  }}
+                                  spellCheck={false}
+                                  autoComplete="off"
+                                  className="bg-transparent border-none outline-none text-transparent caret-green-500 w-full resize-none z-10 relative"
+                                />
                               </div>
-                              
-                              <input 
-                                autoFocus
-                                type="text"
-                                value={cliInput}
-                                onChange={(e) => handleCliChange(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') handleAnswer(cliInput);
-                                  if (e.key === 'Tab' && cliSuggestions.length > 0) {
-                                    e.preventDefault();
-                                    applySuggestion(cliSuggestions[0]);
-                                  }
-                                }}
-                                spellCheck={false}
-                                autoComplete="off"
-                                className="bg-transparent border-none outline-none text-transparent caret-green-500 w-full resize-none z-10 relative"
-                              />
-                              
-                              {!cliInput && (
-                                <span className="absolute left-0 text-green-900 opacity-40 pointer-events-none italic">
-                                  Waiting for input...
-                                </span>
-                              )}
                             </div>
+                            <AnimatePresence>
+                              {cliSuggestions.length > 0 && (
+                                <motion.div 
+                                  initial={{ opacity: 0, y: 5 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, y: 5 }}
+                                  className="absolute left-6 bottom-[-3.5rem] flex gap-2 z-20"
+                                >
+                                  {cliSuggestions.map(s => (
+                                    <button 
+                                      key={s}
+                                      onClick={() => applySuggestion(s)}
+                                      className="px-3 py-1.5 bg-gray-800 border border-gray-700 text-green-400/70 text-[10px] rounded-lg hover:bg-gray-700 hover:text-green-400 transition-all font-bold"
+                                    >
+                                      {s}
+                                    </button>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
                           
-                          {/* Auto-complete suggestions */}
-                          <AnimatePresence>
-                            {cliSuggestions.length > 0 && (
-                              <motion.div 
-                                initial={{ opacity: 0, y: 5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: 5 }}
-                                className="absolute left-6 bottom-[-4rem] flex gap-2 z-20"
-                              >
-                                {cliSuggestions.map(s => (
-                                  <button 
-                                    key={s}
-                                    onClick={() => applySuggestion(s)}
-                                    className="px-3 py-1.5 bg-gray-800 border border-gray-700 text-green-400/70 text-[10px] rounded-lg hover:bg-gray-700 hover:text-green-400 transition-all font-bold"
-                                  >
-                                    {s}
-                                  </button>
-                                ))}
-                                <span className="text-[9px] text-gray-600 flex items-center font-bold uppercase tracking-tighter">[TAB] to Auto-fill</span>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
+                          <button 
+                            onClick={() => handleAnswer(cliInput)}
+                            className="w-full py-5 rounded-[2rem] bg-green-500 text-black font-display font-black text-lg hover:bg-green-400 shadow-xl transition-all active:scale-95"
+                          >
+                            Execute Response
+                          </button>
                         </div>
-                        
-                        <button 
-                          onClick={() => handleAnswer(cliInput)}
-                          className="w-full py-5 rounded-2xl bg-green-500 text-black font-black text-lg hover:bg-green-400 shadow-xl shadow-green-950/20 transition-all active:scale-95"
-                        >
-                          Execute Command
-                        </button>
-                      </div>
                     ) : currentQuestion.type === 'syslog' ? (
-                      <div className="space-y-2 bg-gray-950 p-6 rounded-[2rem] border border-gray-800 shadow-2xl">
-                        {currentQuestion.logData?.map((line, idx) => {
-                          const isCorrect = idx === currentQuestion.correctLogIndex;
-                          const isSelected = syslogSelection === idx;
-                          const showResult = feedback || isFlipped;
-
-                          return (
+                        <div className="space-y-1.5 bg-gray-950 p-5 rounded-[2.5rem] border border-gray-800 shadow-2xl max-h-[220px] overflow-y-auto no-scrollbar">
+                          {currentQuestion.logData?.map((line, idx) => (
                             <button
                               key={idx}
-                              disabled={showResult}
                               onClick={() => handleAnswer(idx.toString())}
-                              className={`w-full text-left font-mono text-[10px] p-2.5 rounded-lg border transition-all ${
-                                showResult
-                                  ? isCorrect
-                                    ? 'bg-green-500/20 border-green-500 text-green-400'
-                                    : isSelected
-                                      ? 'bg-red-500/20 border-red-500 text-red-400'
-                                      : 'bg-transparent border-transparent text-gray-600'
-                                  : 'bg-transparent border-transparent text-gray-400 hover:bg-gray-900 hover:text-white hover:border-gray-700'
+                              className={`w-full text-left font-mono text-[10px] p-2.5 rounded-xl border transition-all ${
+                                syslogSelection === idx
+                                  ? 'bg-green-500/20 border-green-500 text-green-400'
+                                  : 'bg-transparent border-transparent text-gray-500 hover:bg-gray-900 hover:text-white'
                               }`}
                             >
                               <span className="opacity-30 mr-3">{idx + 1}</span>
                               {line}
                             </button>
-                          );
-                        })}
-                      </div>
-                    ) : currentQuestion.type === 'multi-select' ? (
-                      <div className="space-y-3">
-                        {currentQuestion.options.map(opt => (
-                           <button
-                             key={opt}
-                             onClick={() => toggleMultiSelect(opt)}
-                             className={`w-full py-4 px-6 text-left rounded-2xl border transition-all font-bold flex justify-between items-center group ${
-                               multiSelected.includes(opt) 
-                                ? 'bg-blue-500 border-blue-500 text-white' 
-                                : 'bg-gray-50 border-gray-100 text-gray-700'
-                             }`}
-                           >
-                             <span>{opt}</span>
-                             <div className={`w-5 h-5 rounded border flex items-center justify-center ${
-                               multiSelected.includes(opt) ? 'bg-white border-white' : 'bg-white border-gray-300'
-                             }`}>
-                               {multiSelected.includes(opt) && <div className="w-2.5 h-2.5 bg-blue-500 rounded-[2px]" />}
-                             </div>
-                           </button>
-                        ))}
-                        <button 
-                          disabled={multiSelected.length === 0}
-                          onClick={() => handleAnswer(multiSelected)}
-                          className={`mt-4 w-full py-5 rounded-2xl font-bold text-lg shadow-xl transition-all active:scale-95 ${
-                            multiSelected.length > 0 ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                          }`}
-                        >
-                          Submit Response
-                        </button>
-                      </div>
-                    ) : currentQuestion.type === 'subnet' ? (
-                      <div className="space-y-6 px-2">
-                        <div className="text-center font-mono text-3xl font-bold text-blue-600">
-                          {currentQuestion.options[Math.floor(sliderValue * (currentQuestion.options.length - 1) / 100)]}
+                          ))}
                         </div>
-                        <input 
-                          type="range"
-                          min="0"
-                          max="100"
-                          value={sliderValue}
-                          onChange={(e) => setSliderValue(parseInt(e.target.value))}
-                          className="w-full h-3 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                        />
-                        <button 
-                          onClick={() => handleAnswer(currentQuestion.options[Math.floor(sliderValue * (currentQuestion.options.length - 1) / 100)])}
-                          className="w-full py-5 rounded-2xl bg-blue-500 text-white font-bold text-lg hover:bg-blue-600 shadow-xl shadow-blue-100 transition-all active:scale-95"
-                        >
-                          Allocate Subnet
-                        </button>
-                      </div>
-                    ) : (currentQuestion.type === 'architect' || currentQuestion.type === 'acronym' || currentQuestion.options.length === 2) ? (
-                      <div className="grid grid-cols-2 gap-4">
-                        {currentQuestion.options.map((opt, idx) => (
-                          <button
-                            key={opt}
-                            onClick={() => handleAnswer(opt, idx === 0 ? 'left' : 'right')}
-                            className={`py-6 px-4 rounded-3xl font-bold text-xl transition-all shadow-lg active:scale-95 ${
-                              idx === 0 
-                                ? (currentQuestion.type === 'cli' ? 'bg-green-500 text-black shadow-green-950/20 hover:bg-green-400' : 'bg-gray-900 text-white shadow-gray-200 hover:bg-black')
-                                : (currentQuestion.type === 'cli' ? 'bg-gray-900 text-green-500 border border-gray-800 shadow-none hover:bg-gray-800' : 'bg-white text-gray-900 border border-gray-100 shadow-gray-100 hover:bg-gray-50')
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        ))}
-                      </div>
                     ) : (
-                      <div className="grid grid-cols-1 gap-2 mt-4 shrink-0">
-                        {currentQuestion.options.map((opt) => (
-                          <button
+                      <div className="grid grid-cols-1 gap-2.5">
+                        {currentQuestion.options.map((opt, i) => (
+                          <motion.button
                             key={opt}
-                            onClick={() => handleAnswer(opt)}
-                            className={`w-full p-4 text-left rounded-2xl border transition-all font-bold flex justify-between items-center group active:scale-[0.98] ${
-                              currentQuestion.type === 'cli'
-                                ? 'bg-gray-900 border-gray-800 text-green-500/80 hover:bg-gray-800 hover:border-green-500/30'
-                                : 'bg-gray-50 border-gray-100 text-gray-700 hover:bg-gray-100 hover:border-gray-200'
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0, transition: { delay: i * 0.05 } }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (currentQuestion.type === 'multi-select') {
+                                toggleMultiSelect(opt);
+                              } else {
+                                handleAnswer(opt);
+                              }
+                            }}
+                            className={`w-full p-4 sm:p-5 text-left rounded-3xl border-2 transition-all font-bold flex justify-between items-center group active:scale-[0.98] touch-manipulation relative overflow-hidden ${
+                              currentQuestion.type === 'multi-select' && multiSelected.includes(opt)
+                                ? 'bg-blue-600 border-blue-600 text-white shadow-lg'
+                                : currentQuestion.type === 'cli'
+                                  ? 'bg-gray-900 border-gray-800 text-green-500/80 hover:bg-gray-800'
+                                  : 'bg-white border-gray-100 text-gray-800 hover:border-gray-200 shadow-sm'
                             }`}
                           >
-                            <span className={`text-xs md:text-sm leading-tight break-words pr-2 ${currentQuestion.type === 'cli' ? 'font-mono' : ''}`}>{opt}</span>
-                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
-                              currentQuestion.type === 'cli' 
-                                ? 'bg-gray-950 border-gray-700 group-hover:border-green-500/50' 
-                                : 'bg-white border-gray-200 group-hover:border-blue-300'
+                            <span className={`text-base leading-snug pr-4 ${currentQuestion.type === 'cli' ? 'font-mono' : 'font-sans'}`}>{opt}</span>
+                            <div className={`w-6 h-6 rounded-xl border-2 flex items-center justify-center shrink-0 ${
+                              currentQuestion.type === 'multi-select' && multiSelected.includes(opt)
+                                ? 'bg-white border-white text-blue-600'
+                                : 'border-gray-200 opacity-20'
                             }`}>
-                              <div className={`w-1.5 h-1.5 rounded-full bg-transparent ${
-                                currentQuestion.type === 'cli' ? 'group-hover:bg-green-500' : 'group-hover:bg-blue-400'
-                              }`} />
+                              {currentQuestion.type === 'multi-select' && <Shield size={14} strokeWidth={3} />}
                             </div>
-                          </button>
+                          </motion.button>
                         ))}
+                        {currentQuestion.type === 'multi-select' && (
+                          <button 
+                            disabled={multiSelected.length === 0}
+                            onClick={(e) => { e.stopPropagation(); handleAnswer(multiSelected); }}
+                            className={`mt-4 w-full py-5 rounded-[2rem] font-display font-black text-lg transition-all active:scale-95 ${
+                              multiSelected.length > 0 ? 'bg-blue-600 text-white shadow-xl shadow-blue-100' : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            }`}
+                          >
+                            Finalize Bundle
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1244,41 +1243,81 @@ export default function App() {
 
                 {/* BACK OF CARD */}
                 <div 
-                  className="absolute inset-0 p-8 flex flex-col bg-white rounded-[3rem] rotate-y-180"
-                  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                  className="absolute inset-0 flex flex-col bg-[#F9F9FB] rounded-[3.5rem] backface-hidden overflow-hidden"
+                  style={{ 
+                    backfaceVisibility: 'hidden', 
+                    WebkitBackfaceVisibility: 'hidden',
+                    transform: 'rotateY(180deg)',
+                    pointerEvents: isFlipped ? 'auto' : 'none',
+                    zIndex: isFlipped ? 50 : 0
+                  }}
                 >
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full w-fit text-orange-500 bg-orange-50">
-                      <Shield size={14} />
-                      <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Review Explanation</span>
+                  <div className="flex-1 flex flex-col min-h-0">
+                    {/* Header of explanation */}
+                    <div className="p-8 pb-4 flex justify-between items-center">
+                      <div className="flex items-center gap-2 px-4 py-2 bg-orange-50 text-orange-600 rounded-full">
+                         <Shield size={16} />
+                         <span className="text-[10px] font-display font-black uppercase tracking-widest leading-none">Logic Breakdown</span>
+                      </div>
+                      <div className="w-10 h-10 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-400">
+                        <Activity size={18} />
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">{currentQuestion.domain}</div>
-                      <div className="text-[10px] font-bold text-orange-500/60 uppercase tracking-tighter">{currentQuestion.objective}</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
-                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 text-center">The Solution</h3>
-                    <p className="text-2xl font-black text-blue-600 mb-8 text-center tracking-tighter">
-                      {Array.isArray(currentQuestion.correctAnswer) ? currentQuestion.correctAnswer.join(', ') : currentQuestion.correctAnswer}
-                    </p>
-                    
-                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 text-center">Analysis</h3>
-                    <div className="text-base text-gray-600 leading-relaxed font-bold space-y-4">
-                      {currentQuestion.explanation}
+
+                    <div className="flex-1 overflow-y-auto custom-scrollbar px-8 scroll-smooth">
+                       <div className="text-center mb-10">
+                          <h3 className="text-[10px] font-display font-black text-gray-400 uppercase tracking-[0.3em] mb-3">Target Solution</h3>
+                          <p className="text-3xl font-display font-black text-blue-600 tracking-tight leading-tight">
+                            {Array.isArray(currentQuestion.correctAnswer) ? currentQuestion.correctAnswer.join(', ') : currentQuestion.correctAnswer}
+                          </p>
+                       </div>
+
+                       <div className="space-y-4 pb-12">
+                          {currentQuestion.explanation.split('\n\n').map((section, idx) => {
+                            const isCorrectPart = section.toLowerCase().includes('correct') || section.toLowerCase().includes('why') || section.startsWith('Correct:');
+                            const isIncorrectPart = section.toLowerCase().includes('incorrect') || section.toLowerCase().includes('others') || section.startsWith('Incorrect:');
+
+                            return (
+                              <motion.div 
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0, transition: { delay: 0.1 + idx * 0.1 } }}
+                                key={idx} 
+                                className={`p-6 rounded-[2.5rem] border-2 shadow-sm ${
+                                  isCorrectPart 
+                                    ? 'bg-green-50/50 border-green-100 text-green-900 shadow-green-50' 
+                                    : isIncorrectPart 
+                                      ? 'bg-red-50/50 border-red-100 text-red-900 shadow-red-50' 
+                                      : 'bg-white border-gray-100 text-gray-700'
+                                }`}
+                              >
+                                <div className="flex items-start gap-4">
+                                  {isCorrectPart && <Shield size={22} className="shrink-0 mt-1 opacity-60 text-green-600" />}
+                                  {isIncorrectPart && <AlertCircle size={22} className="shrink-0 mt-1 opacity-60 text-red-600" />}
+                                  <p className="text-base font-medium leading-relaxed">{section}</p>
+                                </div>
+                              </motion.div>
+                            );
+                          })}
+                       </div>
                     </div>
                   </div>
 
-                  <button 
-                    onClick={() => {
-                      if (window.navigator.vibrate) window.navigator.vibrate(20);
-                      advanceNext();
-                    }}
-                    className="mt-6 w-full py-6 rounded-[2rem] bg-gray-900 text-white font-black text-xl hover:bg-black shadow-2xl shadow-gray-200 transition-all active:scale-95"
-                  >
-                    Next Ticket
-                  </button>
+                  <div className="p-8 pt-6 bg-white border-t border-gray-100">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (window.navigator.vibrate) window.navigator.vibrate(20);
+                          advanceNext();
+                        }}
+                        className="w-full py-7 rounded-[2.5rem] bg-blue-600 text-white font-display font-black text-2xl hover:bg-blue-700 shadow-2xl shadow-blue-200 transition-all active:scale-[0.97] z-[60] touch-manipulation flex items-center justify-center gap-3"
+                      >
+                        <span>Next Ticket</span>
+                        <Shield size={20} className="opacity-40" />
+                      </button>
+                    <div className="mt-4 flex justify-center">
+                       <div className="w-12 h-1 bg-gray-100 rounded-full" />
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -1307,78 +1346,104 @@ export default function App() {
           </>
         ) : (
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full h-full flex flex-col p-6 overflow-y-auto custom-scrollbar"
+            className="w-full h-full flex flex-col p-2 pt-0 overflow-y-auto no-scrollbar pb-10"
           >
-            <div className="mb-10 text-center">
-              <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Exam Probability</h2>
-              <div className="text-5xl font-black text-gray-900 tracking-tighter">
-                {readiness?.averageMastery}%
+            <div className="mb-8 text-center bg-white p-10 rounded-[3rem] shadow-xl shadow-blue-50/50 border border-gray-50 border-opacity-50">
+              <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4">Exam Ready Score</h2>
+              <div className="text-6xl font-display font-black text-gray-900 tracking-tighter mb-2">
+                {readiness?.averageMastery}<span className="text-blue-500">%</span>
               </div>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Mastery Level: Advanced</p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4">
               {readiness?.stats.map(s => (
-                <div key={s.id} className="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm">
-                  <div className="flex justify-between items-center mb-4">
+                <div key={s.id} className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-center mb-5">
                     <div className="flex flex-col">
-                      <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Domain {s.id}</span>
-                      <span className="text-sm font-bold text-gray-800 leading-tight pr-4">{s.name}</span>
+                      <span className="text-[9px] font-black text-blue-500/50 uppercase tracking-widest mb-1">Domain {s.id}</span>
+                      <span className="text-base font-display font-black text-gray-900 leading-tight pr-4">{s.name}</span>
                     </div>
-                    <div className="text-xl font-black text-gray-900">{s.mastery}%</div>
+                    <div className="text-2xl font-display font-black text-gray-900">{s.mastery}%</div>
                   </div>
-                  <div className="h-2 w-full bg-gray-50 rounded-full overflow-hidden">
+                  <div className="h-3 w-full bg-gray-50 rounded-full overflow-hidden border border-gray-100/50 p-0.5">
                     <motion.div 
-                      className={`h-full rounded-full ${
-                        s.mastery < 70 ? 'bg-red-400' : s.mastery < 85 ? 'bg-yellow-400' : 'bg-green-400'
+                      className={`h-full rounded-full shadow-sm ${
+                        s.mastery < 70 ? 'bg-red-400' : s.mastery < 85 ? 'bg-amber-400' : 'bg-emerald-400'
                       }`}
                       initial={{ width: 0 }}
                       animate={{ width: `${s.mastery}%` }}
-                      transition={{ duration: 1, ease: "easeOut" }}
+                      transition={{ duration: 1.2, ease: "circOut" }}
                     />
                   </div>
-                  <div className="mt-3 flex justify-between items-center">
-                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Exam Weight: {s.target}%</span>
-                    <span className={`text-[9px] font-bold uppercase transition-colors ${
-                      s.mastery < 70 ? 'text-red-500' : s.mastery < 85 ? 'text-yellow-600' : 'text-green-600'
+                  <div className="mt-4 flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                       <span className="w-1.5 h-1.5 rounded-full bg-blue-500/20" />
+                       <span className="text-[10px] font-black text-gray-300 uppercase tracking-tighter">Weight: {s.target}%</span>
+                    </div>
+                    <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${
+                      s.mastery < 70 ? 'text-red-500 bg-red-50 border-red-100' : s.mastery < 85 ? 'text-amber-600 bg-amber-50 border-amber-100' : 'text-emerald-600 bg-emerald-50 border-emerald-100'
                     }`}>
-                      {s.mastery < 70 ? 'Critical Review' : s.mastery < 85 ? 'Reinforce' : 'Certified'}
+                      {s.mastery < 70 ? 'Deficient' : s.mastery < 85 ? 'Intermediate' : 'Expert'}
                     </span>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-10 p-6 bg-blue-50 rounded-[2.5rem] border border-blue-100/50">
-              <p className="text-blue-900/60 text-[10px] font-bold uppercase tracking-widest text-center">Data Summary</p>
-              <p className="text-blue-900 text-xs text-center mt-2 leading-relaxed">
-                Your readiness is calculated using SRS data. <br/>Keep drilling weakly reinforced domains.
+            <div className="mt-8 p-8 bg-blue-600 rounded-[3rem] text-center shadow-2xl shadow-blue-200 mb-4">
+              <Shield size={24} className="text-white mx-auto mb-3" />
+              <p className="text-white text-xs font-bold leading-relaxed">
+                Keep precision drilling to reach <span className="text-blue-100 italic">90% stability</span> across all performance domains.
               </p>
+            </div>
+
+            <div className="flex justify-center pb-8">
+               <button 
+                onClick={resetProgress}
+                className="px-8 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all flex items-center gap-3 border border-transparent hover:border-red-100"
+               >
+                 <RefreshCcw size={14} strokeWidth={3} />
+                 Factory Reset All Data
+               </button>
             </div>
           </motion.div>
         )}
       </main>
 
-      {/* Navigation Footer */}
-      <nav className="w-full max-w-md mt-auto pt-10 flex justify-around items-center border-t border-gray-50 border-opacity-50 px-8">
-        <div 
-          onClick={() => setView('drill')}
-          className={`flex flex-col items-center gap-1 transition-all cursor-pointer ${view === 'drill' ? 'opacity-100 scale-110' : 'opacity-30 hover:opacity-50'}`}
+      {/* Navigation Footer - Ultra Premium */}
+      <nav className="w-full max-w-md mt-auto py-6 sm:py-8 flex justify-around items-center border-t border-gray-100 bg-white/80 backdrop-blur-2xl rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.02)] px-10 transition-all duration-500">
+        <button 
+          onClick={(e) => {
+             e.preventDefault();
+             if (window.navigator.vibrate) window.navigator.vibrate(5);
+             setView('drill');
+          }}
+          className={`flex flex-col items-center gap-1.5 transition-all group ${view === 'drill' ? 'scale-110' : 'opacity-30 hover:opacity-100'}`}
         >
-          <Activity size={20} className={view === 'drill' ? 'text-blue-500' : 'text-gray-400'} />
-          <span className="text-[8px] font-black uppercase tracking-widest">Drill</span>
-        </div>
+          <div className={`p-2 rounded-2xl transition-colors ${view === 'drill' ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'bg-transparent text-gray-600 group-hover:bg-blue-50'}`}>
+            <Activity size={22} strokeWidth={2.5} />
+          </div>
+          <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${view === 'drill' ? 'text-blue-600' : 'text-gray-400'}`}>Drill</span>
+        </button>
         
-        <div className="w-px h-6 bg-gray-100" />
+        <div className="w-px h-10 bg-gray-100 opacity-50" />
         
-        <div 
-          onClick={() => setView('dashboard')}
-          className={`flex flex-col items-center gap-1 transition-all cursor-pointer ${view === 'dashboard' ? 'opacity-100 scale-110' : 'opacity-30 hover:opacity-50'}`}
+        <button 
+          onClick={(e) => {
+             e.preventDefault();
+             if (window.navigator.vibrate) window.navigator.vibrate(5);
+             setView('dashboard');
+          }}
+          className={`flex flex-col items-center gap-1.5 transition-all group ${view === 'dashboard' ? 'scale-110' : 'opacity-30 hover:opacity-100'}`}
         >
-          <LayoutGrid size={20} className={view === 'dashboard' ? 'text-blue-500' : 'text-gray-400'} />
-          <span className="text-[8px] font-black uppercase tracking-widest">Stats</span>
-        </div>
+          <div className={`p-2 rounded-2xl transition-colors ${view === 'dashboard' ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'bg-transparent text-gray-600 group-hover:bg-blue-50'}`}>
+            <LayoutGrid size={22} strokeWidth={2.5} />
+          </div>
+          <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${view === 'dashboard' ? 'text-blue-600' : 'text-gray-400'}`}>Stats</span>
+        </button>
       </nav>
         </>
       )}

@@ -1,6 +1,6 @@
 {
   "name": "Shift: Network+ Master",
-  "description": "High-intensity N10-009 simulator featuring adaptive SRS drills, Syslog PBQs, Audio Commute Mode, and a 5-minute Braindump whiteboard simulator.",
+  "description": "Premium, mobile-first CompTIA N10-009 simulator. Feature-rich adaptive SRS drills, Syslog PBQs, and deep performance analytics, all audited for world-class mobile UX and retention.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
