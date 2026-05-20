@@ -29,6 +29,7 @@ export default function App() {
   const [view, setView] = useState<'home' | 'drill' | 'dashboard' | 'mock' | 'braindump' | 'tips'>('home');
   const [questionsPool, setQuestionsPool] = useState<Question[]>([]);
   const [recentQuestionIds, setRecentQuestionIds] = useState<string[]>([]);
+  const [sessionHistory, setSessionHistory] = useState<any[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [score, setScore] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
@@ -260,9 +261,50 @@ export default function App() {
 
   const finishExam = () => {
     setIsExamOver(true);
-    // Score calculation: (correct / total) * 900
-    // Simplified for the mock length available
+    saveSessionStats(Math.round((examScore / mockQuestions.length) * 100), mockQuestions.length);
   };
+
+  const saveSessionStats = (scorePercent: number, count: number) => {
+    if (!readiness) return;
+    
+    const sortedStats = [...readiness.stats].sort((a, b) => a.mastery - b.mastery);
+    const weakest = sortedStats[0]?.name || 'N/A';
+    const strongest = sortedStats[sortedStats.length - 1]?.name || 'N/A';
+
+    const newSession = {
+      date: new Date().toISOString(),
+      score: scorePercent,
+      questionsAnswered: count,
+      weakestDomain: weakest,
+      strongestDomain: strongest
+    };
+
+    const updatedHistory = [newSession, ...sessionHistory].slice(0, 10); // Keep last 10
+    setSessionHistory(updatedHistory);
+    localStorage.setItem('shift_session_history', JSON.stringify(updatedHistory));
+  };
+
+  const calculateExamTimeline = () => {
+    const currentMastery = readiness?.averageMastery || 0;
+    const remaining = Math.max(0, 95 - currentMastery);
+    const daysNeeded = Math.ceil(remaining / 2); // 2% per day
+    
+    const examDate = new Date();
+    examDate.setDate(examDate.getDate() + daysNeeded);
+    
+    return {
+      date: examDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      daysRemaining: daysNeeded,
+      phase: currentMastery >= 95 ? 4 : currentMastery >= 80 ? 3 : currentMastery >= 50 ? 2 : 1
+    };
+  };
+
+  // SRS Mastery Trigger (Every 20 questions)
+  useEffect(() => {
+    if (questionsAnswered > 0 && questionsAnswered % 20 === 0) {
+      saveSessionStats(readiness?.averageMastery || 0, 20);
+    }
+  }, [questionsAnswered]);
 
   const [showXpToast, setShowXpToast] = useState(false);
   const [lastXpGain, setLastXpGain] = useState(0);
@@ -283,12 +325,23 @@ export default function App() {
     
     const savedScore = localStorage.getItem('shift_score');
     if (savedScore) setScore(parseInt(savedScore));
+
+    const savedHistory = localStorage.getItem('shift_session_history');
+    if (savedHistory) {
+      try {
+        setSessionHistory(JSON.parse(savedHistory));
+      } catch (e) {
+        setSessionHistory([]);
+      }
+    }
   }, []);
 
   // Pick first question once pool is ready
   useEffect(() => {
     if (questionsPool.length > 0 && !currentQuestion) {
-      setCurrentQuestion(pickWeightedQuestion(questionsPool));
+      const q = pickWeightedQuestion(questionsPool);
+      if (q.options) q.options = [...q.options].sort(() => Math.random() - 0.5);
+      setCurrentQuestion(q);
     }
   }, [questionsPool, currentQuestion]);
 
@@ -362,13 +415,18 @@ export default function App() {
           setQuestionsAnsweredSinceCheck(0);
           checkAndTriggerQuarantine();
         } else {
-          // Exclude recent questions (last 15)
+          // Exclude recent questions (last 20)
           const nextQ = pickWeightedQuestion(questionsPool, recentQuestionIds);
           
+          // Shuffle options if they exist
+          if (nextQ.options && nextQ.options.length > 0) {
+            nextQ.options = [...nextQ.options].sort(() => Math.random() - 0.5);
+          }
+
           // Update recent IDs history
           setRecentQuestionIds(prev => {
             const nextBatch = [nextQ.id, ...prev];
-            return nextBatch.slice(0, 15); // Keep history of 15
+            return nextBatch.slice(0, 20); // Keep history of 20
           });
 
           setCurrentQuestion({ ...nextQ }); 
@@ -1381,12 +1439,100 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             className="w-full h-full flex flex-col p-2 pt-0 overflow-y-auto no-scrollbar pb-10"
           >
+            {/* Strategy Vault Timeline - NEW */}
+            <div className="mb-8 p-8 bg-white rounded-[3rem] shadow-xl shadow-blue-50/50 border border-gray-50">
+              <div className="flex justify-between items-start mb-10">
+                <div className="text-left">
+                  <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-2">Vault Strategy</h3>
+                  <div className="text-3xl font-display font-black text-gray-900 tracking-tight">Exam Target Date</div>
+                  <p className="text-blue-600 font-bold text-lg">{calculateExamTimeline().date}</p>
+                </div>
+                <div className="bg-blue-50 p-2.5 rounded-2xl">
+                   <Shield size={20} className="text-blue-500" />
+                </div>
+              </div>
+
+              {/* Vertical Stepper */}
+              <div className="relative pl-8 space-y-12">
+                <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-gray-100" />
+                
+                {[
+                  { phase: 1, label: 'Boot Camp', range: '< 50%', desc: 'Focusing on core SRS drills.' },
+                  { phase: 2, label: 'Endurance', range: '50-80%', desc: 'Taking full 90-question mock exams.' },
+                  { phase: 3, label: 'The Vault', range: '80-95%', desc: 'Final 7-Day Lockdown. Aggressive PBQ and Quarantine Drills only.' },
+                  { phase: 4, label: 'Exam Ready', range: '95%+', desc: 'Book your CompTIA Voucher.' },
+                ].map((node) => {
+                  const currentPhase = calculateExamTimeline().phase;
+                  const isPast = currentPhase > node.phase;
+                  const isCurrent = currentPhase === node.phase;
+                  
+                  return (
+                    <div key={node.phase} className="relative">
+                      <div className={`absolute left-[-26px] top-1 w-2.5 h-2.5 rounded-full z-10 transition-all duration-500 ${
+                        isPast ? 'bg-emerald-500 ring-4 ring-emerald-50' : isCurrent ? 'bg-blue-600 ring-4 ring-blue-50 animate-pulse' : 'bg-gray-200'
+                      }`} />
+                      <div className={`text-left transition-opacity duration-500 ${isPast || isCurrent ? 'opacity-100' : 'opacity-30'}`}>
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className="text-xs font-black text-gray-900 uppercase tracking-tight">{node.label}</span>
+                          <span className="text-[9px] font-bold text-gray-400 bg-gray-50 px-1.5 rounded">{node.range}</span>
+                        </div>
+                        <p className="text-xs text-gray-500 font-medium leading-relaxed">{node.desc}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="mb-8 text-center bg-white p-10 rounded-[3rem] shadow-xl shadow-blue-50/50 border border-gray-50 border-opacity-50">
               <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4">Exam Ready Score</h2>
               <div className="text-6xl font-display font-black text-gray-900 tracking-tighter mb-2">
                 {readiness?.averageMastery}<span className="text-blue-500">%</span>
               </div>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Mastery Level: Advanced</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Mastery Level: {readiness?.averageMastery && readiness.averageMastery > 85 ? 'Elite' : readiness?.averageMastery && readiness.averageMastery > 70 ? 'Advanced' : 'Combat Ready'}</p>
+            </div>
+
+            {/* Session Activity Feed - NEW */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between px-4 mb-4">
+                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Activity Feed</h3>
+                <RefreshCcw size={14} className="text-gray-300" />
+              </div>
+              
+              <div className="space-y-3 px-1">
+                {sessionHistory.length === 0 ? (
+                  <div className="bg-white p-10 rounded-[2.5rem] border border-gray-50 text-center">
+                    <p className="text-sm font-bold text-gray-400 uppercase tracking-tight">Complete your first shift to see analytics</p>
+                  </div>
+                ) : (
+                  sessionHistory.map((session, idx) => (
+                    <div key={idx} className="bg-white p-5 rounded-[2rem] border border-gray-100 flex items-center justify-between shadow-sm group hover:border-blue-100 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-11 h-11 rounded-2xl flex items-center justify-center font-display font-black text-lg ${
+                          session.score >= 80 ? 'bg-emerald-50 text-emerald-600' : session.score >= 60 ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-600'
+                        }`}>
+                          {session.score}%
+                        </div>
+                        <div className="text-left">
+                          <p className="text-xs font-black text-gray-900 leading-none mb-1">
+                            {session.questionsAnswered} Question Pulse
+                          </p>
+                          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">
+                            {new Date(session.date).toLocaleDateString()} • Weak: {session.weakestDomain.split(' ').pop()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right flex flex-col items-end">
+                        <span className={`text-[8px] font-black uppercase px-2 py-1 rounded-full mb-1 ${
+                          session.score >= 80 ? 'bg-emerald-500/10 text-emerald-600' : session.score >= 60 ? 'bg-amber-500/10 text-amber-600' : 'bg-red-500/10 text-red-600'
+                        }`}>
+                          {session.score >= 80 ? 'Certified' : session.score >= 60 ? 'Stable' : 'Warning'}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
 
             <div className="space-y-4">
