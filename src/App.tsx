@@ -5,7 +5,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'motion/react';
-import { Activity, Shield, Hash, LayoutGrid, Server, Globe, AlertCircle, RefreshCcw, Terminal } from 'lucide-react';
+import { Activity, Shield, Hash, LayoutGrid, Server, Globe, AlertCircle, RefreshCcw, Terminal, X } from 'lucide-react';
 import { questions as initialQuestions } from './data';
 import { Question } from './types';
 
@@ -1370,31 +1370,71 @@ export default function App() {
                        </div>
 
                        <div className="space-y-4 pb-12">
-                          {(currentQuestion.explanation || "No logical breakdown available for this specific scenario.").split('\n\n').map((section, idx) => {
-                            const isCorrectPart = section.toLowerCase().includes('correct') || section.toLowerCase().includes('why') || section.startsWith('Correct:');
-                            const isIncorrectPart = section.toLowerCase().includes('incorrect') || section.toLowerCase().includes('others') || section.startsWith('Incorrect:');
-
-                            return (
+                          {typeof currentQuestion.explanation === 'object' ? (
+                            <>
                               <motion.div 
                                 initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0, transition: { delay: 0.1 + idx * 0.1 } }}
-                                key={idx} 
-                                className={`p-6 rounded-[2.5rem] border-2 shadow-sm ${
-                                  isCorrectPart 
-                                    ? 'bg-green-50/50 border-green-100 text-green-900 shadow-green-50' 
-                                    : isIncorrectPart 
-                                      ? 'bg-red-50/50 border-red-100 text-red-900 shadow-red-50' 
-                                      : 'bg-white border-gray-100 text-gray-700'
-                                }`}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="p-6 rounded-[2.5rem] border-2 bg-green-50/50 border-green-100 text-green-900 shadow-sm shadow-green-50"
                               >
                                 <div className="flex items-start gap-4">
-                                  {isCorrectPart && <Shield size={22} className="shrink-0 mt-1 opacity-60 text-green-600" />}
-                                  {isIncorrectPart && <AlertCircle size={22} className="shrink-0 mt-1 opacity-60 text-red-600" />}
-                                  <p className="text-base font-medium leading-relaxed">{section}</p>
+                                  <Shield size={22} className="shrink-0 mt-1 opacity-60 text-green-600" />
+                                  <div className="flex-1">
+                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-green-600 mb-1">Target Logic</h4>
+                                    <p className="text-base font-medium leading-relaxed">{currentQuestion.explanation.whyCorrect}</p>
+                                  </div>
                                 </div>
                               </motion.div>
-                            );
-                          })}
+                              
+                              <div className="pt-2 space-y-3">
+                                <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 px-6">Distractor Analysis</h4>
+                                {currentQuestion.explanation.whyWrong.map((wrong, idx) => (
+                                  <motion.div 
+                                    key={idx}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0, transition: { delay: 0.1 + idx * 0.05 } }}
+                                    className="p-5 rounded-[2rem] border-2 bg-gray-50/50 border-gray-100 text-gray-700 hover:border-red-100/50 transition-colors"
+                                  >
+                                    <div className="flex items-start gap-3">
+                                      <div className="w-5 h-5 rounded-lg bg-red-100 flex items-center justify-center shrink-0 mt-0.5">
+                                        <X size={10} className="text-red-500" strokeWidth={4} />
+                                      </div>
+                                      <div className="flex-1">
+                                        <span className="text-xs font-black text-red-600 mr-2 uppercase tracking-tighter">{wrong.option}:</span>
+                                        <p className="text-sm font-medium leading-relaxed text-gray-600">{wrong.reason}</p>
+                                      </div>
+                                    </div>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            </>
+                          ) : (
+                            (currentQuestion.explanation || "No logical breakdown available for this specific scenario.").split('\n\n').map((section, idx) => {
+                              const isCorrectPart = section.toLowerCase().includes('correct') || section.toLowerCase().includes('why') || section.startsWith('Correct:');
+                              const isIncorrectPart = section.toLowerCase().includes('incorrect') || section.toLowerCase().includes('others') || section.startsWith('Incorrect:');
+
+                              return (
+                                <motion.div 
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0, transition: { delay: 0.1 + idx * 0.1 } }}
+                                  key={idx} 
+                                  className={`p-6 rounded-[2.5rem] border-2 shadow-sm ${
+                                    isCorrectPart 
+                                      ? 'bg-green-50/50 border-green-100 text-green-900 shadow-green-50' 
+                                      : isIncorrectPart 
+                                        ? 'bg-red-50/50 border-red-100 text-red-900 shadow-red-50' 
+                                        : 'bg-white border-gray-100 text-gray-700'
+                                  }`}
+                                >
+                                  <div className="flex items-start gap-4">
+                                    {isCorrectPart && <Shield size={22} className="shrink-0 mt-1 opacity-60 text-green-600" />}
+                                    {isIncorrectPart && <AlertCircle size={22} className="shrink-0 mt-1 opacity-60 text-red-600" />}
+                                    <p className="text-base font-medium leading-relaxed">{section}</p>
+                                  </div>
+                                </motion.div>
+                              );
+                            })
+                          )}
                        </div>
                     </div>
                   </div>

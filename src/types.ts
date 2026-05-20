@@ -8,7 +8,10 @@ export interface Question {
   question: string;
   options: string[];
   correctAnswer: string | string[];
-  explanation: string;
+  explanation: string | {
+    whyCorrect: string;
+    whyWrong: { option: string; reason: string }[];
+  };
   weight: number;
   imageUrl?: string;
   logData?: string[];

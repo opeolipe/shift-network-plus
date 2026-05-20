@@ -10,7 +10,14 @@ export const questions: Question[] = [
     question: 'A network administrator is designing a highly scalable data center fabric. They need to provide Layer 2 connectivity over a Layer 3 spine-leaf architecture while allowing for over 16 million segments. Which technology is BEST suited for this requirement?',
     options: ['VXLAN', 'STP', 'VLAN', '802.1Q'],
     correctAnswer: 'VXLAN',
-    explanation: 'Correct: VXLAN (Virtual Extensible LAN) is the industry standard for large data centers. It uses a 24-bit VNI (VXLAN Network Identifier), which supports over 16 million unique segments, far exceeding the 4,096-segment limit of traditional 802.1Q VLANs.\n\nIncorrect: STP (Spanning Tree Protocol) is for loop prevention. VLANs are limited to 4,096 IDs. 802.1Q is the standard trunking protocol, but doesn\'t provide the scale of VXLAN.',
+    explanation: {
+      whyCorrect: "VXLAN (Virtual Extensible LAN) is the industry standard for large data centers. It uses a 24-bit VNI (VXLAN Network Identifier), which supports over 16 million unique segments, far exceeding the 4,096-segment limit of traditional 802.1Q VLANs.",
+      whyWrong: [
+        { option: "STP", reason: "STP (Spanning Tree Protocol) is for loop prevention in Layer 2 networks, not for creating massive virtual segments." },
+        { option: "VLAN", reason: "VLANs are limited to 4,096 IDs, which is insufficient for the high scalability required in modern multi-tenant cloud data centers." },
+        { option: "802.1Q", reason: "This is the standard trunking protocol for VLANs, but it doesn't provide the level of scalability that VXLAN encapsulates." }
+      ]
+    },
     weight: 10,
   },
   {
@@ -21,7 +28,14 @@ export const questions: Question[] = [
     question: 'An organization needs to optimize cloud application performance for branch offices by dynamically routing traffic based on real-time link quality and application requirements. Which solution should be implemented?',
     options: ['SD-WAN', 'BGP', 'Site-to-Site VPN', 'Static Routing'],
     correctAnswer: 'SD-WAN',
-    explanation: 'Correct: SD-WAN (Software-Defined Wide Area Network) provides dynamic path selection (DPS), allowing traffic to be routed over MPLS, Broadband, or LTE based on performance metrics like jitter and latency.\n\nIncorrect: BGP is for path exchange between AS. Site-to-Site VPN provides a tunnel but doesn\'t typically include application-aware dynamic routing. Static routing is manual and non-dynamic.',
+    explanation: {
+      whyCorrect: "SD-WAN (Software-Defined Wide Area Network) provides dynamic path selection (DPS), allowing traffic to be routed over MPLS, Broadband, or LTE based on performance metrics like jitter and latency.",
+      whyWrong: [
+        { option: "BGP", reason: "BGP is for path exchange between Autonomous Systems; it doesn't natively handle application-aware dynamic routing based on link health." },
+        { option: "Site-to-Site VPN", reason: "Site-to-Site VPN provides a fixed secure tunnel but typically lacks the real-time link quality monitoring and dynamic steering of SD-WAN." },
+        { option: "Static Routing", reason: "Static routing is manual and does not adapt automatically to failures or changes in link performance." }
+      ]
+    },
     weight: 10,
   },
   {
@@ -32,7 +46,15 @@ export const questions: Question[] = [
     question: 'A security engineer is configuring a stateful firewall. Which of the following ports should be allowed to facilitate secure remote administration and secure file transfer? (Select TWO).',
     options: ['22', '23', '443', '445', '990', '21'],
     correctAnswer: ['22', '990'],
-    explanation: 'Correct: Port 22 is used for SSH (secure administration) and SFTP. Port 990 is used for FTPS (FTP over TLS/SSL) implicit mode.\n\nIncorrect: Port 23 is Telnet (plaintext). Port 443 is HTTPS. Port 445 is SMB/AD.',
+    explanation: {
+      whyCorrect: "Port 22 is natively used by SSH (secure remote administration) and SFTP. Port 990 is used for FTPS (FTP over TLS/SSL) implicit mode, ensuring encrypted file transfers.",
+      whyWrong: [
+        { option: "23", reason: "Port 23 is Telnet, which transfers data and credentials in plaintext, making it highly insecure." },
+        { option: "443", reason: "Port 443 is HTTPS; while secure, it is for web traffic rather than direct remote administration or standard file transfer protocols." },
+        { option: "445", reason: "Port 445 is SMB; it is commonly used for file sharing in local networks but is not a standard secure remote admin protocol for these scenarios." },
+        { option: "21", reason: "Port 21 is standard FTP; like Telnet, it is plaintext and insecure for modern corporate administration." }
+      ]
+    },
     weight: 10,
   },
 
@@ -1073,7 +1095,14 @@ export const questions: Question[] = [
     question: 'A cloud architect is designing a network to support heavy virtual machine migrations and server-to-server database replication within the same facility. Which of the following traffic flows and architectures is MOST appropriate?',
     options: ['East-West traffic using a Spine-and-Leaf topology', 'North-South traffic using a Three-Tier Hierarchical model', 'North-South traffic using a Hub-and-Spoke topology', 'East-West traffic using a Ring topology'],
     correctAnswer: 'East-West traffic using a Spine-and-Leaf topology',
-    explanation: 'Correct: East-west traffic refers to data transfer within a data center (server-to-server). A Spine-and-Leaf topology provides the low-latency, high-bandwidth mesh required for this, especially for VM migrations (vMotion/Live Migration).\n\nIncorrect: North-south traffic refers to traffic entering/leaving the data center. Three-tier is older and less efficient for massive east-west flows.',
+    explanation: {
+      whyCorrect: "East-west traffic refers to data transfer within a data center (server-to-server). A Spine-and-Leaf topology provides the low-latency, high-bandwidth mesh required for this, especially for VM migrations (vMotion/Live Migration).",
+      whyWrong: [
+        { option: "North-South traffic using a Three-Tier Hierarchical model", reason: "North-south traffic refers to traffic entering/leaving the data center. Three-tier is older and less efficient for massive east-west flows." },
+        { option: "North-South traffic using a Hub-and-Spoke topology", reason: "Hub-and-Spoke creates tight bottlenecks and is usually for WAN connections, not high-speed server migrations." },
+        { option: "East-West traffic using a Ring topology", reason: "Ring topologies are legacy (Token Ring/FDDI) and are never used for high-performance data center fabric designs." }
+      ]
+    },
     weight: 10,
   },
   {
@@ -1084,7 +1113,14 @@ export const questions: Question[] = [
     question: 'A security engineer is upgrading the corporate WLAN to mitigate offline dictionary attacks against wireless handshakes. The new implementation must drop the use of Pre-Shared Keys (PSK). Which of the following should be implemented?',
     options: ['WPA3 using SAE (Simultaneous Authentication of Equals)', 'WPA3 using AES-CCMP', 'WPA2 Enterprise with TKIP', 'WPA3 using OWE (Opportunistic Wireless Encryption)'],
     correctAnswer: 'WPA3 using SAE (Simultaneous Authentication of Equals)',
-    explanation: 'Correct: WPA3 replaces PSK with SAE (Simultaneous Authentication of Equals). SAE provides Forward Secrecy and makes offline dictionary attacks much harder by requiring an active exchange for each attempt.\n\nIncorrect: AES-CCMP is an encryption algorithm, not a handshake/auth mechanism. OWE is for open networks without passwords.',
+    explanation: {
+      whyCorrect: "WPA3 replaces Pre-Shared Keys with SAE (Simultaneous Authentication of Equals). SAE provides Forward Secrecy and makes offline dictionary attacks much harder by requiring an interactive exchange for each authentication attempt.",
+      whyWrong: [
+        { option: "WPA3 using AES-CCMP", reason: "AES-CCMP is the encryption algorithm. While WPA3 uses it, SAE is the specific mechanism that solves the handshake/dictionary attack problem." },
+        { option: "WPA2 Enterprise with TKIP", reason: "WPA2 Enterprise uses 802.1X/RADIUS, not PSK, but TKIP is legacy/insecure and WPA2 is still vulnerable to some handshake captures." },
+        { option: "WPA3 using OWE", reason: "OWE (Opportunistic Wireless Encryption) provides encryption for open guest networks, but it doesn't use passwords at all." }
+      ]
+    },
     weight: 10,
   },
   {
@@ -1095,7 +1131,14 @@ export const questions: Question[] = [
     question: 'A technician connects Workstation A (IP: 10.0.0.14/28) and Workstation B (IP: 10.0.0.22/28) to the same unmanaged Layer 2 switch. The workstations cannot ping each other. What is the MOST likely cause?',
     options: ['The workstations are in different subnets and require a Layer 3 device to route traffic', 'The switch requires 802.1Q VLAN tagging to be configured', 'The workstations are both in the same collision domain', 'A crossover cable is required between the workstations'],
     correctAnswer: 'The workstations are in different subnets and require a Layer 3 device to route traffic',
-    explanation: 'Correct: A /28 subnet has a block size of 16. Subnet 1 is 10.0.0.0 - 10.0.0.15. Subnet 2 is 10.0.0.16 - 10.0.0.31. Workstation A (.14) is in the first subnet, and Workstation B (.22) is in the second. Even on the same physical switch, they cannot communicate without a router or Layer 3 switch.\n\nIncorrect: VLANs are not the issue here as unmanaged switches don\'t support them, and the root cause is the subnetting.',
+    explanation: {
+      whyCorrect: "A /28 subnet has a block size of 16. Subnet 1 covers 10.0.0.0 - 10.0.0.15 (hosts .1-.14). Subnet 2 covers 10.0.0.16 - 10.0.0.31 (hosts .17-.30). Because .14 and .22 are in logically separate subnets, they cannot communicate on Layer 2 without a Layer 3 gateway.",
+      whyWrong: [
+        { option: "The switch requires 802.1Q VLAN tagging to be configured", reason: "Unmanaged switches ignore VLAN tags; even on a managed switch, the primary issue is the IP subnet mismatch." },
+        { option: "The workstations are both in the same collision domain", reason: "Switches create separate collision domains per port. Even if they were in the same domain, the IP routing would still fail." },
+        { option: "A crossover cable is required between the workstations", reason: "Modern switches use Auto-MDIX to auto-detect cable types; the hardware layer is likely fine since link lights were verified." }
+      ]
+    },
     weight: 10,
   },
   {
@@ -1106,7 +1149,14 @@ export const questions: Question[] = [
     question: 'An enterprise network uses two core routers. Router A actively handles all traffic, while Router B sits idle, monitoring Router A via keepalives. If Router A fails, Router B takes over the virtual IP gateway. What specific architecture is this?',
     options: ['Active-Passive using FHRP (First Hop Redundancy Protocol)', 'Active-Active using MLAG', 'Active-Passive using LACP', 'Active-Passive using STP'],
     correctAnswer: 'Active-Passive using FHRP (First Hop Redundancy Protocol)',
-    explanation: 'Correct: FHRPs like HSRP or VRRP allow for a standby router to take over a virtual gateway address if the active router fails, which is a classic Active-Passive setup.\n\nIncorrect: MLAG and LACP are for link aggregation. STP is for loop prevention.',
+    explanation: {
+      whyCorrect: "FHRPs like HSRP (Hot Standby Router Protocol) or VRRP allow multiple routers to present a single 'Virtual IP' to clients. In Active-Passive, only one router forwards data while the other waits for a heartbeat failure.",
+      whyWrong: [
+        { option: "Active-Active using MLAG", reason: "MLAG allows multiple physical links to be treated as one logical link between two switches, not specifically for gateway redundancy." },
+        { option: "Active-Passive using LACP", reason: "LACP is for Link Aggregation (bonding) of multiple cables between two fixed points, not for router gateway failover." },
+        { option: "Active-Passive using STP", reason: "Spanning Tree Protocol (STP) prevents loops at Layer 2; it doesn't manage Layer 3 gateway IP redundancy." }
+      ]
+    },
     weight: 10,
   },
   {
@@ -1117,7 +1167,14 @@ export const questions: Question[] = [
     question: 'A technician is connecting two switches inside the same server rack that are 2 meters apart. To minimize latency and cost without using fiber optics, which of the following cabling types should be used?',
     options: ['DAC (Direct Attach Copper) Twinaxial cable', 'Cat 6a UTP Patch cable', 'Single-mode Fiber with LC connectors', 'InfiniBand cable'],
     correctAnswer: 'DAC (Direct Attach Copper) Twinaxial cable',
-    explanation: 'Correct: DAC (Direct Attach Copper) cables are Twinaxial cables with integrated SFP+ connectors. They are cheaper and have lower latency than SFP+ transceivers with fiber/copper for very short distances (usually up to 7m).\n\nIncorrect: Cat 6a is an option but has higher latency/overhead than DAC at 10Gbps+ rates.',
+    explanation: {
+      whyCorrect: "Direct Attach Copper (DAC) cables are Twinaxial cables with factory-integrated SFP+ transceivers on both ends. They are the most cost-effective and lowest-latency choice for very short distances (under 7m).",
+      whyWrong: [
+        { option: "Cat 6a UTP Patch cable", reason: "While Cat6a supports 10Gbps, it requires Base-T transceivers which are more expensive and consume more power than DAC cables." },
+        { option: "Single-mode Fiber with LC connectors", reason: "SMF is for long distances (kilometers). Using it for 2 meters is overkill and requires two separate, expensive SFP+ transceivers." },
+        { option: "InfiniBand cable", reason: "InfiniBand is a separate high-performance computing architecture, not typically used for standard Ethernet switch-to-switch links." }
+      ]
+    },
     weight: 10,
   },
   {
@@ -1128,7 +1185,14 @@ export const questions: Question[] = [
     question: 'A user reports they cannot access the local intranet server. The technician verifies the user\'s PC has a link light and an IP address of 192.168.1.105. What should the technician do NEXT?',
     options: ['Ping the local default gateway', 'Ping the intranet server', 'Run an ipconfig /release and renew', 'Reboot the local switch'],
     correctAnswer: 'Ping the local default gateway',
-    explanation: 'Correct: According to the systematic troubleshooting model, you should verify connectivity to the local gateway before testing remote resources or servers. If you cannot reach your own router, you certainly cannot reach a server on another segment.\n\nIncorrect: Pinging the server is testing too far ahead. Verifying local connectivity is the correct "next" step.',
+    explanation: {
+      whyCorrect: "The logical next step in connectivity troubleshooting is checking the Default Gateway. If you can ping the gateway but not the server, the problem is likely on the other side of the router.",
+      whyWrong: [
+        { option: "Ping the intranet server", reason: "Pinging the destination directly skips the hop-by-hop verification. If it fails, you won't know if the router or the server is the bottleneck." },
+        { option: "Run an ipconfig /release and renew", reason: "The technician already verified the PC has a valid 192.168.1.x address, so DHCP is currently working correctly." },
+        { option: "Reboot the local switch", reason: "Rebooting the switch affects all users; the link light indicates Layer 1 is fine, so checking routing is more targeted than rebooting hardware." }
+      ]
+    },
     weight: 10,
   }
 ];
