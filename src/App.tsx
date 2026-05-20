@@ -619,7 +619,7 @@ export default function App() {
   const badge = getBadge();
 
   return (
-    <div className={`min-h-screen font-sans text-gray-900 flex flex-col items-center p-4 sm:p-6 selection:bg-blue-100 overflow-hidden touch-none transition-colors duration-1000 ${
+    <div className={`h-[100dvh] font-sans text-gray-900 flex flex-col items-center p-4 sm:p-6 selection:bg-blue-100 overflow-hidden transition-colors duration-1000 ${
       quarantine ? 'bg-amber-50' : 'bg-[#F9F9FB]'
     }`}>
       {/* Quarantine Alert - Premium Integrated */}
@@ -716,7 +716,7 @@ export default function App() {
       </header>
 
       {/* Main Gameplay Area */}
-      <main className="flex-1 w-full max-w-md flex flex-col items-center justify-center relative perspective-1000">
+      <main className="flex-1 w-full max-w-md flex flex-col items-center justify-center relative perspective-2000">
         {view === 'home' ? (
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
@@ -1037,9 +1037,11 @@ export default function App() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentQuestion.id}
-                style={{ x, rotate, opacity, transformStyle: "preserve-3d" }}
+                style={{ x, rotate, opacity }}
+                className="preserve-3d w-full min-h-[580px] sm:min-h-[640px] flex flex-col relative"
                 drag={(currentQuestion.type === 'architect' || currentQuestion.type === 'acronym') && !isFlipped && view !== 'mock' ? 'x' : false}
                 dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.05}
                 onDragEnd={handleDragEnd}
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ 
@@ -1054,10 +1056,9 @@ export default function App() {
                   rotate: exitX > 0 ? 45 : exitX < 0 ? -45 : 0
                 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className={`w-full min-h-[580px] sm:min-h-[640px] rounded-[3.5rem] shadow-2xl flex flex-col border ${getCardStyles()} relative ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? '' : 'overflow-hidden'} ${view !== 'mock' && !isFlipped ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 id="active-card"
               >
-                {/* FRONT OF CARD */}
+                {/* FRONT OF CARD WRAPPER */}
                 <motion.div 
                    animate={{ 
                      rotateY: isFlipped ? -180 : 0,
@@ -1065,13 +1066,10 @@ export default function App() {
                      zIndex: isFlipped ? 0 : 10
                    }}
                    transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                   className={`absolute inset-0 p-7 sm:p-9 flex flex-col rounded-[3.5rem] ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? 'bg-gray-950' : 'bg-white'}`}
-                   style={{ 
-                     backfaceVisibility: 'hidden',
-                     WebkitBackfaceVisibility: 'hidden',
-                     pointerEvents: isFlipped ? 'none' : 'auto'
-                   }}
+                   className={`absolute inset-0 flex flex-col rounded-[3.5rem] shadow-2xl border backface-hidden preserve-3d ${getCardStyles()} ${currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive' ? '' : 'overflow-hidden'} ${view !== 'mock' && !isFlipped ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 >
+                   {/* FRONT CONTENT */}
+                   <div className="absolute inset-0 p-7 sm:p-9 flex flex-col overflow-hidden">
                   {/* CLI Traffic Lights */}
                   {(currentQuestion.type === 'cli' || currentQuestion.type === 'cli-interactive') && (
                     <div className="flex gap-1.5 mb-6 opacity-40">
@@ -1163,10 +1161,13 @@ export default function App() {
                         </h2>
                       </div>
                     ) : (
-                      <div className="flex-1 overflow-y-auto no-scrollbar px-1 pb-4">
+                      <div 
+                        className="flex-1 overflow-y-auto no-scrollbar px-1 pb-4"
+                        onPointerDownCapture={(e) => e.stopPropagation()}
+                      >
                         <h2 
-                          className={`font-display font-bold leading-[1.3] tracking-tight transition-all duration-300 ${
-                            currentQuestion.type === 'cli' ? 'text-green-400 font-mono text-lg' : 'text-gray-900'
+                          className={`font-display font-bold leading-[1.4] tracking-tight transition-all duration-300 ${
+                            currentQuestion.type === 'cli' ? 'text-green-400 font-mono text-lg' : 'text-gray-900 font-semibold'
                           } ${
                             currentQuestion.question.length > 200 ? 'text-lg' : currentQuestion.question.length > 100 ? 'text-xl' : 'text-2xl'
                           }`}
@@ -1179,13 +1180,13 @@ export default function App() {
                                return (
                                  <div className="relative group">
                                    <span 
-                                     className="blur-[6px] opacity-20 transition-all duration-700 cursor-help select-none"
+                                     className="blur-[8px] opacity-10 transition-all duration-1000 cursor-help select-none grayscale"
                                      onClick={() => setShowBlurredText(true)}
-                                    >{sentences.join('')}</span>
-                                   <span className="bg-blue-50/50 text-blue-900 rounded-lg px-1">{lastSentence}</span>
+                                   >{sentences.join('')}</span>
+                                   <span className="bg-blue-50/80 text-blue-900 rounded-lg px-2 py-0.5 shadow-sm border border-blue-100/50">{lastSentence}</span>
                                    {!showBlurredText && (
-                                     <div className="absolute top-0 right-0 p-1 opacity-20">
-                                       <AlertCircle size={12} />
+                                     <div className="absolute -top-4 right-0 p-1 opacity-40 animate-bounce">
+                                       <AlertCircle size={14} className="text-blue-500" />
                                      </div>
                                    )}
                                  </div>
@@ -1331,7 +1332,8 @@ export default function App() {
                       </div>
                     )}
                   </div>
-                </motion.div>
+                </div>
+              </motion.div>
 
                 {/* BACK OF CARD */}
                 <motion.div 
@@ -1361,7 +1363,10 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar px-8 scroll-smooth">
+                    <div 
+                      className="flex-1 overflow-y-auto custom-scrollbar px-8 scroll-smooth"
+                      onPointerDownCapture={(e) => e.stopPropagation()}
+                    >
                        <div className="text-center mb-10">
                           <h3 className="text-[10px] font-display font-black text-gray-400 uppercase tracking-[0.3em] mb-3">Target Solution</h3>
                           <p className="text-3xl font-display font-black text-blue-600 tracking-tight leading-tight">
@@ -1386,22 +1391,22 @@ export default function App() {
                                 </div>
                               </motion.div>
                               
-                              <div className="pt-2 space-y-3">
-                                <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 px-6">Distractor Analysis</h4>
+                               <div className="pt-4 space-y-4">
+                                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-4 px-8">Distractor Analysis</h4>
                                 {currentQuestion.explanation.whyWrong.map((wrong, idx) => (
                                   <motion.div 
                                     key={idx}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0, transition: { delay: 0.1 + idx * 0.05 } }}
-                                    className="p-5 rounded-[2rem] border-2 bg-gray-50/50 border-gray-100 text-gray-700 hover:border-red-100/50 transition-colors"
+                                    initial={{ opacity: 0, y: 15 }}
+                                    animate={{ opacity: 1, y: 0, transition: { delay: 0.1 + idx * 0.08 } }}
+                                    className="p-7 rounded-[2.5rem] border-2 bg-gray-50/30 border-gray-100 text-gray-700 hover:border-red-100 transition-all shadow-sm"
                                   >
-                                    <div className="flex items-start gap-3">
-                                      <div className="w-5 h-5 rounded-lg bg-red-100 flex items-center justify-center shrink-0 mt-0.5">
-                                        <X size={10} className="text-red-500" strokeWidth={4} />
+                                    <div className="flex items-start gap-4">
+                                      <div className="w-6 h-6 rounded-xl bg-red-50 flex items-center justify-center shrink-0 mt-0.5 border border-red-100/50">
+                                        <X size={12} className="text-red-500" strokeWidth={3} />
                                       </div>
                                       <div className="flex-1">
-                                        <span className="text-xs font-black text-red-600 mr-2 uppercase tracking-tighter">{wrong.option}:</span>
-                                        <p className="text-sm font-medium leading-relaxed text-gray-600">{wrong.reason}</p>
+                                        <span className="text-[11px] font-black text-red-600 mr-2 uppercase tracking-tight">{wrong.option}:</span>
+                                        <p className="text-base font-medium leading-[1.65] text-gray-600 mt-1">{wrong.reason}</p>
                                       </div>
                                     </div>
                                   </motion.div>
