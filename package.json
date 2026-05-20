@@ -17,7 +17,6 @@
     "lucide-react": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "vite": "latest",
     "express": "latest",
     "dotenv": "latest",
     "motion": "latest"
@@ -29,7 +28,7 @@
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.3",
+    "vite": "^8.0.0",
     "@types/express": "^4.17.21"
   }
 }

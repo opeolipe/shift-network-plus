@@ -285,7 +285,15 @@ export default function App() {
   };
 
   const calculateExamTimeline = () => {
-    const currentMastery = readiness?.averageMastery || 0;
+    if (!readiness || readiness.averageMastery === 0) {
+      return {
+        date: 'Complete Shifts to Calculate',
+        daysRemaining: null,
+        phase: 1
+      };
+    }
+    
+    const currentMastery = readiness.averageMastery;
     const remaining = Math.max(0, 95 - currentMastery);
     const daysNeeded = Math.ceil(remaining / 2); // 2% per day
     
@@ -842,9 +850,9 @@ export default function App() {
                   setIsBraindumpActive(false);
                   setView('home');
                 }}
-                className="p-2 rounded-full bg-gray-100 text-gray-500"
+                className="px-4 py-2 rounded-xl bg-gray-100 text-gray-500 font-bold text-sm"
               >
-                Exit
+                Back
               </button>
             </div>
             
@@ -916,9 +924,9 @@ export default function App() {
               </div>
               <button 
                 onClick={() => setView('home')}
-                className="p-3 bg-gray-100 rounded-2xl font-bold text-sm text-gray-500 hover:bg-gray-200 transition-colors"
+                className="px-4 py-2 bg-gray-100 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-200 transition-colors"
               >
-                Exit
+                Back
               </button>
             </div>
 
@@ -1439,16 +1447,33 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             className="w-full h-full flex flex-col p-2 pt-0 overflow-y-auto no-scrollbar pb-10"
           >
-            {/* Strategy Vault Timeline - NEW */}
-            <div className="mb-8 p-8 bg-white rounded-[3rem] shadow-xl shadow-blue-50/50 border border-gray-50">
-              <div className="flex justify-between items-start mb-10">
+            <div className="flex items-center justify-between mb-6 px-4">
+               <div className="flex items-center gap-3">
+                <LayoutGrid size={24} className="text-blue-500" />
+                <h1 className="text-xl font-black uppercase tracking-tighter text-gray-900">Readiness Dashboard</h1>
+              </div>
+              <button 
+                onClick={() => setView('home')}
+                className="px-4 py-2 bg-gray-100 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-200 transition-colors"
+              >
+                Back
+              </button>
+            </div>
+
+            {/* Strategy Vault Timeline */}
+            <div className="mb-8 p-8 bg-white rounded-[3rem] shadow-xl shadow-blue-50/50 border border-gray-50 overflow-hidden relative">
+              <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-blue-50/30 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="flex justify-between items-start mb-10 relative z-10">
                 <div className="text-left">
-                  <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-2">Vault Strategy</h3>
-                  <div className="text-3xl font-display font-black text-gray-900 tracking-tight">Exam Target Date</div>
-                  <p className="text-blue-600 font-bold text-lg">{calculateExamTimeline().date}</p>
+                  <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-2">Readiness Vault</h3>
+                  <div className="text-3xl font-display font-black text-gray-900 tracking-tight leading-none mb-1">Estimated Exam Date</div>
+                  <p className={`text-xl font-black tracking-tight ${calculateExamTimeline().daysRemaining === null ? 'text-gray-300' : 'text-blue-600'}`}>
+                    {calculateExamTimeline().date}
+                  </p>
                 </div>
-                <div className="bg-blue-50 p-2.5 rounded-2xl">
-                   <Shield size={20} className="text-blue-500" />
+                <div className="bg-blue-600 p-3 rounded-2xl shadow-lg shadow-blue-200">
+                   <Shield size={22} className="text-white" />
                 </div>
               </div>
 
@@ -1590,38 +1615,6 @@ export default function App() {
         )}
       </main>
 
-      {/* Navigation Footer - Ultra Premium */}
-      <nav className="w-full max-w-md mt-auto py-6 sm:py-8 flex justify-around items-center border-t border-gray-100 bg-white/80 backdrop-blur-2xl rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.02)] px-10 transition-all duration-500">
-        <button 
-          onClick={(e) => {
-             e.preventDefault();
-             if (window.navigator.vibrate) window.navigator.vibrate(5);
-             setView('drill');
-          }}
-          className={`flex flex-col items-center gap-1.5 transition-all group ${view === 'drill' ? 'scale-110' : 'opacity-30 hover:opacity-100'}`}
-        >
-          <div className={`p-2 rounded-2xl transition-colors ${view === 'drill' ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'bg-transparent text-gray-600 group-hover:bg-blue-50'}`}>
-            <Activity size={22} strokeWidth={2.5} />
-          </div>
-          <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${view === 'drill' ? 'text-blue-600' : 'text-gray-400'}`}>Drill</span>
-        </button>
-        
-        <div className="w-px h-10 bg-gray-100 opacity-50" />
-        
-        <button 
-          onClick={(e) => {
-             e.preventDefault();
-             if (window.navigator.vibrate) window.navigator.vibrate(5);
-             setView('dashboard');
-          }}
-          className={`flex flex-col items-center gap-1.5 transition-all group ${view === 'dashboard' ? 'scale-110' : 'opacity-30 hover:opacity-100'}`}
-        >
-          <div className={`p-2 rounded-2xl transition-colors ${view === 'dashboard' ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'bg-transparent text-gray-600 group-hover:bg-blue-50'}`}>
-            <LayoutGrid size={22} strokeWidth={2.5} />
-          </div>
-          <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${view === 'dashboard' ? 'text-blue-600' : 'text-gray-400'}`}>Stats</span>
-        </button>
-      </nav>
         </>
       )}
     </div>
