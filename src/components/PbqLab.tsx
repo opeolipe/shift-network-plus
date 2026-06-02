@@ -14,18 +14,36 @@ export default function PbqLab({ onBack, onAddXp }: PbqLabProps) {
     attempts: number;
     answers: any;
     feedback: string | null;
-  }>>({
-    1: { solved: false, attempts: 0, answers: {}, feedback: null },
-    2: { solved: false, attempts: 0, answers: { net: '', mask: '', bcast: '' }, feedback: null },
-    3: { solved: false, attempts: 0, answers: {}, feedback: null },
-    4: { solved: false, attempts: 0, answers: { 1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '' }, feedback: null },
-    5: { solved: false, attempts: 0, answers: { cmd1: '', cmd2: '', cmd3: '' }, feedback: null },
-    6: { solved: false, attempts: 0, answers: {}, feedback: null },
-    7: { solved: false, attempts: 0, answers: { action: '', proto: '', src: '', dst: '', port: '' }, feedback: null },
-    8: { solved: false, attempts: 0, answers: { choice: '', justification: '' }, feedback: null },
-    9: { solved: false, attempts: 0, answers: { band: '', standard: '', width: '' }, feedback: null },
-    10: { solved: false, attempts: 0, answers: {}, feedback: null },
+  }>>(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('shift_pbq_states') : null;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Make sure all 10 entries exist to prevent partial-loading crashes
+        if (Object.keys(parsed).length === 10) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error("Failed to parse saved pbq states", e);
+      }
+    }
+    return {
+      1: { solved: false, attempts: 0, answers: {}, feedback: null },
+      2: { solved: false, attempts: 0, answers: { net: '', mask: '', bcast: '' }, feedback: null },
+      3: { solved: false, attempts: 0, answers: {}, feedback: null },
+      4: { solved: false, attempts: 0, answers: { 1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '' }, feedback: null },
+      5: { solved: false, attempts: 0, answers: { cmd1: '', cmd2: '', cmd3: '' }, feedback: null },
+      6: { solved: false, attempts: 0, answers: {}, feedback: null },
+      7: { solved: false, attempts: 0, answers: { action: '', proto: '', src: '', dst: '', port: '' }, feedback: null },
+      8: { solved: false, attempts: 0, answers: { choice: '', justification: '' }, feedback: null },
+      9: { solved: false, attempts: 0, answers: { band: '', standard: '', width: '' }, feedback: null },
+      10: { solved: false, attempts: 0, answers: {}, feedback: null },
+    };
   });
+
+  React.useEffect(() => {
+    localStorage.setItem('shift_pbq_states', JSON.stringify(pbqStates));
+  }, [pbqStates]);
 
   const pbqList = [
     { id: 1, title: 'OSI Layer Alignment', domain: '1.0 Physical & Logical Layers', type: 'Drag & Drop Matching' },
@@ -136,15 +154,22 @@ export default function PbqLab({ onBack, onAddXp }: PbqLabProps) {
       'FTP': '21',
       'SFTP': '22',
       'DNS': '53',
-      'DHCP': '68',
+      'DHCP': '68', // Fallback value, custom check below accepts 67 or 68
       'HTTPS': '443',
       'RDP': '3389'
     };
     let isCorrect = true;
     for (const key of Object.keys(correctMap)) {
-      if (answers[key] !== correctMap[key]) {
-        isCorrect = false;
-        break;
+      if (key === 'DHCP') {
+        if (answers[key] !== '67' && answers[key] !== '68') {
+          isCorrect = false;
+          break;
+        }
+      } else {
+        if (answers[key] !== correctMap[key]) {
+          isCorrect = false;
+          break;
+        }
       }
     }
     if (isCorrect) {

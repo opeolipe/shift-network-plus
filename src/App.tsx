@@ -114,6 +114,17 @@ export default function App() {
       { id: '5.0', name: 'Network Troubleshooting', target: 24, color: 'orange' },
     ];
 
+    let pbqSolvedCount = 0;
+    try {
+      const savedPbqs = localStorage.getItem('shift_pbq_states');
+      if (savedPbqs) {
+        const parsed = JSON.parse(savedPbqs);
+        pbqSolvedCount = Object.values(parsed).filter((p: any) => p && p.solved).length;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
     const stats = domains.map(d => {
       const domainQuestions = questionsPool.filter(q => q.domain.startsWith(d.id));
       if (domainQuestions.length === 0) return { ...d, mastery: 0 };
@@ -123,13 +134,14 @@ export default function App() {
         return acc + m;
       }, 0);
 
-      return { ...d, mastery: Math.round(totalMastery / domainQuestions.length) };
+      // Add proportional PBQ completion to domain mastery as well so domains reflect active work
+      return { ...d, mastery: Math.min(100, Math.round(totalMastery / domainQuestions.length) + pbqSolvedCount) };
     });
 
-    const averageMastery = Math.round(stats.reduce((acc, s) => acc + s.mastery, 0) / stats.length);
+    const averageMastery = Math.min(100, Math.round(stats.reduce((acc, s) => acc + s.mastery, 0) / stats.length));
 
     return { stats, averageMastery };
-  }, [questionsPool]);
+  }, [questionsPool, score]);
 
   // Exam Timer
   useEffect(() => {
@@ -575,6 +587,7 @@ export default function App() {
     if (confirm("This will wipe all SRS progress and XP. Are you sure?")) {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem('shift_score');
+      localStorage.removeItem('shift_pbq_states');
       window.location.reload();
     }
   };
@@ -838,14 +851,17 @@ export default function App() {
                   if (window.navigator.vibrate) window.navigator.vibrate(10);
                   setComptiaVision(prev => !prev);
                 }}
-                className={`w-12 h-6 rounded-full transition-all relative p-1 shadow-inner ${comptiaVision ? 'bg-blue-500' : 'bg-gray-200'}`}
+                className="w-12 h-11 flex items-center justify-center relative focus:outline-none"
+                aria-label="Toggle CompTIA Vision Anti-Fluff"
               >
-                <motion.div 
-                  initial={false}
-                  animate={{ x: comptiaVision ? 24 : 0 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  className="w-4 h-4 bg-white rounded-full shadow-md"
-                />
+                <div className={`w-12 h-6 rounded-full transition-all relative p-1 shadow-inner ${comptiaVision ? 'bg-blue-500' : 'bg-gray-200'}`}>
+                  <motion.div 
+                    initial={false}
+                    animate={{ x: comptiaVision ? 24 : 0 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    className="w-4 h-4 bg-white rounded-full shadow-md"
+                  />
+                </div>
               </button>
             </div>
           </motion.div>
@@ -860,18 +876,26 @@ export default function App() {
                 <Terminal size={24} className="text-gray-400" />
                 <h2 className="text-xl font-black uppercase tracking-tighter">Braindump Canvas</h2>
               </div>
-              <div className={`text-2xl font-mono font-black ${braindumpTimer < 60 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
-                {formatTime(braindumpTimer)}
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setShowReference(!showReference)}
+                  className="px-4 py-2 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors font-bold text-sm"
+                >
+                  {showReference ? 'Hide Cheat Sheet' : 'Show Cheat Sheet'}
+                </button>
+                <div className={`text-2xl font-mono font-black ${braindumpTimer < 60 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
+                  {formatTime(braindumpTimer)}
+                </div>
+                <button 
+                  onClick={() => {
+                    setIsBraindumpActive(false);
+                    setView('home');
+                  }}
+                  className="px-4 py-2 rounded-xl bg-gray-100 text-gray-500 font-bold text-sm"
+                >
+                  Back
+                </button>
               </div>
-              <button 
-                onClick={() => {
-                  setIsBraindumpActive(false);
-                  setView('home');
-                }}
-                className="px-4 py-2 rounded-xl bg-gray-100 text-gray-500 font-bold text-sm"
-              >
-                Back
-              </button>
             </div>
             
             <div className="flex-1 relative">
