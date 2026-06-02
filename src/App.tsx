@@ -619,7 +619,7 @@ export default function App() {
   const badge = getBadge();
 
   return (
-    <div className={`h-[100dvh] font-sans text-gray-900 flex flex-col items-center p-4 sm:p-6 selection:bg-blue-100 overflow-hidden transition-colors duration-1000 ${
+    <div className={`h-[100dvh] font-sans text-gray-900 flex flex-col items-center p-3.5 sm:p-6 pt-2 sm:pt-6 pb-2.5 sm:pb-6 selection:bg-blue-100 overflow-hidden transition-colors duration-1000 ${
       quarantine ? 'bg-amber-50' : 'bg-[#F9F9FB]'
     }`}>
       {/* Quarantine Alert - Premium Integrated */}
@@ -673,7 +673,7 @@ export default function App() {
       ) : (
         <>
           {/* Header */}
-      <header className="w-full max-w-md flex justify-between items-center mb-6 sm:mb-8 mt-2 px-2">
+      <header className="w-full max-w-md flex justify-between items-center mb-3.5 sm:mb-8 mt-1.5 sm:mt-2 px-2">
         <div 
           className="flex items-center gap-3 cursor-pointer group" 
           onClick={() => setView('home')}
@@ -716,12 +716,12 @@ export default function App() {
       </header>
 
       {/* Main Gameplay Area */}
-      <main className="flex-1 w-full max-w-md flex flex-col items-center justify-center relative perspective-2000">
+      <main className={`flex-1 w-full max-w-md flex flex-col relative perspective-2000 min-h-0 ${(view === 'home' || view === 'dashboard' || view === 'tips') ? 'items-stretch justify-start' : 'items-center justify-center'}`}>
         {view === 'home' ? (
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-md space-y-6 px-2 pb-10"
+            className="w-full h-full overflow-y-auto custom-scrollbar space-y-6 px-2 pr-1 pb-10"
           >
             <div className="bg-white p-8 sm:p-10 rounded-[3rem] shadow-xl shadow-blue-50 border border-gray-100 text-center relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-[0.03] scale-[4] rotate-12 pointer-events-none">
@@ -915,7 +915,7 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="p-8 max-w-2xl mx-auto space-y-8 pb-32"
+            className="w-full h-full overflow-y-auto custom-scrollbar p-6 sm:p-8 max-w-2xl mx-auto space-y-8 pb-20"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -1038,7 +1038,7 @@ export default function App() {
               <motion.div
                 key={currentQuestion.id}
                 style={{ x, rotate, opacity }}
-                className="preserve-3d w-full min-h-[580px] sm:min-h-[640px] flex flex-col relative"
+                className="preserve-3d w-full min-h-[460px] sm:min-h-[580px] md:min-h-[640px] flex flex-col relative"
                 drag={(currentQuestion.type === 'architect' || currentQuestion.type === 'acronym') && !isFlipped && view !== 'mock' ? 'x' : false}
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.05}
@@ -1143,15 +1143,18 @@ export default function App() {
                   </div>
 
                   {/* Question Scrollable Container */}
-                  <div className="flex-1 flex flex-col min-h-0 overflow-y-auto no-scrollbar pt-2">
+                  <div 
+                    className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-2 px-1 pr-2 pb-4"
+                    onPointerDownCapture={(e) => e.stopPropagation()}
+                  >
                     {currentQuestion.imageUrl && (
                       <div className="mb-6 rounded-3xl overflow-hidden border border-gray-100 shadow-sm max-h-[160px] shrink-0 bg-gray-50 flex items-center justify-center">
-                        <img src={currentQuestion.imageUrl} alt="Scenario Visual" className="w-full h-full object-contain" />
+                        <img src={currentQuestion.imageUrl} alt="Scenario Visual" className="w-full h-full object-contain" referrerPolicy="no-referrer" />
                       </div>
                     )}
 
                     {currentQuestion.type === 'acronym' ? (
-                      <div className="flex-1 flex items-center justify-center">
+                      <div className="flex items-center justify-center min-h-[120px]">
                         <h2 className={`font-display font-black leading-tight text-gray-900 tracking-tighter text-center uppercase px-4 ${
                           currentQuestion.question.length > 25 ? 'text-2xl sm:text-3xl' : 
                           currentQuestion.question.length > 15 ? 'text-3xl sm:text-4xl' : 
@@ -1161,41 +1164,36 @@ export default function App() {
                         </h2>
                       </div>
                     ) : (
-                      <div 
-                        className="flex-1 overflow-y-auto no-scrollbar px-1 pb-4"
-                        onPointerDownCapture={(e) => e.stopPropagation()}
+                      <h2 
+                        className={`font-display font-bold leading-[1.4] tracking-tight transition-all duration-300 ${
+                          currentQuestion.type === 'cli' ? 'text-green-400 font-mono text-lg' : 'text-gray-900 font-semibold'
+                        } ${
+                          currentQuestion.question.length > 200 ? 'text-lg' : currentQuestion.question.length > 100 ? 'text-xl' : 'text-2xl'
+                        }`}
                       >
-                        <h2 
-                          className={`font-display font-bold leading-[1.4] tracking-tight transition-all duration-300 ${
-                            currentQuestion.type === 'cli' ? 'text-green-400 font-mono text-lg' : 'text-gray-900 font-semibold'
-                          } ${
-                            currentQuestion.question.length > 200 ? 'text-lg' : currentQuestion.question.length > 100 ? 'text-xl' : 'text-2xl'
-                          }`}
-                        >
-                          {(() => {
-                            const text = currentQuestion.question;
-                            if (comptiaVision && !showBlurredText && text.length > 100) {
-                               const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
-                               const lastSentence = sentences.pop();
-                               return (
-                                 <div className="relative group">
-                                   <span 
-                                     className="blur-[8px] opacity-10 transition-all duration-1000 cursor-help select-none grayscale"
-                                     onClick={() => setShowBlurredText(true)}
-                                   >{sentences.join('')}</span>
-                                   <span className="bg-blue-50/80 text-blue-900 rounded-lg px-2 py-0.5 shadow-sm border border-blue-100/50">{lastSentence}</span>
-                                   {!showBlurredText && (
-                                     <div className="absolute -top-4 right-0 p-1 opacity-40 animate-bounce">
-                                       <AlertCircle size={14} className="text-blue-500" />
-                                     </div>
-                                   )}
-                                 </div>
-                               );
-                            }
-                            return text;
-                          })()}
-                        </h2>
-                      </div>
+                        {(() => {
+                          const text = currentQuestion.question;
+                          if (comptiaVision && !showBlurredText && text.length > 100) {
+                             const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+                             const lastSentence = sentences.pop();
+                             return (
+                               <div className="relative group">
+                                 <span 
+                                   className="blur-[8px] opacity-10 transition-all duration-1000 cursor-help select-none grayscale"
+                                   onClick={() => setShowBlurredText(true)}
+                                 >{sentences.join('')}</span>
+                                 <span className="bg-blue-50/80 text-blue-900 rounded-lg px-2 py-0.5 shadow-sm border border-blue-100/50">{lastSentence}</span>
+                                 {!showBlurredText && (
+                                   <div className="absolute -top-4 right-0 p-1 opacity-40 animate-bounce">
+                                     <AlertCircle size={14} className="text-blue-500" />
+                                   </div>
+                                 )}
+                               </div>
+                             );
+                          }
+                          return text;
+                        })()}
+                      </h2>
                     )}
                   </div>
 
@@ -1269,7 +1267,10 @@ export default function App() {
                           </button>
                         </div>
                     ) : currentQuestion.type === 'syslog' ? (
-                        <div className="space-y-1.5 bg-gray-950 p-5 rounded-[2.5rem] border border-gray-800 shadow-2xl max-h-[220px] overflow-y-auto no-scrollbar">
+                        <div 
+                          className="space-y-1.5 bg-gray-950 p-5 rounded-[2.5rem] border border-gray-800 shadow-2xl max-h-[220px] overflow-y-auto custom-scrollbar"
+                          onPointerDownCapture={(e) => e.stopPropagation()}
+                        >
                           {currentQuestion.logData?.map((line, idx) => (
                             <button
                               key={idx}
@@ -1286,7 +1287,10 @@ export default function App() {
                           ))}
                         </div>
                     ) : (
-                      <div className="grid grid-cols-1 gap-2.5">
+                      <div 
+                        className="grid grid-cols-1 gap-2 max-h-[240px] sm:max-h-[300px] overflow-y-auto custom-scrollbar pr-1"
+                        onPointerDownCapture={(e) => e.stopPropagation()}
+                      >
                         {currentQuestion.options.map((opt, i) => (
                           <motion.button
                             key={opt}
@@ -1465,7 +1469,7 @@ export default function App() {
             </AnimatePresence>
 
             {/* Status Bar */}
-            <div className="mt-12 w-full px-8">
+            <div className="mt-4 sm:mt-12 w-full px-8">
               <div className="flex justify-between items-center mb-3">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                   {view === 'mock' ? 'Exam Progress' : 'Shift Progress'}
@@ -1490,7 +1494,7 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full h-full flex flex-col p-2 pt-0 overflow-y-auto no-scrollbar pb-10"
+            className="w-full h-full flex flex-col p-2 pt-0 overflow-y-auto custom-scrollbar pb-10 pr-1"
           >
             <div className="flex items-center justify-between mb-6 px-4">
                <div className="flex items-center gap-3">
