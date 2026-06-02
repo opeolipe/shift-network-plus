@@ -8,6 +8,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform } from 'motion/re
 import { Activity, Shield, Hash, LayoutGrid, Server, Globe, AlertCircle, RefreshCcw, Terminal, X } from 'lucide-react';
 import { questions as initialQuestions } from './data';
 import { Question } from './types';
+import PbqLab from './components/PbqLab';
 
 const STORAGE_KEY = 'shift_srs_data';
 
@@ -26,7 +27,7 @@ const COMMON_COMMANDS = [
 ];
 
 export default function App() {
-  const [view, setView] = useState<'home' | 'drill' | 'dashboard' | 'mock' | 'braindump' | 'tips'>('home');
+  const [view, setView] = useState<'home' | 'drill' | 'dashboard' | 'mock' | 'braindump' | 'tips' | 'pbqs'>('home');
   const [questionsPool, setQuestionsPool] = useState<Question[]>([]);
   const [recentQuestionIds, setRecentQuestionIds] = useState<string[]>([]);
   const [sessionHistory, setSessionHistory] = useState<any[]>([]);
@@ -376,6 +377,15 @@ export default function App() {
   const persistData = (newPool: Question[], newScore: number) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newPool));
     localStorage.setItem('shift_score', newScore.toString());
+  };
+
+  const handleAddXp = (amount: number) => {
+    const newScore = score + amount;
+    setScore(newScore);
+    setLastXpGain(amount);
+    setShowXpToast(true);
+    setTimeout(() => setShowXpToast(false), 2000);
+    persistData(questionsPool, newScore);
   };
 
   const advanceNext = () => {
@@ -751,6 +761,14 @@ export default function App() {
                   Full Mock Exam
                   <span className="text-[9px] uppercase tracking-widest opacity-40">90 Questions • 90 Minutes</span>
                 </button>
+
+                <button 
+                  onClick={() => setView('pbqs')}
+                  className="w-full py-5 bg-blue-50 text-blue-900 border-2 border-blue-100 rounded-[2rem] font-display font-bold text-lg hover:border-blue-500 hover:bg-blue-100/50 transition-all active:scale-[0.97] flex flex-col items-center shadow-sm"
+                >
+                  PBQ Lab Simulator
+                  <span className="text-[9px] uppercase tracking-widest text-blue-700/60 font-mono font-black mt-0.5">10 Interactive Simulations</span>
+                </button>
               </div>
             </div>
 
@@ -1032,6 +1050,8 @@ export default function App() {
                Return Home
              </button>
           </motion.div>
+        ) : view === 'pbqs' ? (
+          <PbqLab onBack={() => setView('home')} onAddXp={handleAddXp} />
         ) : (view === 'drill' || view === 'mock') ? (
           <>
             <AnimatePresence mode="wait">

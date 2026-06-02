@@ -1194,5 +1194,2706 @@ export const questions: Question[] = [
       ]
     },
     weight: 10,
+  },
+  {
+    id: 'port1',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A firewall needs to be configured with rules for active File Transfer Protocol (FTP) sessions. Which of the following port configurations is required?',
+    options: ['TCP ports 20 and 21', 'UDP ports 20 and 21', 'TCP port 21 only', 'TCP port 22'],
+    correctAnswer: 'TCP ports 20 and 21',
+    explanation: {
+      whyCorrect: 'Active FTP requires two separate connections: TCP port 21 for control/commands, and TCP port 20 for actual data transmission. Both must be open in the firewall for active FTP to function.',
+      whyWrong: [
+        { option: 'UDP ports 20 and 21', reason: 'FTP is a reliable file transfer protocol that relies entirely on connection-oriented TCP, not connectionless UDP.' },
+        { option: 'TCP port 21 only', reason: 'While TCP 21 handles commands, port 20 is still required for the active data stream dynamic connection.' },
+        { option: 'TCP port 22', reason: 'Port 22 is used by Secure Shell (SSH) and SFTP, not legacy FTP.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port2',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'An administrator wants to transfer confidential client data securely over the Internet. Which protocol-to-port mapping should be permitted on the firewall to allow SSH File Transfer Protocol (SFTP) connections?',
+    options: ['TCP port 22', 'TCP port 21', 'UDP port 69', 'TCP port 990'],
+    correctAnswer: 'TCP port 22',
+    explanation: {
+      whyCorrect: 'SFTP (SSH File Transfer Protocol) runs entirely enclosed within an SSH session, which uses TCP port 22. It performs both authentication and encryption over this single channel.',
+      whyWrong: [
+        { option: 'TCP port 21', reason: 'This is the legacy, unencrypted FTP control port, exposing usernames, passwords, and data to eavesdroppers.' },
+        { option: 'UDP port 69', reason: 'This is TFTP (Trivial File Transfer Protocol), which is connectionless, unencrypted, and has no security mechanism.' },
+        { option: 'TCP port 990', reason: 'This is FTPS implicit mode, which uses SSL/TLS rather than SFTPs SSH-based tunnel.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port3',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'You need to securely connect to a remote Linux instance via a command line interface to apply system updates. Which protocol-port pair is required?',
+    options: ['SSH on TCP port 22', 'Telnet on TCP port 23', 'RDP on TCP port 3389', 'HTTP on TCP port 80'],
+    correctAnswer: 'SSH on TCP port 22',
+    explanation: {
+      whyCorrect: 'SSH (Secure Shell) provides encrypted remote command line access and operates on TCP port 22 as a secure replacement for Telnet.',
+      whyWrong: [
+        { option: 'Telnet on TCP port 23', reason: 'Telnet is unencrypted and transmits credentials and commands in plain text, making it highly insecure.' },
+        { option: 'RDP on TCP port 3389', reason: 'RDP provides remote desktop graphical UI access, primarily for Windows, rather than standard Linux command line.' },
+        { option: 'HTTP on TCP port 80', reason: 'HTTP is for unencrypted web page delivery, not command-line shell administration.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port4',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A security audit flags active Telnet traffic on a critical internal administrative subnet. Which port is this traffic using, and what protocol should be recommended to secure it?',
+    options: ['FTP on Port 21', 'Telnet on Port 23; recommend SSH (Port 22)', 'Telnet on Port 23; recommend SFTP (Port 22)', 'Telnet on Port 23; recommend HTTPS (Port 443)'],
+    correctAnswer: 'Telnet on Port 23; recommend SSH (Port 22)',
+    explanation: {
+      whyCorrect: 'Telnet operates on TCP port 23. Because Telnet transfers all terminal logins and traffic in plaintext, the auditor recommends replacing it with the encrypted SSH protocol (TCP port 22).',
+      whyWrong: [
+        { option: 'FTP on Port 21', reason: 'FTP is on port 21 and is for file transfers, not remote command-line shell access.' },
+        { option: 'Telnet on Port 23; recommend SFTP (Port 22)', reason: 'While SFTP uses SSH port 22, its primary use case is secure file transfer, not standard remote shell access.' },
+        { option: 'Telnet on Port 23; recommend HTTPS (Port 443)', reason: 'HTTPS (443) is for secure web delivery, not shell administration.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port5',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'Which port is natively used by mail transfer agents to route and deliver email messages between corporate mail servers?',
+    options: ['TCP port 25', 'TCP port 110', 'TCP port 143', 'TCP port 587'],
+    correctAnswer: 'TCP port 25',
+    explanation: {
+      whyCorrect: 'Simple Mail Transfer Protocol (SMTP) uses TCP port 25 for server-to-server mail relays and command communications across the Internet.',
+      whyWrong: [
+        { option: 'TCP port 110', reason: 'Port 110 is used by POP3, which is a legacy protocol for clients to retrieve email from a server, not for server-to-server relay.' },
+        { option: 'TCP port 143', reason: 'Port 143 is IMAP4, which is for client email retrieval and mailbox management.' },
+        { option: 'TCP port 587', reason: 'Port 587 is secure client-to-server submission, not the default standard port used for server-to-server mail transit.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port6',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'When a host resolves a domain name like "example.com" to an IP address, which port and protocol are primarily used for fast, low-overhead lookup queries?',
+    options: ['UDP port 53', 'TCP port 53', 'UDP port 67', 'TCP port 80'],
+    correctAnswer: 'UDP port 53',
+    explanation: {
+      whyCorrect: 'DNS query lookups primarily use UDP port 53 because UDP is connectionless and fast, minimizing lookup overhead. (Note: Large DNS responses or zone transfers may fail over to TCP port 53).',
+      whyWrong: [
+        { option: 'TCP port 53', reason: 'While DNS does use TCP 53 for zone transfers or large payloads exceeding 512 bytes, the standard fast client lookups use UDP port 53.' },
+        { option: 'UDP port 67', reason: 'UDP 67 is used by DHCP servers, not DNS hosts.' },
+        { option: 'TCP port 80', reason: 'TCP 80 is used by HTTP web traffic.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port7',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A host connects to a network and broadcasts requests for auto-configuration. Which ports must be open on local client firewall interfaces for DHCP to execute?',
+    options: ['UDP 67 (server) & UDP 68 (client)', 'TCP 67 (server) & TCP 68 (client)', 'UDP 53 (server) & UDP 54 (client)', 'UDP 69 (server) & UDP 70 (client)'],
+    correctAnswer: 'UDP 67 (server) & UDP 68 (client)',
+    explanation: {
+      whyCorrect: 'DHCP uses connectionless UDP. Servers listen on UDP port 67 to receive requests from clients, while clients listen on UDP port 68 to receive answers from servers.',
+      whyWrong: [
+        { option: 'TCP 67 (server) & TCP 68 (client)', reason: 'DHCP operates entirely over connectionless, fast UDP broadcast/unicast channels, not connection-oriented TCP.' },
+        { option: 'UDP 53 (server) & UDP 54 (client)', reason: 'UDP 53 is used by DNS queries; UDP 54 is not standard for these transactions.' },
+        { option: 'UDP 69 (server) & UDP 70 (client)', reason: 'UDP 69 is TFTP, while 70 is the legacy Gopher protocol.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port8',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'An engineer needs to quickly push a small firmware update file to a bootloader chip on an embedded switch over a safe management network. Which simple, unauthenticated protocol on UDP port 69 is best suited?',
+    options: ['TFTP', 'SFTP', 'FTP', 'HTTPS'],
+    correctAnswer: 'TFTP',
+    explanation: {
+      whyCorrect: 'TFTP (Trivial File Transfer Protocol) uses UDP port 69. It has a very low operational footprint because it lacks encryption and client authentication, making it super fast for firmware boots.',
+      whyWrong: [
+        { option: 'SFTP', reason: 'Runs on TCP port 22, requiring complete SSH handshakes, key exchange, and authentication.' },
+        { option: 'FTP', reason: 'Runs on TCP ports 20/21 and requires stateful control connections.' },
+        { option: 'HTTPS', reason: 'Runs on TCP port 443 and requires large SSL certificates and a complex software stack.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port9',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'You are setting up Port Forwarding or NAT rules. Web sessions bound for non-secure HTTP pages are traditionally addressed to which destination port?',
+    options: ['Port 80', 'Port 443', 'Port 8080', 'Port 88'],
+    correctAnswer: 'Port 80',
+    explanation: {
+      whyCorrect: 'The standard default port assigned by IANA for unencrypted Hypertext Transfer Protocol (HTTP) web traffic is TCP port 80.',
+      whyWrong: [
+        { option: 'Port 443', reason: 'This is reserved for HTTPS, which encrypts HTTP traffic via TLS.' },
+        { option: 'Port 8080', reason: 'This is commonly used for alternative, proxy, or test HTTP servers, but is not the standard official default.' },
+        { option: 'Port 88', reason: 'Port 88 is the Kerberos authentication protocol.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port10',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'Domain controller synchronization fails across different sites, leading to Kerberos authentication timeout issues. Which protocol-port pair should you verify is open on the firewall to allow clock sync?',
+    options: ['NTP on UDP port 123', 'NTP on TCP port 123', 'LDAP on TCP port 389', 'SNMP on UDP port 161'],
+    correctAnswer: 'NTP on UDP port 123',
+    explanation: {
+      whyCorrect: 'Network Time Protocol (NTP) relies on UDP port 123 to coordinate and sync system times with high precision.',
+      whyWrong: [
+        { option: 'NTP on TCP port 123', reason: 'NTP is optimized using connectionless, low-delay UDP broadcasts and unicast updates on UDP port 123, not TCP.' },
+        { option: 'LDAP on TCP port 389', reason: 'LDAP is for directory services lookups and queries, not scheduling or timekeeping.' },
+        { option: 'SNMP on UDP port 161', reason: 'SNMP is for network device management and monitoring, not clock synchronization.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port11',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A Network Management System (NMS) polls a core router for status statistics, and then the router sends spontaneous unsolicited trap alerts. Which ports are used?',
+    options: ['UDP 161 for polling & UDP 162 for traps', 'TCP 161 for polling & TCP 162 for traps', 'UDP 162 for polling & UDP 161 for traps', 'UDP 514 for everything'],
+    correctAnswer: 'UDP 161 for polling & UDP 162 for traps',
+    explanation: {
+      whyCorrect: 'Simple Network Management Protocol (SNMP) uses UDP port 161 for interactive requests and manager-to-agent polling. Agents push unrequested "Trap" notices to the manager on UDP port 162.',
+      whyWrong: [
+        { option: 'TCP 161 for polling & TCP 162 for traps', reason: 'SNMP natively uses connectionless UDP to keep monitoring traffic overhead minimal.' },
+        { option: 'UDP 162 for polling & UDP 161 for traps', reason: 'The port numbers are inverted; agents and servers listen on 161 for polling queries, and servers collect traps on 162.' },
+        { option: 'UDP 514 for everything', reason: 'UDP 514 is reserved for Syslog message delivery.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port12',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'An application needs to perform plain-text authentication lookups by searching Active Directory directory hierarchies. Which port should it use?',
+    options: ['TCP port 389', 'TCP port 636', 'TCP port 445', 'TCP port 389 & UDP port 389'],
+    correctAnswer: 'TCP port 389',
+    explanation: {
+      whyCorrect: 'Lightweight Directory Access Protocol (LDAP) uses TCP port 389 for plain-text or StartTLS-secured directory inquiries.',
+      whyWrong: [
+        { option: 'TCP port 636', reason: 'This is LDAPS (LDAP over SSL/TLS) which enforces encryption immediately on connection establishment.' },
+        { option: 'TCP port 445', reason: 'This is SMB, used for file and print sharing, not directory services lookup.' },
+        { option: 'TCP port 389 & UDP port 389', reason: 'While UDP 389 is occasionally used for simple ping/lookup operations, the main directory queries and authentication use TCP port 389.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port13',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A secure web server needs to have its certificate loaded and configured. Which port should the ingress firewall forward to this web server to allow secure SSL/TLS web client traffic?',
+    options: ['TCP port 443', 'TCP port 80', 'TCP port 22', 'TCP port 445'],
+    correctAnswer: 'TCP port 443',
+    explanation: {
+      whyCorrect: 'HTTPS (Hypertext Transfer Protocol Secure) encrypts communication over a TLS/SSL tunnel and standardizes on TCP port 443.',
+      whyWrong: [
+        { option: 'TCP port 80', reason: 'This is normal HTTP, which delivers webpages in plaintext without encryption.' },
+        { option: 'TCP port 22', reason: 'This is SSH/SFTP, not used for standard HTTPS web browsing.' },
+        { option: 'TCP port 445', reason: 'This is SMB, designed for file sharing in Windows-based networks.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port14',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A storage administrator shares a network volume so users can mount it directly in Windows File Explorer. Which port must be reachable between clients and the storage array?',
+    options: ['TCP port 445', 'TCP port 1433', 'TCP port 389', 'TCP port 3389'],
+    correctAnswer: 'TCP port 445',
+    explanation: {
+      whyCorrect: 'Server Message Block (SMB) runs directly over TCP port 445. It is the primary file-sharing and network resource access protocol in Windows-dominated domains.',
+      whyWrong: [
+        { option: 'TCP port 1433', reason: 'This is the Microsoft SQL Server database server, not general network volume storage.' },
+        { option: 'TCP port 389', reason: 'This is LDAP, used to query index directory trees.' },
+        { option: 'TCP port 3389', reason: 'This is RDP (Remote Desktop Protocol), used for GUI remote machine management.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port15',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'An engineer is forwarding system logs from fifty enterprise firewalls to a central SIEM server. Which port and protocol should be configured for standard syslog?',
+    options: ['UDP port 514', 'TCP port 514', 'TCP port 587', 'UDP port 162'],
+    correctAnswer: 'UDP port 514',
+    explanation: {
+      whyCorrect: 'The standard default port for sending Syslog telemetry and logs is UDP port 514 (though secure implementations often use TCP 6514).',
+      whyWrong: [
+        { option: 'TCP port 514', reason: 'While TCP syslog is supported on some newer platforms, the official default standard syslog relies on fast UDP port 514.' },
+        { option: 'TCP port 587', reason: 'This is secure SMTP client submissions for emails, not log delivery.' },
+        { option: 'UDP port 162', reason: 'This is SNMP Traps, which are distinct from standard Syslog messages.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port16',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'An email client application needs to securely submit outbound emails to a corporate mail server. The mail server supports modern TLS encryption. Which port is recommended for this?',
+    options: ['TCP port 587', 'TCP port 25', 'TCP port 465', 'TCP port 110'],
+    correctAnswer: 'TCP port 587',
+    explanation: {
+      whyCorrect: 'TCP port 587 is the standardized port for secure email submission (SMTP Secure / SMTP submission) featuring mandatory or opportunistic upgrade to TLS (StartTLS).',
+      whyWrong: [
+        { option: 'TCP port 25', reason: 'Port 25 is used natively for server-to-server relaying, and ISPs often block outgoing client traffic on this port to prevent bots from sending spam.' },
+        { option: 'TCP port 465', reason: 'This is an older, deprecated port for SMTP over SSL, which has been replaced by StartTLS on port 587.' },
+        { option: 'TCP port 110', reason: 'This is POP3 and is only for retrieving mail, not sending/submitting it.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port17',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'To comply with security mandates, an enterprise must immediately encrypt all Active Directory database queries. Which port should they open between client subnets and Domain Controllers?',
+    options: ['TCP port 636', 'TCP port 389', 'TCP port 445', 'TCP port 1433'],
+    correctAnswer: 'TCP port 636',
+    explanation: {
+      whyCorrect: 'LDAPS (LDAP over SSL/TLS) encrypts directory access queries immediately at connection and listens on TCP port 636.',
+      whyWrong: [
+        { option: 'TCP port 389', reason: 'This is plain LDAP, which defaults to transmitting passwords and user structures in cleartext.' },
+        { option: 'TCP port 445', reason: 'This is Windows Server Message Block (SMB) for file shares.' },
+        { option: 'TCP port 1433', reason: 'This is the Microsoft SQL Server connection port.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port18',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A backup application fails to connect to its backend Microsoft SQL Server database. The local Windows firewall is blocking ingress. Which port must be allowed?',
+    options: ['TCP port 1433', 'TCP port 3306', 'TCP port 1521', 'TCP port 3389'],
+    correctAnswer: 'TCP port 1433',
+    explanation: {
+      whyCorrect: 'Microsoft SQL Server listens on TCP port 1433 by default as its standard database catalog interface.',
+      whyWrong: [
+        { option: 'TCP port 3306', reason: 'This is the default port for MySQL databases.' },
+        { option: 'TCP port 1521', reason: 'This is the default port for Oracle databases.' },
+        { option: 'TCP port 3389', reason: 'This is Remote Desktop Protocol (RDP).' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port19',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A Windows utility needs to be accessed by internal technicians to run applications on a central jump box via a graphical desktop interface. Which port is required?',
+    options: ['TCP port 3389', 'TCP port 22', 'TCP port 443', 'TCP port 445'],
+    correctAnswer: 'TCP port 3389',
+    explanation: {
+      whyCorrect: 'Remote Desktop Protocol (RDP) provides GUI access for managing Microsoft Windows environments and operates on TCP port 3389.',
+      whyWrong: [
+        { option: 'TCP port 22', reason: 'This is SSH/SFTP, which offers console/CLI administration or secure file transfer, not full GUI remote desktop.' },
+        { option: 'TCP port 443', reason: 'This is HTTPS for secure web interactions.' },
+        { option: 'TCP port 445', reason: 'This is SMB for network files and printer mounts.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port20',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A network engineer is configuring a voice gateway. Which two ports and transport methods should be allowed for Session Initiation Protocol (SIP) signaling?',
+    options: ['TCP/UDP 5060 (plaintext) & TCP 5061 (TLS secure)', 'TCP/UDP 5060 (plaintext) & UDP 162 (traps)', 'TCP 5060 (TLS secure) & UDP 5061 (plaintext)', 'UDP 1720 (H.323) & TCP 5060'],
+    correctAnswer: 'TCP/UDP 5060 (plaintext) & TCP 5061 (TLS secure)',
+    explanation: {
+      whyCorrect: 'SIP uses TCP or UDP port 5060 for cleartext signaling, and TCP port 5061 for encrypted signaling using Transport Layer Security (SIPS).',
+      whyWrong: [
+        { option: 'TCP/UDP 5060 (plaintext) & UDP 162 (traps)', reason: 'Port 162 is SNMP Traps, which is not involved in VoIP signaling pathways.' },
+        { option: 'TCP 5060 (TLS secure) & UDP 5061 (plaintext)', reason: 'The security mappings are reversed; 5060 is plain/clear, while 5061 holds the encrypted TLS session.' },
+        { option: 'UDP 1720 (H.323) & TCP 5060', reason: 'Port 1720 is for the H.323 voice standard, not SIP default standards.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port21',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A technician is troubleshooting a router firmware load issue over the LAN. The router boot sequence is configured to download a config file from a server on port 69, but fails. The firewall log indicates allowed port 21 traffic. What is the mismatch?',
+    options: ['The bootloader uses TFTP (UDP 69), but the administrator opened FTP (TCP 21)', 'The bootloader uses FTP (TCP 21), but the administrator opened TFTP (UDP 69)', 'The bootloader uses SFTP (TCP 22), but the administrator opened TFTP (UDP 69)', 'The bootloader uses HTTP (TCP 80), but the administrator opened HTTPS (TCP 443)'],
+    correctAnswer: 'The bootloader uses TFTP (UDP 69), but the administrator opened FTP (TCP 21)',
+    explanation: {
+      whyCorrect: 'Router bootloaders generally request files using TFTP (Trivial File Transfer Protocol) on UDP port 69 due to its simplicity, not full TCP FTP on port 21.',
+      whyWrong: [
+        { option: 'The bootloader uses FTP (TCP 21), but the administrator opened TFTP (UDP 69)', reason: 'This would mean the router wants FTP on TCP 21, but routers utilize the lighter UDP 69 during BIOS-level boot sequences.' },
+        { option: 'The bootloader uses SFTP (TCP 22), but the administrator opened TFTP (UDP 69)', reason: 'SFTP uses SSH (port 22) and is too complex for basic, low-level Bootstrap programs.' },
+        { option: 'The bootloader uses HTTP (TCP 80), but the administrator opened HTTPS (TCP 443)', reason: 'This is completely unrelated to Port 69 or Port 21 operations.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'port22',
+    type: 'port',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A new network segment is created for VoIP systems and remote managers. The firewall must allow: unencrypted VoIP signaling, secure remote command line, and encrypted web management. Which ports should be allowed INBOUND?',
+    options: ['UDP 5060, TCP 22, TCP 443', 'TCP 5061, TCP 23, TCP 80', 'UDP 5060, TCP 3389, TCP 80', 'TCP 5061, TCP 22, TCP 445'],
+    correctAnswer: 'UDP 5060, TCP 22, TCP 443',
+    explanation: {
+      whyCorrect: 'Unencrypted VoIP signaling uses SIP on UDP 5060. Secure remote CLI is SSH on TCP 22. Encrypted web management is HTTPS on TCP 443. Therefore, this combination satisfies all criteria.',
+      whyWrong: [
+        { option: 'TCP 5061, TCP 23, TCP 80', reason: 'This includes encrypted SIP (5061) instead of unencrypted, unsecure Telnet (23) instead of secure SSH, and clear HTTP (80) instead of secure HTTPS.' },
+        { option: 'UDP 5060, TCP 3389, TCP 80', reason: 'This includes GUI-based RDP (3389) instead of command-line SSH, and clear HTTP (80) instead of secure.' },
+        { option: 'TCP 5061, TCP 22, TCP 445', reason: 'This features encrypted SIPS (5061) instead of clear SIP, and Windows file share SMB (445) instead of web traffic HTTPS.' }
+      ]
+    },
+    weight: 10
+  },
+  // --- USER GENERATED DOMAIN 1.0 (Networking Concepts) ---
+  {
+    id: 'd1_q1',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.1 OSI Layers',
+    question: 'A network administrator is troubleshooting a connectivity issue. The problem occurs at the physical cabling and voltage levels. At which layer of the OSI model should the administrator begin troubleshooting?',
+    options: [
+      'A) Layer 1 — Physical',
+      'B) Layer 2 — Data Link',
+      'C) Layer 3 — Network',
+      'D) Layer 4 — Transport'
+    ],
+    correctAnswer: 'A) Layer 1 — Physical',
+    explanation: {
+      whyCorrect: 'Physical cabling, connector configurations, voltage levels, signaling, and physical interfaces are all handled at Layer 1 (Physical) of the OSI model.',
+      whyWrong: [
+        { option: 'B) Layer 2 — Data Link', reason: 'Data Link layer handles MAC addresses, frames, hardware addressing, and local link communications.' },
+        { option: 'C) Layer 3 — Network', reason: 'Network layer handles logical IP addressing, routing, packet forwarding, and path selection.' },
+        { option: 'D) Layer 4 — Transport', reason: 'Transport layer manages end-to-end transport, flow control, windowing, and port numbers (TCP/UDP).' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q2',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.1 OSI Layers',
+    question: 'A web server needs to encrypt data between the client and server to secure online transactions. Which OSI layer is responsible for this encryption and data formatting?',
+    options: [
+      'A) Layer 3 — Network',
+      'B) Layer 5 — Session',
+      'C) Layer 6 — Presentation',
+      'D) Layer 7 — Application'
+    ],
+    correctAnswer: 'C) Layer 6 — Presentation',
+    explanation: {
+      whyCorrect: 'The Presentation layer (Layer 6) is responsible for data translation, syntax formatting, and encryption/decryption functions (including SSL/TLS encapsulation).',
+      whyWrong: [
+        { option: 'A) Layer 3 — Network', reason: 'The Network layer is concerned only with routing and logical addressing, not with payload encryption.' },
+        { option: 'B) Layer 5 — Session', reason: 'The Session layer establishes, maintains, and terminates communication sessions between applications.' },
+        { option: 'D) Layer 7 — Application', reason: 'The Application layer is the interface between the user application and network services; it relies on Layer 6 for encryption.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q3',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.8 Network Appliances',
+    question: 'Which of the following network appliances can connect multiple network segments, filter traffic based on IP addresses and port numbers, and is commonly used to create a screened subnet (DMZ)?',
+    options: [
+      'A) Hub',
+      'B) Switch',
+      'C) Router',
+      'D) Firewall'
+    ],
+    correctAnswer: 'D) Firewall',
+    explanation: {
+      whyCorrect: 'Firewalls are security appliances designed to inspect and filter traffic using security rules based on IP addresses, ports, or applications, and are used to separate zones like dmz/screened subnets.',
+      whyWrong: [
+        { option: 'A) Hub', reason: 'A hub is a physical-layer repeater with no intelligence that broadcasts all incoming traffic to all ports.' },
+        { option: 'B) Switch', reason: 'A standard Layer 2 switch forwards frames based strictly on MAC addresses, not IP or port filtering.' },
+        { option: 'C) Router', reason: 'A router is designed primarily for packets forwarding between separate network subnets, not security policy enforcement.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q4',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.7 Cloud Concepts',
+    question: 'A company wants to deploy servers in a cloud environment where multiple customers share the same physical infrastructure, but each customer\'s data is logically isolated. Which cloud concept best describes this arrangement?',
+    options: [
+      'A) Multitenancy',
+      'B) Hybrid hosting',
+      'C) Elasticity',
+      'D) Infrastructure as a Service (IaaS)'
+    ],
+    correctAnswer: 'A) Multitenancy',
+    explanation: {
+      whyCorrect: 'Multitenancy refers to a key cloud architecture where unified physical hardware/infrastructure resources are securely shared among multiple distinct clients or organizations (tenants).',
+      whyWrong: [
+        { option: 'B) Hybrid hosting', reason: 'Hybrid models involve mixing on-premise infrastructure with public/private cloud environments, not specifically sharing physical resources.' },
+        { option: 'C) Elasticity', reason: 'Elasticity allows resources to dynamically scale up or down based on demand; it does not describe the multi-client resource sharing schema.' },
+        { option: 'D) Infrastructure as a Service (IaaS)', reason: 'IaaS is a broad service model supplying virtualized computing infrastructure, whereas multitenancy is the architecture that enables such sharing.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q5',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.8 Modern Envs',
+    question: 'A network engineer needs to connect a branch office to the corporate headquarters over the internet securely. The solution must encrypt all traffic between the two sites. Which technology should the engineer implement?',
+    options: [
+      'A) Virtual Private Network (VPN)',
+      'B) Software-Defined WAN (SD-WAN)',
+      'C) Virtual Extensible LAN (VXLAN)',
+      'D) Dynamic Host Configuration Protocol (DHCP)'
+    ],
+    correctAnswer: 'A) Virtual Private Network (VPN)',
+    explanation: {
+      whyCorrect: 'A Virtual Private Network (VPN) creates an encrypted tunnel over an untrusted public network (like the internet) to safely link remote sites or clients together.',
+      whyWrong: [
+        { option: 'B) Software-Defined WAN (SD-WAN)', reason: 'SD-WAN manages and optimizes wide-area connections across multiple routes but doesn\'t describe the specific point-to-point encrypted tunneling of a VPN.' },
+        { option: 'C) Virtual Extensible LAN (VXLAN)', reason: 'VXLAN is an encapsulation protocol to stretch Layer 2 overlays over Layer 3 fabrics inside a data center, lacking native public encryption.' },
+        { option: 'D) Dynamic Host Configuration Protocol (DHCP)', reason: 'DHCP is a client utility designed to automatically assign IP configurations, not secure network transmissions.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q6',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'Which protocol, running on port 53, is responsible for resolving human-readable domain names into IP addresses?',
+    options: [
+      'A) FTP',
+      'B) DHCP',
+      'C) DNS (Domain Name System)',
+      'D) SSH'
+    ],
+    correctAnswer: 'C) DNS (Domain Name System)',
+    explanation: {
+      whyCorrect: 'Domain Name System (DNS) maps human-friendly hostnames (like google.com) to computer-readable IP addresses using port 53.',
+      whyWrong: [
+        { option: 'A) FTP', reason: 'File Transfer Protocol uses ports 20/21 and manages bulk data transfer across host interfaces.' },
+        { option: 'B) DHCP', reason: 'DHCP uses ports 67/68 for dynamic allocation of addressing configuration.' },
+        { option: 'D) SSH', reason: 'Secure Shell operates on port 22 to facilitate safe command-line terminal control.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q7',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A network administrator needs to assign IP addresses automatically to devices on the network. The server will also provide the default gateway and DNS server information. Which protocol, operating on ports 67 and 68, should be used?',
+    options: [
+      'A) DNS (Domain Name System)',
+      'B) HTTP (Hypertext Transfer Protocol)',
+      'C) DHCP (Dynamic Host Configuration Protocol)',
+      'D) SNMP (Simple Network Management Protocol)'
+    ],
+    correctAnswer: 'C) DHCP (Dynamic Host Configuration Protocol)',
+    explanation: {
+      whyCorrect: 'Dynamic Host Configuration Protocol (DHCP) automatically scales host setup by distributing IP settings, gateways, and subnet configurations over active client lists.',
+      whyWrong: [
+        { option: 'A) DNS (Domain Name System)', reason: 'DNS manages hostname lookup profiles, not terminal address allocation leases.' },
+        { option: 'B) HTTP (Hypertext Transfer Protocol)', reason: 'HTTP communicates unsecure web site layout transfers using port 80.' },
+        { option: 'D) SNMP (Simple Network Management Protocol)', reason: 'SNMP polls remote devices on port 161 to collect diagnostic and query status info.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q8',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.6 Topology',
+    question: 'A security analyst is investigating an attack where an unauthorized device is mimicking a legitimate access point to capture user credentials. Which type of attack is this?',
+    options: [
+      'A) Evil twin',
+      'B) Denial of service',
+      'C) IP spoofing',
+      'D) Man-in-the-middle ARP poison'
+    ],
+    correctAnswer: 'A) Evil twin',
+    explanation: {
+      whyCorrect: 'An Evil Twin is a rogue wireless access point that mimics a legitimate SSID/network name to trick users into connecting so the attacker can intercept traffic and steal credentials.',
+      whyWrong: [
+        { option: 'B) Denial of service', reason: 'Denial of Service is structured to deplete system bandwidth or processing resources, not spoof user access paths.' },
+        { option: 'C) IP spoofing', reason: 'IP spoofing alters the header information of packets to hide source identification, but is not specific to wireless access points.' },
+        { option: 'D) Man-in-the-middle ARP poison', reason: 'ARP poisoning is a Layer 2 LAN mechanism mapping fraudulent MAC-to-IP pairings to divert switch traffic, not a rogue wireless AP.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q9',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.5 Physical Media',
+    question: 'A company is deploying fiber optic cabling in a data center and needs to connect two switches that are 500 meters apart. The cable must support high speeds and use a laser-based transceiver. Which fiber type should the technician choose?',
+    options: [
+      'A) Single-mode fiber',
+      'B) Multimode fiber',
+      'C) Twisted-pair copper',
+      'D) Coaxial cable'
+    ],
+    correctAnswer: 'A) Single-mode fiber',
+    explanation: {
+      whyCorrect: 'Single-mode fiber uses lasers to transmit light down a narrow core, making it optimal for long distances and high speeds, and is required for laser-based modules over long distances without optical dispersion.',
+      whyWrong: [
+        { option: 'B) Multimode fiber', reason: 'Multimode fiber uses LEDs or VCSELs to transmit light over a wider core. While it can reach 500 meters at lower speeds, laser-specific high-bandwidth needs point directly to single-mode cabling.' },
+        { option: 'C) Twisted-pair copper', reason: 'Twisted-pair copper cables are highly constrained and limited to a max distance of 100 meters.' },
+        { option: 'D) Coaxial cable', reason: 'Coaxial cable is a legacy analog physical media, not suitable for high-speed fiber data configurations.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q10',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.6 Topology',
+    question: 'A network administrator is designing a large enterprise campus network and wants to separate traffic between departments (Engineering, Sales, HR) to improve security and reduce broadcast traffic. Which technology should the administrator implement?',
+    options: [
+      'A) VLAN (Virtual Local Area Network)',
+      'B) Spanning Tree Protocol (STP)',
+      'C) Link Aggregation Control Protocol (LACP)',
+      'D) Network Address Translation (NAT)'
+    ],
+    correctAnswer: 'A) VLAN (Virtual Local Area Network)',
+    explanation: {
+      whyCorrect: 'VLANs separate a single physical switch network into multiple logical broadcast domains, keeping department traffic isolated at Layer 2.',
+      whyWrong: [
+        { option: 'B) Spanning Tree Protocol (STP)', reason: 'STP acts to block ports and prevent loop creation across Layer 2 switch layouts, not separate groups.' },
+        { option: 'C) Link Aggregation Control Protocol (LACP)', reason: 'LACP aggregates multiple physical cables to act as one virtual interface, scaling throughput.' },
+        { option: 'D) Network Address Translation (NAT)', reason: 'NAT rewrites IP addresses within packet headers at the border firewall, irrelevant to internal LAN broadcast segmentation.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q11',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.3 IP Addressing',
+    question: 'A network technician needs to divide the 192.168.1.0/24 network into four smaller subnets, each supporting at least 50 usable hosts. What subnet mask should be used?',
+    options: [
+      'A) 255.255.255.0 (/24)',
+      'B) 255.255.255.128 (/25)',
+      'C) 255.255.255.192 (/26)',
+      'D) 255.255.255.240 (/28)'
+    ],
+    correctAnswer: 'C) 255.255.255.192 (/26)',
+    explanation: {
+      whyCorrect: 'Borrowing 2 bits for subnetting (increasing the mask from /24 to /26) yields 4 subnets (2^2). Each subnet has 6 host bits available (32-26=6), which provides 62 usable host addresses (2^6 - 2 = 62), fully hosting the 50-user minimum.',
+      whyWrong: [
+        { option: 'A) 255.255.255.0 (/24)', reason: 'This is the original unpartitioned network; it is a single broadcast domain with 254 endpoints.' },
+        { option: 'B) 255.255.255.128 (/25)', reason: 'A /25 yields only two subnets (though they can support 126 devices each).' },
+        { option: 'D) 255.255.255.240 (/28)', reason: 'A /28 provides 16 subnets, but each subnet supports only 14 usable hosts, which fails to meet the 50-host requirement.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q12',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.8 Modern Envs',
+    question: 'An organization wants to adopt an architecture that eliminates implicit trust and requires continuous authentication of every access request. Which modern security framework fulfills this requirement?',
+    options: [
+      'A) Zero trust architecture (ZTA)',
+      'B) Defense in Depth',
+      'C) Role-Based Access Control (RBAC)',
+      'D) Multi-Factor Authentication (MFA)'
+    ],
+    correctAnswer: 'A) Zero trust architecture (ZTA)',
+    explanation: {
+      whyCorrect: 'Zero Trust Architecture (ZTA) operates on the core belief that no user or asset should be granted implicit trust based purely on physical or logical location, requiring ongoing validation for every resource lookup.',
+      whyWrong: [
+        { option: 'B) Defense in Depth', reason: 'Defense in depth uses layered security controls but does not natively enforce an explicitly zero-trust, access-by-access validation engine.' },
+        { option: 'C) Role-Based Access Control (RBAC)', reason: 'RBAC maps privilege to a specific organizational role, which is a component of access control rather than an entire modern zero-trust architecture.' },
+        { option: 'D) Multi-Factor Authentication (MFA)', reason: 'MFA is an authentication technology validating user identities, which is a tool used by ZTA but not the architecture itself.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q13',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.7 Cloud Concepts',
+    question: 'Which cloud service model provides the customer with the ability to deploy applications onto the cloud infrastructure using programming languages and tools supported by the provider, with the customer managing the applications and data but not the underlying infrastructure?',
+    options: [
+      'A) Infrastructure as a Service (IaaS)',
+      'B) Software as a Service (SaaS)',
+      'C) Platform as a Service (PaaS)',
+      'D) Database as a Service (DBaaS)'
+    ],
+    correctAnswer: 'C) Platform as a Service (PaaS)',
+    explanation: {
+      whyCorrect: 'Platform as a Service (PaaS) abstracts away operating systems, databases, hardware, and networks, exposing only the pipeline/execution layout for user scripts and programs.',
+      whyWrong: [
+        { option: 'A) Infrastructure as a Service (IaaS)', reason: 'IaaS leaves complete OS management, patching, runtime setup, and software builds entirely to the client.' },
+        { option: 'B) Software as a Service (SaaS)', reason: 'SaaS provides fully managed, preloaded turnkey software in a browser shell, offering no developer coding levels.' },
+        { option: 'D) Database as a Service (DBaaS)', reason: 'DBaaS is a platform sub-type aimed only at managing databases, not deploying generalized developer scripts.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q14',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.8 Modern Envs',
+    question: 'A technician receives a new router that is pre-configured with default settings. After receiving a URL via email, the technician connects the device to the internet, and it automatically downloads and applies its full configuration. Which feature is being demonstrated?',
+    options: [
+      'A) Dynamic Routing',
+      'B) Hot Standby Routing',
+      'C) Zero-touch provisioning',
+      'D) Port Address Translation'
+    ],
+    correctAnswer: 'C) Zero-touch provisioning',
+    explanation: {
+      whyCorrect: 'Zero-touch provisioning (ZTP) allows devices to be configured automatically upon initial connection to the network by requesting bootstrap files from a cloud server.',
+      whyWrong: [
+        { option: 'A) Dynamic Routing', reason: 'Dynamic routing is used by routers to negotiate active network paths using protocols like OSPF, not deploy whole device hardware maps.' },
+        { option: 'B) Hot Standby Routing', reason: 'Hot Standby describes FHRP gateways handling dynamic user routing failovers, completely separate from auto-provisioning.' },
+        { option: 'D) Port Address Translation', reason: 'PAT allows internal IP clusters to map out over a single WAN address using distinct ports.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q15',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.3 IP Addressing',
+    question: 'A company is running out of public IPv4 addresses and needs to allow multiple internal devices to share a single public IP address when accessing the internet. Which technology should be configured on the edge router?',
+    options: [
+      'A) PAT (Port Address Translation)',
+      'B) Static NAT',
+      'C) Dynamic Host Configuration Protocol (DHCP)',
+      'D) Domain Name System (DNS)'
+    ],
+    correctAnswer: 'A) PAT (Port Address Translation)',
+    explanation: {
+      whyCorrect: 'Port Address Translation (PAT, or NAT Overload) allows a single IP address to serve thousands of concurrent clients by assigning unique port mappings to each session.',
+      whyWrong: [
+        { option: 'B) Static NAT', reason: 'Static NAT creates a fixed one-to-one mapping between a private IP and a public IP, which does not conserve public addresses.' },
+        { option: 'C) Dynamic Host Configuration Protocol (DHCP)', reason: 'DHCP issues configuration templates to local devices, unrelated to external address translation.' },
+        { option: 'D) Domain Name System (DNS)', reason: 'DNS maps names to addressing fields, unrelated to conserving IP counts.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q16',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.4 Protocols',
+    question: 'Which of the following wireless standards operates in the 6 GHz frequency band and supports the highest theoretical throughput among the listed options?',
+    options: [
+      'A) 802.11g (Wi-Fi 3)',
+      'B) 802.11n (Wi-Fi 4)',
+      'C) 802.11ac (Wi-Fi 5)',
+      'D) 802.11ax (Wi-Fi 6E)'
+    ],
+    correctAnswer: 'D) 802.11ax (Wi-Fi 6E)',
+    explanation: {
+      whyCorrect: '802.11ax (specifically the Wi-Fi 6E enhancement) introduced operations in the 6 GHz band, which supports wide channels and high data throughput.',
+      whyWrong: [
+        { option: 'A) 802.11g (Wi-Fi 3)', reason: '802.11g runs exclusively on the 2.4 GHz spectrum with a max bandwidth of 54 Mbps.' },
+        { option: 'B) 802.11n (Wi-Fi 4)', reason: '802.11n runs on 2.4/5 GHz bands and reaches up to 600 Mbps, but lacks 6 GHz capabilities.' },
+        { option: 'C) 802.11ac (Wi-Fi 5)', reason: '802.11ac runs on the 5 GHz band only, lacking the 6 GHz frequency band supported by Wi-Fi 6E/7.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q17',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.3 IP Addressing',
+    question: 'A server with an IP address of 10.10.10.10 sends a packet to the destination IP 255.255.255.255. This packet will be delivered to which devices?',
+    options: [
+      'A) All devices on the local network segment',
+      'B) All devices across the entire autonomous system (AS)',
+      'C) A specific multicast group of devices',
+      'D) Only the default gateway router'
+    ],
+    correctAnswer: 'A) All devices on the local network segment',
+    explanation: {
+      whyCorrect: 'An IP of 255.255.255.255 is the limited broadcast address. Routers discard this address by default, so it reaches all devices on the local Layer 2 broadcast domain but does not cross routers.',
+      whyWrong: [
+        { option: 'B) All devices across the entire autonomous system (AS)', reason: 'Routers block limited broadcasts, restricting them only to the local subnet segment.' },
+        { option: 'C) A specific multicast group of devices', reason: 'Multicast relies on Class D addresses (224.0.0.0 to 239.255.255.255), not the limited broadcast address.' },
+        { option: 'D) Only the default gateway router', reason: 'Unicast traffic points directly to a single gateway, whereas broadcast hits every local endpoint.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q18',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.5 Physical Media',
+    question: 'A network administrator is adding a new switch to the network and needs to connect it to an existing aggregation switch. The connection must support high throughput with minimal latency using a fiber optic link. Which type of transceiver should the administrator use?',
+    options: [
+      'A) RJ-45',
+      'B) Small form-factor pluggable (SFP)',
+      'C) BNC Connector',
+      'D) Twinaxial Direct Attach Copper (DAC)'
+    ],
+    correctAnswer: 'B) Small form-factor pluggable (SFP)',
+    explanation: {
+      whyCorrect: 'Small Form-Factor Pluggable (SFP), and its upgrade SFP+, are standard hot-swappable transceiver interfaces used on switches to support optical fiber modules for high-speed uplink routing.',
+      whyWrong: [
+        { option: 'A) RJ-45', reason: 'RJ-45 is a copper connector format, which is not used for fiber optic cabling.' },
+        { option: 'C) BNC Connector', reason: 'BNC is a coaxial locking cable plug typically used for analog video or legacy 10Base2 systems, not fiber.' },
+        { option: 'D) Twinaxial Direct Attach Copper (DAC)', reason: 'DAC uses twinaxial copper cables with built-in SFP ports, which is not an optical fiber link.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q19',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.6 Topology',
+    question: 'A network architect is designing a new data center network that requires high-speed switching between multiple leaf switches. The design must provide low and predictable latency for east-west traffic. Which topology is most appropriate?',
+    options: [
+      'A) Spine and leaf',
+      'B) Star',
+      'C) Ring',
+      'D) Bus'
+    ],
+    correctAnswer: 'A) Spine and leaf',
+    explanation: {
+      whyCorrect: 'Spine-and-leaf is a two-tier non-blocking architecture where every leaf switch connects directly to every spine switch, creating low and predictable latency for east-west data center traffic.',
+      whyWrong: [
+        { option: 'B) Star', reason: 'A star layout uses a single central switch hub, creating a major bottleneck and single point of failure in scaled environments.' },
+        { option: 'C) Ring', reason: 'A ring layout has redundant paths but requires traffic to hop sequentially around node loops, causing highly variable latency.' },
+        { option: 'D) Bus', reason: 'Bus layouts are legacy half-duplex structures where all nodes share a single horizontal cable line, which is obsolete.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q20',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.1 Infrastructure as Code',
+    question: 'A company is implementing Infrastructure as Code (IaC) to manage its network device configurations. The team needs to track changes, collaborate on configurations, and revert to previous versions if an error occurs. Which technology should be used alongside IaC to meet these requirements?',
+    options: [
+      'A) Simple Network Management Protocol (SNMP)',
+      'B) Version control',
+      'C) Software-defined WAN (SD-WAN)',
+      'D) Grid Protocol'
+    ],
+    correctAnswer: 'B) Version control',
+    explanation: {
+      whyCorrect: 'Version control systems (such as Git) track edits, enable team contributions, and maintain file histories to allow configurations to be rolled back to any previous state.',
+      whyWrong: [
+        { option: 'A) Simple Network Management Protocol (SNMP)', reason: 'SNMP monitors device statistics and alerts, not repository state files.' },
+        { option: 'C) Software-defined WAN (SD-WAN)', reason: 'SD-WAN manages dynamic public routing layouts but does not provide version history/code storage.' },
+        { option: 'D) Grid Protocol', reason: 'Grid Protocol is not a recognized routing or configuration tracking standard.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q21',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.3 IP Addressing',
+    question: 'A network has been assigned the IPv6 address block 2001:db8::/32. An administrator wants to create multiple subnets within this block for different departments. Which technology allows the administrator to flexibly subnet the IPv6 space?',
+    options: [
+      'A) Address Resolution Protocol (ARP)',
+      'B) Statefull DHCPv6 only',
+      'C) Standard IPv6 subnetting (with CIDR)',
+      'D) Link-local address mappings'
+    ],
+    correctAnswer: 'C) Standard IPv6 subnetting (with CIDR)',
+    explanation: {
+      whyCorrect: 'Standard IPv6 layout utilizes Classless Inter-Domain Routing (CIDR) notation allowing administrators to borrow bits to carve up address spaces.',
+      whyWrong: [
+        { option: 'A) Address Resolution Protocol (ARP)', reason: 'ARP resolves IPv4 addresses to MAC entries, completely unrelated to IPv6 configuration structures.' },
+        { option: 'B) Statefull DHCPv6 only', reason: 'DHCPv6 assigns addressing maps, but the layout and subnetting itself is planned using standard CIDR structures.' },
+        { option: 'D) Link-local address mappings', reason: 'Link-local addresses (fe80::/10) are automatic, non-routable interfaces, not standard address blocks.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q22',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.8 Modern Envs',
+    question: 'A remote employee is working from a coffee shop. The user connects to a corporate resource, but the VPN is configured so that only traffic destined for the corporate network goes through the VPN tunnel, while internet browsing uses the coffee shop\'s internet connection directly. Which type of VPN configuration is being used?',
+    options: [
+      'A) Full tunnel',
+      'B) Split tunnel',
+      'C) Site-to-site',
+      'D) Host-to-host IPsec'
+    ],
+    correctAnswer: 'B) Split tunnel',
+    explanation: {
+      whyCorrect: 'A split tunnel VPN encrypts and routes only enterprise-destined traffic through the VPN gateway, sending standard internet packets directly out to the local ISP.',
+      whyWrong: [
+        { option: 'A) Full tunnel', reason: 'Full tunneling forces all data (internal and general web) through the VPN path, which increases latency and uses more server bandwidth.' },
+        { option: 'C) Site-to-site', reason: 'Site-to-site connects two static network offices over a gateway, rather than a remote individual user.' },
+        { option: 'D) Host-to-host IPsec', reason: 'Host-to-host IPsec secures transmission from one specific server endpoint to another, not split routing behavior.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd1_q23',
+    type: 'architect',
+    domain: '1.0 Concepts',
+    objective: '1.4 Ports & Protocols',
+    question: 'A system administrator needs to remotely manage a Linux server securely. Which protocol, operating on port 22, provides encrypted remote command-line access?',
+    options: [
+      'A) SSH (Secure Shell)',
+      'B) Telnet',
+      'C) RDP (Remote Desktop Protocol)',
+      'D) SFTP'
+    ],
+    correctAnswer: 'A) SSH (Secure Shell)',
+    explanation: {
+      whyCorrect: 'Secure Shell (SSH) replaces unencrypted protocols (like Telnet) by establishing an encrypted command-line shell session on TCP port 22.',
+      whyWrong: [
+        { option: 'B) Telnet', reason: 'Telnet runs on port 23 and transmits command inputs, logs, and credentials in plaintext, which is insecure.' },
+        { option: 'C) RDP (Remote Desktop Protocol)', reason: 'RDP is a GUI management utility operating on port 3389, commonly used for Windows servers.' },
+        { option: 'D) SFTP', reason: 'SFTP uses SSH (port 22) but is designed for secure file transfer, not running interactive shells.' }
+      ]
+    },
+    weight: 10
+  },
+
+  // --- USER GENERATED DOMAIN 2.0 (Network Implementation) ---
+  {
+    id: 'd2_q1',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.4 Network Address Translation',
+    question: 'An organization is configuring a new firewall and needs to translate multiple internal private IP addresses to a single public IP address. Additionally, the configuration must track each session using port numbers to ensure return traffic is correctly matched. Which technology should the network engineer implement?',
+    options: [
+      'A) Dynamic NAT',
+      'B) Static NAT',
+      'C) PAT (Port Address Translation)',
+      'D) Port Forwarding'
+    ],
+    correctAnswer: 'C) PAT (Port Address Translation)',
+    explanation: {
+      whyCorrect: 'Port Address Translation (PAT, or NAT Overload) maps multiple internal private IP hosts to a single public IP by tracking unique TCP/UDP port mapping entries for each session.',
+      whyWrong: [
+        { option: 'A) Dynamic NAT', reason: 'Dynamic NAT links local nodes to any free IP address in an allocated public pool but does not multiplex them over a single IP.' },
+        { option: 'B) Static NAT', reason: 'Static NAT establishes a fixed one-to-one mapping between a private host and a public IP, consuming public IPs rapidly.' },
+        { option: 'D) Port Forwarding', reason: 'Port Forwarding routes incoming traffic on a specific port to an internal host, rather than managing outgoing client translations.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q2',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.1 Routing Technologies',
+    question: 'A network router has routes to the same destination from three different routing protocols: EIGRP (administrative distance 90), OSPF (administrative distance 110), and a static route (administrative distance 1). Which route will be installed in the routing table?',
+    options: [
+      'A) The EIGRP route',
+      'B) The OSPF route',
+      'C) The static route (administrative distance 1)',
+      'D) All three routes will be multipath load-balanced'
+    ],
+    correctAnswer: 'C) The static route (administrative distance 1)',
+    explanation: {
+      whyCorrect: 'Administrative Distance (AD) is a measure of route trustworthiness. The router installs the route with the lowest AD. Static routes have an AD of 1, which is more trusted than EIGRP (90) or OSPF (110).',
+      whyWrong: [
+        { option: 'A) The EIGRP route', reason: 'EIGRP is trusted (AD 90) but is overridden by the static route (AD 1).' },
+        { option: 'B) The OSPF route', reason: 'OSPF routes (AD 110) are less trusted than both EIGRP and static routes.' },
+        { option: 'D) All three routes will be multipath load-balanced', reason: 'Multipath load balancing requires identical AD and routing metrics, which does not apply across different protocols.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q3',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.2 Switching Features',
+    question: 'A network technician is configuring a new VLAN for the guest Wi-Fi network. To ensure that only authorized devices can access the network, the technician needs to implement a security feature that limits the number of MAC addresses allowed on a switch port. Which feature should the technician enable?',
+    options: [
+      'A) 802.1Q trunking',
+      'B) Port security',
+      'C) Spanning Tree Protocol (STP)',
+      'D) DHCP snooping'
+    ],
+    correctAnswer: 'B) Port security',
+    explanation: {
+      whyCorrect: 'Port Security allows administrators to specify and limit the MAC addresses that are permitted to send traffic on a switch port, blocking unrecognized physical hardware.',
+      whyWrong: [
+        { option: 'A) 802.1Q trunking', reason: '802.1Q tags frames to support multiple VLANs over a single link, offering no MAC device control.' },
+        { option: 'C) Spanning Tree Protocol (STP)', reason: 'STP prevents logical packet forwarding loops across switch infrastructures.' },
+        { option: 'D) DHCP snooping', reason: 'DHCP snooping acts to ignore unauthorized DHCP server announcements inside the LAN.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q4',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.2 MDF/IDF',
+    question: 'A growing company is expanding to a new building with five floors. The ground floor will house the main Internet demarcation point and core switching equipment. Each upper floor will have its own wiring closet containing access switches and horizontal cabling. What are the correct designations for these two types of facilities?',
+    options: [
+      'A) Ground floor = Main Distribution Frame (MDF); Upper floors = Intermediate Distribution Frames (IDFs)',
+      'B) Ground floor = Intermediate Distribution Frame (IDF); Upper floors = Main Distribution Frames (MDFs)',
+      'C) Ground floor = Smart Jack / Demarcation Point; Upper floors = Horizontal Cabling Blocks',
+      'D) Ground floor = Core Switch Room; Upper floors = Aggregation Switch Closets'
+    ],
+    correctAnswer: 'A) Ground floor = Main Distribution Frame (MDF); Upper floors = Intermediate Distribution Frames (IDFs)',
+    explanation: {
+      whyCorrect: 'The Main Distribution Frame (MDF) is the primary room connecting to the ISP demarc and core infrastructure, which links to Intermediate Distribution Frames (IDFs) on other floors.',
+      whyWrong: [
+        { option: 'B) Ground floor = Intermediate Distribution Frame (IDF); Upper floors = Main Distribution Frames (MDFs)', reason: 'This reverses the standard hierarchy; there is typically only one MDF per site.' },
+        { option: 'C) Ground floor = Smart Jack / Demarcation Point; Upper floors = Horizontal Cabling Blocks', reason: 'While the demarc is on the ground floor, this does not describe the wiring closets.' },
+        { option: 'D) Ground floor = Core Switch Room; Upper floors = Aggregation Switch Closets', reason: 'These are engineering descriptions, not the formal standard wiring facility designations.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q5',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.1 Routing Technologies',
+    question: 'A network engineer is configuring a site-to-site VPN between two branch offices. The link must remain up even if the primary WAN connection fails. Which First Hop Redundancy Protocol (FHRP) feature allows multiple routers to share a single virtual IP address to provide gateway redundancy?',
+    options: [
+      'A) Dynamic DNS',
+      'B) Spanning Tree Protocol (STP)',
+      'C) Virtual IP (VIP)',
+      'D) Port Address Translation (PAT)'
+    ],
+    correctAnswer: 'C) Virtual IP (VIP)',
+    explanation: {
+      whyCorrect: 'First Hop Redundancy Protocols (like VRRP and HSRP) use a shared Virtual IP (VIP) address as the default gateway for local clients. If the active gateway fails, a standby router takes over the VIP.',
+      whyWrong: [
+        { option: 'A) Dynamic DNS', reason: 'Dynamic DNS updates DNS records automatically, unrelated to default gateway failovers.' },
+        { option: 'B) Spanning Tree Protocol (STP)', reason: 'STP acts to block redundant Layer 2 links to prevent broadcast storms, not manage IP gateways.' },
+        { option: 'D) Port Address Translation (PAT)', reason: 'PAT translates IP addresses to conserve address space but does not handle gateway failovers.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q6',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.2 Switching Features',
+    question: 'A network administrator is configuring a small office network with a single switch. The administrator needs to separate voice and data traffic to improve quality of service. The IP phones support passing data traffic through to the connected PCs. Which switch interface configuration feature should be used?',
+    options: [
+      'A) Trunk port',
+      'B) Voice VLAN',
+      'C) Link aggregation',
+      'D) Native VLAN'
+    ],
+    correctAnswer: 'B) Voice VLAN',
+    explanation: {
+      whyCorrect: 'A Voice VLAN allows a switch port to carry both untagged data traffic from a PC and tagged voice traffic from an IP phone, ensuring proper QoS treatment.',
+      whyWrong: [
+        { option: 'A) Trunk port', reason: 'Trunk ports carry traffic for all VLANs and are typically used between switches, not for end-user workstations.' },
+        { option: 'C) Link aggregation', reason: 'Link aggregation combines multiple physical links to increase bandwidth, not segment voice traffic.' },
+        { option: 'D) Native VLAN', reason: 'The Native VLAN handles untagged frames traversing an 802.1Q trunk, not end-user IP phone segregation.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q7',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.2 MDF/IDF',
+    question: 'A data center manager is concerned about the cooling efficiency of the server racks. The manager wants cold air from the CRAC units to directly reach equipment intake vents and warm exhaust air to be captured and returned without mixing. Which physical arrangement of racks achieves this goal?',
+    options: [
+      'A) Enclosed bento setup',
+      'B) Perimeter cooling orientation',
+      'C) Hot aisle/cold aisle configuration',
+      'D) Bottom-up forced convection venting'
+    ],
+    correctAnswer: 'C) Hot aisle/cold aisle configuration',
+    explanation: {
+      whyCorrect: 'A hot aisle/cold aisle layout separates cold intake air from hot exhaust air by orienting server racks back-to-back and front-to-front, which optimizes cooling efficiency.',
+      whyWrong: [
+        { option: 'A) Enclosed bento setup', reason: 'This is not a recognized industry design standard for server rack orientation.' },
+        { option: 'B) Perimeter cooling orientation', reason: 'Simply pushing cold air around the perimeter does not prevent intake and exhaust air from mixing.' },
+        { option: 'D) Bottom-up forced convection venting', reason: 'This relies on vertical airflow but does not separate intake and exhaust zones.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q8',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.3 Wireless Tech',
+    question: 'A network technician is installing a new wireless access point in a high-density office environment. The technician notices that neighboring businesses are using overlapping channels on the 2.4 GHz band, causing interference and poor performance. Which solution would best mitigate this issue while maintaining compatibility with older client devices?',
+    options: [
+      'A) Enable dynamic frequency selection (DFS) over the 2.4 GHz spectrum',
+      'B) Switch to channel 1, 6, or 11 and adjust channel width to 20 MHz',
+      'C) Adjust channel width to 40 MHz and configure band steering to force 2.4 GHz',
+      'D) Use channel 3, 4, or 9 with a 10 MHz narrow spectral slice'
+    ],
+    correctAnswer: 'B) Switch to channel 1, 6, or 11 and adjust channel width to 20 MHz',
+    explanation: {
+      whyCorrect: 'In the 2.4 GHz spectrum, only channels 1, 6, and 11 do not overlap. Using a standard 20 MHz channel width minimizes co-channel interference and maintains compatibility.',
+      whyWrong: [
+        { option: 'A) Enable dynamic frequency selection (DFS) over the 2.4 GHz spectrum', reason: 'DFS operates on the 5 GHz band to avoid interference with radar installations, not in the 2.4 GHz spectrum.' },
+        { option: 'C) Adjust channel width to 40 MHz and configure band steering to force 2.4 GHz', reason: 'A 40 MHz channel consumes too much spectrum in the crowded 2.4 GHz band, increasing interference.' },
+        { option: 'D) Use channel 3, 4, or 9 with a 10 MHz narrow spectral slice', reason: 'Using non-standard or overlapping channels like 3, 4, or 9 causes severe adjacent-channel interference.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q9',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.1 Routing Technologies',
+    question: 'A router receives a packet destined for 192.168.5.100. The routing table shows: S 192.168.5.0/24 via 10.0.0.1, O 192.168.5.0/26 via 10.0.0.2, C 192.168.5.0/24 via 10.0.0.3. Which route does the router select, and why?',
+    options: [
+      'A) The static route for 192.168.5.0/24 because static routes have the lowest administrative distance of 1',
+      'B) The connected route for 192.168.5.0/24 because directly connected interfaces have an administrative distance of 0',
+      'C) The OSPF route for 192.168.5.0/26 because it has the longest prefix match (most specific subnet mask)',
+      'D) The router will drop the packet because of conflicting overlapping subnet records'
+    ],
+    correctAnswer: 'C) The OSPF route for 192.168.5.0/26 because it has the longest prefix match (most specific subnet mask)',
+    explanation: {
+      whyCorrect: 'The router first evaluates routes using the "longest prefix match" (most specific subnet mask). Since /26 is more specific than /24, the route via 10.0.0.2 is chosen, regardless of administrative distance.',
+      whyWrong: [
+        { option: 'A) The static route for 192.168.5.0/24 because static routes have the lowest administrative distance of 1', reason: 'AD is evaluated only when comparing routes with identical prefix lengths.' },
+        { option: 'B) The connected route for 192.168.5.0/24 because directly connected interfaces have an administrative distance of 0', reason: 'This route has a shorter prefix (/24) than the OSPF route (/26), so it is not evaluated first.' },
+        { option: 'D) The router will drop the packet because of conflicting overlapping subnet records', reason: 'IP routers can resolve overlapping subnets natively using the longest prefix match rule.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q10',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.2 Switching Features',
+    question: 'A company is experiencing network loops causing broadcast storms and MAC address table instability. The network uses multiple interconnected switches. Which IEEE standard should be enabled to prevent these loops by blocking redundant links?',
+    options: [
+      'A) 802.3 (Ethernet CSMA/CD)',
+      'B) 802.1Q (VLAN Trunking Services)',
+      'C) 802.1D (Spanning Tree Protocol)',
+      'D) 802.11 (Wireless Local Area Networks)'
+    ],
+    correctAnswer: 'C) 802.1D (Spanning Tree Protocol)',
+    explanation: {
+      whyCorrect: 'IEEE 802.1D Spanning Tree Protocol (STP) detects network loops and dynamically blocks redundant ports to maintain a loop-free topology.',
+      whyWrong: [
+        { option: 'A) 802.3 (Ethernet CSMA/CD)', reason: 'This is the foundational standard for Ethernet physical and data-link operations, not loop prevention.' },
+        { option: 'B) 802.1Q (VLAN Trunking Services)', reason: '802.1Q is the standard for insert trunk tags for VLAN segmentation, not loop prevention.' },
+        { option: 'D) 802.11 (Wireless Local Area Networks)', reason: '802.11 defines standards for Wi-Fi configurations.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q11',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.2 Switching Features',
+    question: 'A network administrator needs to secure the management interface of a switch. The administrator wants to ensure that all traffic to the management IP address is encrypted. Which protocol should the administrator use to connect to the switch\'s command-line interface?',
+    options: [
+      'A) HTTP',
+      'B) Telnet',
+      'C) SSH (Secure Shell)',
+      'D) SNMPv1'
+    ],
+    correctAnswer: 'C) SSH (Secure Shell)',
+    explanation: {
+      whyCorrect: 'Secure Shell (SSH) encrypts all data in transit, including passwords, preventing eavesdropping and protecting credentials during remote switch administration.',
+      whyWrong: [
+        { option: 'A) HTTP', reason: 'HTTP is unencrypted web-based management, which sends credentials in plaintext.' },
+        { option: 'B) Telnet', reason: 'Telnet is a legacy unencrypted command-line tool that is highly vulnerable to capture.' },
+        { option: 'D) SNMPv1', reason: 'SNMPv1 is used for device monitoring and uses unencrypted plaintext community strings.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q12',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.3 Wireless Tech',
+    question: 'A network engineer is designing a wireless network for a warehouse with metal shelving and equipment. The engineer needs to ensure that roaming devices maintain connectivity as users move through the aisles. Which wireless network type is most appropriate for this environment?',
+    options: [
+      'A) Point-to-point wireless bridge',
+      'B) Ad-hoc network',
+      'C) Mesh network',
+      'D) Standalone independent client infrastructure'
+    ],
+    correctAnswer: 'C) Mesh network',
+    explanation: {
+      whyCorrect: 'A wireless Mesh network uses multiple interconnected nodes to dynamically route traffic around obstacles like metal shelving, providing high reliability for roaming clients.',
+      whyWrong: [
+        { option: 'A) Point-to-point wireless bridge', reason: 'A point-to-point link connects two fixed locations, not roaming warehouse clients.' },
+        { option: 'B) Ad-hoc network', reason: 'Ad-hoc networks are peer-to-peer connections between client devices and do not scale to support warehouse roaming.' },
+        { option: 'D) Standalone independent client infrastructure', reason: 'This refers to disconnected clients and does not represent a shared enterprise wireless architecture.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q13',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.2 MDF/IDF',
+    question: 'A small business is deploying a new server room. The business experiences frequent brief power sags and surges, which have caused network equipment to reboot unexpectedly. The administrator needs a device that conditions the power and provides enough runtime to perform graceful shutdowns during extended outages. Which device should be installed?',
+    options: [
+      'A) Power Distribution Unit (PDU)',
+      'B) Uninterruptible Power Supply (UPS)',
+      'C) Gas-powered backup generator',
+      'D) Secondary surge suppressor strip'
+    ],
+    correctAnswer: 'B) Uninterruptible Power Supply (UPS)',
+    explanation: {
+      whyCorrect: 'An Uninterruptible Power Supply (UPS) filters dirty power, protects against sags and surges, and provides battery backup power during outages to keep critical network components online.',
+      whyWrong: [
+        { option: 'A) Power Distribution Unit (PDU)', reason: 'A PDU is an intelligent power strip that distributes electrical outlets to devices in a rack, offering no battery backup.' },
+        { option: 'C) Gas-powered backup generator', reason: 'Generators provide long-term power but require a few minutes to start up, during which the devices would still drop offline.' },
+        { option: 'D) Secondary surge suppressor strip', reason: 'Surge suppressors protect against voltage spikes but do not maintain power during a sag or outage.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q14',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.2 Switching Features',
+    question: 'A network switch has been configured with multiple VLANs: VLAN 10 (Sales), VLAN 20 (Engineering), and VLAN 30 (Management). The administrator needs to route traffic between these VLANs without purchasing a separate router. Which feature should be configured on the switch?',
+    options: [
+      'A) Link Aggregation (LACP)',
+      'B) Switch Virtual Interface (SVI)',
+      'C) Trunking Port Modes',
+      'D) Jumbo Frames (9000 MTU)'
+    ],
+    correctAnswer: 'B) Switch Virtual Interface (SVI)',
+    explanation: {
+      whyCorrect: 'A Switch Virtual Interface (SVI) is a logical Layer 3 interface on a multilayer switch that allows the switch to route traffic between different VLAN subnets natively.',
+      whyWrong: [
+        { option: 'A) Link Aggregation (LACP)', reason: 'LACP bundles physical links to increase bandwidth, not route traffic.' },
+        { option: 'C) Trunking Port Modes', reason: 'Trunking carries multiple VLANs over a single port but does not perform the routing between those VLANs.' },
+        { option: 'D) Jumbo Frames (9000 MTU)', reason: 'Jumbo frames support larger payloads to improve transmission efficiency, unrelated to IP routing.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q15',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.3 Wireless Tech',
+    question: 'A technician is installing a new wireless network that must support the highest possible throughput and operate in the 6 GHz band to avoid interference from legacy devices. Which 802.11 standard should the technician choose?',
+    options: [
+      'A) 802.11a (Wi-Fi 1)',
+      'B) 802.11n (Wi-Fi 4)',
+      'C) 802.11ac (Wi-Fi 5)',
+      'D) 802.11ax (Wi-Fi 6E)'
+    ],
+    correctAnswer: 'D) 802.11ax (Wi-Fi 6E)',
+    explanation: {
+      whyCorrect: 'IEEE 802.11ax (specifically the Wi-Fi 6E designation) introduced operations in the 6 GHz spectrum, providing high data rates and less environmental congestion.',
+      whyWrong: [
+        { option: 'A) 802.11a (Wi-Fi 1)', reason: '802.11a operates on the 5 GHz band with a max speed of 54 Mbps.' },
+        { option: 'B) 802.11n (Wi-Fi 4)', reason: '802.11n operates in 2.4/5 GHz only, not in the 6 GHz spectrum.' },
+        { option: 'C) 802.11ac (Wi-Fi 5)', reason: '802.11ac operates purely in the 5 GHz band, lacking support for the 6 GHz band.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q16',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.2 Switching Features',
+    question: 'A network administrator is configuring a link aggregation group (LAG) between two switches to increase throughput and provide redundancy. Four physical interfaces are being bundled. After configuration, the administrator notices that traffic is not load-balancing across all four links. Which protocol should be used to negotiate the aggregation and ensure proper operation?',
+    options: [
+      'A) Spanning Tree Protocol (STP)',
+      'B) Cisco Discovery Protocol (CDP)',
+      'C) Link Aggregation Control Protocol (LACP)',
+      'D) Link Layer Discovery Protocol (LLDP)'
+    ],
+    correctAnswer: 'C) Link Aggregation Control Protocol (LACP)',
+    explanation: {
+      whyCorrect: 'Link Aggregation Control Protocol (LACP, IEEE 802.3ad) dynamically negotiates and bundle physical ports to act as a single logical connection (EtherChannel), ensuring active traffic sharing and failovers.',
+      whyWrong: [
+        { option: 'A) Spanning Tree Protocol (STP)', reason: 'STP blocks redundant paths to prevent loops; it is not used to aggregate multiple physical connections into a single trunk.' },
+        { option: 'B) Cisco Discovery Protocol (CDP)', reason: 'CDP is a proprietary Layer 2 neighbor discovery tool used to map device layouts.' },
+        { option: 'D) Link Layer Discovery Protocol (LLDP)', reason: 'LLDP is an open-standard neighbor discovery tool used to advertise capabilities.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q17',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.2 MDF/IDF',
+    question: 'A network technician is deploying fiber optic cabling between two IDFs located 450 meters apart. The technician needs to select the appropriate fiber type and transceiver. Which combination supports this distance with multimode fiber?',
+    options: [
+      'A) Multimode fiber with an SFP+ transceiver (10GBASE-SR)',
+      'B) Multimode fiber with an SFP+ transceiver (10GBASE-LR)',
+      'C) Multimode fiber with an SFP transceiver (1000BASE-T)',
+      'D) Multimode fiber with an SFP transceiver (1000BASE-CX)'
+    ],
+    correctAnswer: 'A) Multimode fiber with an SFP+ transceiver (10GBASE-SR)',
+    explanation: {
+      whyCorrect: '10GBASE-SR (Short Range) transceivers operate over OM3/OM4 multimode fiber and can reach up to 400-500 meters at 10 Gbps, making it the ideal choice for this IDF uplink.',
+      whyWrong: [
+        { option: 'B) Multimode fiber with an SFP+ transceiver (10GBASE-LR)', reason: '10GBASE-LR is a Long Range standard indicating Single-Mode Fiber (SMF) operations over several kilometers.' },
+        { option: 'C) Multimode fiber with an SFP transceiver (1000BASE-T)', reason: '1000BASE-T operates over twisted-pair copper cables with an RJ-45 interface, limited to a max distance of 100 meters.' },
+        { option: 'D) Multimode fiber with an SFP transceiver (1000BASE-CX)', reason: '1000BASE-CX is a legacy short-haul copper cable standard, not multimode fiber.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q18',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.1 Routing Technologies',
+    question: 'A network engineer is configuring a new branch office router to connect to the corporate headquarters using a dynamic routing protocol. The engineer wants to ensure that the branch router can automatically learn routes and adapt to network changes without manual intervention. Which protocol features should the engineer look for?',
+    options: [
+      'A) Static routing configurations with administrative distance limits',
+      'B) Dynamic routing with automatic route updates and convergence',
+      'C) Port Address Translation (PAT) overload with dynamic IP allocation',
+      'D) Policy-based routing maps with hardcoded administrative gates'
+    ],
+    correctAnswer: 'B) Dynamic routing with automatic route updates and convergence',
+    explanation: {
+      whyCorrect: 'Dynamic routing protocols (such as OSPF and BGP) send periodic route updates to neighbors and converge dynamically to handle failures or path changes seamlessly.',
+      whyWrong: [
+        { option: 'A) Static routing configurations with administrative distance limits', reason: 'Static routing is entirely manual and does not adapt automatically to failures.' },
+        { option: 'C) Port Address Translation (PAT) overload with dynamic IP allocation', reason: 'PAT overload maps ports to hide private networks, completely unrelated to dynamic route learning.' },
+        { option: 'D) Policy-based routing maps with hardcoded administrative gates', reason: 'Policy-based routing forces manual packet paths, lacking automatic adaptation.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q19',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.2 Switching Features',
+    question: 'A network administrator notices that a switch port is showing "errdisabled" status. The port is connected to a workstation. What is the most likely cause of this error-disabled state?',
+    options: [
+      'A) Port security violation',
+      'B) Spanning Tree loop detected',
+      'C) Standard duplex mismatch',
+      'D) Switch port overvoltage'
+    ],
+    correctAnswer: 'A) Port security violation',
+    explanation: {
+      whyCorrect: 'A port security violation (such as receiving more MAC addresses than permitted, or an unauthorized device connecting) puts the switch port into an "errdisable" state to protect the network.',
+      whyWrong: [
+        { option: 'B) Spanning Tree loop detected', reason: 'STP blocks loop interfaces but maintains "blocking" or "discarding" states, rather than "errdisabled".' },
+        { option: 'C) Standard duplex mismatch', reason: 'Duplex mismatches cause late collisions and performance loss, but they do not shut down ports.' },
+        { option: 'D) Switch port overvoltage', reason: 'This describes physical component overloads, which damage components but do not trigger logical "errdisabled" software states.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd2_q20',
+    type: 'architect',
+    domain: '2.0 Implementation',
+    objective: '2.3 Wireless Tech',
+    question: 'A company has deployed wireless access points throughout its office. Users report that when they move from one area to another, their devices disconnect and must manually reconnect to the Wi-Fi network. Which feature is likely misconfigured on the wireless controllers?',
+    options: [
+      'A) Band steering',
+      'B) Roaming',
+      'C) Channel bonding',
+      'D) SSIDs'
+    ],
+    correctAnswer: 'B) Roaming',
+    explanation: {
+      whyCorrect: 'Wireless roaming allows devices to transition seamlessly from one access point to another under a shared SSID as signal strength changes, without disconnecting.',
+      whyWrong: [
+        { option: 'A) Band steering', reason: 'Band steering encourages dual-band devices to connect to the faster 5 GHz frequency instead of 2.4 GHz.' },
+        { option: 'C) Channel bonding', reason: 'Channel bonding combines multiple Wi-Fi channels to increase bandwidth, not manage roaming client handovers.' },
+        { option: 'D) SSIDs', reason: 'SSIDs are the visible names of the wireless networks, which are identical across an enterprise to support roaming.' }
+      ]
+    },
+    weight: 10
+  },
+
+  // --- USER GENERATED DOMAIN 3.0 (Network Operations) ---
+  {
+    id: 'd3_q1',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.1 Assets & Lifecycle',
+    question: 'An administrator is creating an asset inventory. Which two details are most critical to include for every piece of networking hardware to comply with license agreements and ensure supportability over the device\'s lifespan? Choose two.',
+    options: [
+      'A) End-of-Life (EOL) date',
+      'B) The VLAN assignment',
+      'C) Warranty expiration',
+      'D) The color of the device'
+    ],
+    correctAnswer: ['A) End-of-Life (EOL) date', 'C) Warranty expiration'],
+    explanation: {
+      whyCorrect: 'End-of-Life (EOL) date is critical for tracking when support and firmware patches from the manufacturer will end, and the warranty expiration determines when external replacement support expires, ensuring license compliance and supportability over the device\'s lifespan.',
+      whyWrong: [
+        { option: 'B) The VLAN assignment', reason: 'VLAN assignments are operational network configurations that change frequently and are not core hardware inventory parameters.' },
+        { option: 'D) The color of the device', reason: 'The color of the device is purely cosmetic and plays no role in licensing, warranty coverage, or supportability.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q2',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.1 Physical Diagrams',
+    question: 'A junior network technician needs to quickly understand the physical location of all intermediate distribution frames (IDFs) and how they are cabled back to the main distribution frame (MDF). Which document should the technician reference?',
+    options: [
+      'A) Logical network diagram',
+      'B) Layer 3 topology map',
+      'C) Physical cabling map/diagram',
+      'D) IP address management (IPAM) records'
+    ],
+    correctAnswer: 'C) Physical cabling map/diagram',
+    explanation: {
+      whyCorrect: 'A physical cabling map or diagram shows the precise physical routing of cables, the physical location of hardware like cabinets and racks (MDF/IDF), and how paths are physically interconnected.',
+      whyWrong: [
+        { option: 'A) Logical network diagram', reason: 'A logical network diagram represents how data flows logically through the network (subnets, IPs, trust boundaries) rather than physical location.' },
+        { option: 'B) Layer 3 topology map', reason: 'A Layer 3 topology map shows IP subnets, routing interfaces, and paths, not physical room layouts or cabling closet locations.' },
+        { option: 'D) IP address management (IPAM) records', reason: 'IPAM records track the allocation and usage of IP subnets and addresses across the enterprise, offering no physical cabling layout.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q3',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.2 Monitoring & SNMP',
+    question: 'A company\'s security team has detected an ongoing, low-and-slow network attack. They need to receive real-time notifications from network devices without continuously polling them to avoid alert fatigue. Which SNMP feature should they configure on the managed devices?',
+    options: [
+      'A) GET request',
+      'B) Management Information Base (MIB)',
+      'C) Trap',
+      'D) Community string'
+    ],
+    correctAnswer: 'C) Trap',
+    explanation: {
+      whyCorrect: 'SNMP Traps are unsolicited, real-time message notifications sent by managed network devices to an SNMP manager upon detecting an event or alarm, letting managers stay informed without resource-heavy active polling.',
+      whyWrong: [
+        { option: 'A) GET request', reason: 'GET requests are active polling queries sent from the SNMP manager to a managed device, which consumes continuous bandwidth and resources.' },
+        { option: 'B) Management Information Base (MIB)', reason: 'The MIB is a structured directory database containing the specific variables and definitions that can be monitored on a device.' },
+        { option: 'D) Community string', reason: 'A community string functions as a simple unencrypted password used to authenticate SNMPv1/v2c queries, rather than send real-time alerts.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q4',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.2 Monitoring & SNMP',
+    question: 'An organization must meet strict compliance regulations requiring all network monitoring data to be encrypted and authenticated. The current SNMP configuration sends data in plain text. Which version of SNMP should the administrator implement to meet this requirement?',
+    options: [
+      'A) SNMPv1',
+      'B) SNMPv2c',
+      'C) SNMPv3',
+      'D) SNMPv2 with a complex community string'
+    ],
+    correctAnswer: 'C) SNMPv3',
+    explanation: {
+      whyCorrect: 'SNMPv3 is the only SNMP version that provides cryptographic encryption of diagnostic payloads (ensuring privacy) along with cryptographic authentication (ensuring integrity).',
+      whyWrong: [
+        { option: 'A) SNMPv1', reason: 'SNMPv1 is legacy and transmits community strings and data in clear text with zero payload encryption.' },
+        { option: 'B) SNMPv2c', reason: 'SNMPv2c adds bulk transfers and informational features, but retains clear text transmissions.' },
+        { option: 'D) SNMPv2 with a complex community string', reason: 'A complex community string prevents guessing passwords, but the password is still sent in plaintext, leaving payload data unencrypted.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q5',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.2 Monitoring & Traffic',
+    question: 'A network administrator needs to capture the complete contents of network traffic, including the payload, to investigate a suspected data exfiltration attempt. Which method should the administrator use?',
+    options: [
+      'A) NetFlow',
+      'B) sFlow',
+      'C) SNMP trap',
+      'D) Port mirroring with a packet capture tool'
+    ],
+    correctAnswer: 'D) Port mirroring with a packet capture tool',
+    explanation: {
+      whyCorrect: 'Port mirroring sends copies of all frames traversing a switch port directly to a packet captured interface, allowing analyzers (like WireShark or tcpdump) to record and inspect complete packet structures and payloads.',
+      whyWrong: [
+        { option: 'A) NetFlow', reason: 'NetFlow is a Cisco metadata collection tool that tracks statistical flow metrics (source, destination, protocol, packet counts) but does not inspect payload contents.' },
+        { option: 'B) sFlow', reason: 'sFlow is an industry-standard sampling technology that collects statistical packet samples and metadata, not full payloads.' },
+        { option: 'C) SNMP trap', reason: 'SNMP traps are alert logs sent from devices (such as port down) and contain no raw packet data.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q6',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.3 Disaster Recovery',
+    question: 'A bank\'s disaster recovery plan specifies a Recovery Point Objective (RPO) of 15 minutes and a Recovery Time Objective (RTO) of 4 hours. The current solution uses an offsite tape backup performed once every 24 hours. Which potential outcome is most likely during a failure scenario?',
+    options: [
+      'A) Restoration will take more than 4 hours.',
+      'B) The bank could lose up to 24 hours of transactions.',
+      'C) The bank will fail to meet the RTO but not the RPO.',
+      'D) The bank will fail to meet the RPO but not the RTO.'
+    ],
+    correctAnswer: 'D) The bank will fail to meet the RPO but not the RTO.',
+    explanation: {
+      whyCorrect: 'The Recovery Point Objective is the maximum age of data that can be lost following a disaster (here, 15 minutes). Backing up only once every 24 hours means up to 24 hours of local database transactions could be lost, failing the RPO.',
+      whyWrong: [
+        { option: 'A) Restoration will take more than 4 hours.', reason: 'Nothing in the scenario outlines how long tape physical restoration actually takes, meaning RTO status is unknown.' },
+        { option: 'B) The bank could lose up to 24 hours of transactions.', reason: 'While true, this is the business impact resulting from a failure to meet the RPO objective of 15 minutes.' },
+        { option: 'C) The bank will fail to meet the RTO but not the RPO.', reason: 'The scenario explicitly shows that the backup frequency (24 hours) is insufficient to meet the aggressive target data loss window (15 minutes), meaning the RPO fails.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q7',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.3 Disaster Recovery',
+    question: 'A Chief Information Officer (CIO) needs a disaster recovery site that provides a balance between cost and speed of restoration. The requirement is to have equipment, power, and network connectivity pre-installed, but servers will need to be configured and data loaded from backups in the event of a disaster. Which type of disaster recovery site does this describe?',
+    options: [
+      'A) Cold site',
+      'B) Warm site',
+      'C) Hot site',
+      'D) Cloud site'
+    ],
+    correctAnswer: 'B) Warm site',
+    explanation: {
+      whyCorrect: 'A warm site is a compromise solution where infrastructure, cooling, power, and computing hardware are present and pre-wired, but actual data synchronization, final installations, and setups are performed post-disaster.',
+      whyWrong: [
+        { option: 'A) Cold site', reason: 'A cold site provides shell rental facilities (space, HVAC, power) without any server computers or routers pre-provisioned.' },
+        { option: 'C) Hot site', reason: 'A hot site is a fully mirrored duplicate facility with online synchronized servers that can take over operations immediately with zero downtime.' },
+        { option: 'D) Cloud site', reason: 'Cloud sites are virtual infrastructure layouts that can act as cold, warm, or hot sites, but they are not a distinctive hardware model under this classic typology.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q8',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.2 High Availability',
+    question: 'A network administrator needs to ensure two firewalls can operate simultaneously, actively processing traffic. If one fails, the other must immediately take over without disruption. Which high-availability approach should the administrator configure?',
+    options: [
+      'A) Active-Passive',
+      'B) Load balancing',
+      'C) Active-Active',
+      'D) Cold standby'
+    ],
+    correctAnswer: 'C) Active-Active',
+    explanation: {
+      whyCorrect: 'In an Active-Active setup, all nodes in a cluster process production traffic simultaneously, providing load sharing and immediate fault routing if a peer fails.',
+      whyWrong: [
+        { option: 'A) Active-Passive', reason: 'Active-Passive maintains a single online gateway while the secondary node sits idle, ready to take over only when the active node goes offline.' },
+        { option: 'B) Load balancing', reason: 'Load balancing is a mechanism of traffic distribution but is not the HA cluster configuration itself.' },
+        { option: 'D) Cold standby', reason: 'A cold standby is a backup device that is powered down and must be manually booted and configured if a failure occurs.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q9',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.4 DHCP Services',
+    question: 'A network technician is configuring a DHCP server for a new subnet that does not have a DHCP server. The DHCP server is on a different subnet than the clients. Which feature must be configured on the router to allow DHCP broadcasts to reach the server?',
+    options: [
+      'A) DHCP exclusion',
+      'B) DHCP relay (IP helper)',
+      'C) DHCP reservation',
+      'D) Scope options'
+    ],
+    correctAnswer: 'B) DHCP relay (IP helper)',
+    explanation: {
+      whyCorrect: 'DHCP relay agents (including Cisco\'s "ip helper-address" interface helper) convert broadcast DHCP messages into unicast frames and route them across the network to a central DHCP server.',
+      whyWrong: [
+        { option: 'A) DHCP exclusion', reason: 'An exclusion specifies a range of IP addresses within a pool that the DHCP server must not assign (such as printers).' },
+        { option: 'C) DHCP reservation', reason: 'A reservation anchors a specific IP address to a target device\'s physical MAC address.' },
+        { option: 'D) Scope options', reason: 'Scope options deliver additional parameters (like DNS servers or NTP gateways) to client terminals.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q10',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.4 DNS Records',
+    question: 'A support technician is troubleshooting an issue where users can access external websites but cannot connect to an internal server named intranet.company.com. Pinging the server by its IP address is successful, but pinging intranet.company.com fails. Which DNS record type is most likely misconfigured or missing on the DNS server?',
+    options: [
+      'A) PTR record',
+      'B) MX record',
+      'C) A record',
+      'D) TXT record'
+    ],
+    correctAnswer: 'C) A record',
+    explanation: {
+      whyCorrect: 'An Address (A) record maps a friendly hostname (intranet.company.com) to an IPv4 address. If pings to the IP address succeed but pings to the hostname fail, then name-to-address resolution is broken, indicating a missing A record.',
+      whyWrong: [
+        { option: 'A) PTR record', reason: 'A Pointer (PTR) record does the reverse mapping (IP address to hostname), used for reverse DNS checks.' },
+        { option: 'B) MX record', reason: 'A Mail Exchanger (MX) record points to mail servers handling email transport for the domain.' },
+        { option: 'D) TXT record', reason: 'A Text (TXT) record holds administrative strings and verification values like SPF and DKIM profiles.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q11',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.4 DNS Records',
+    question: 'A junior administrator is configuring a new DNS server for a company\'s domain. The administrator has added the necessary A and AAAA records for all hosts. Which additional record type must be added to determine the hostnames for a given IP address (reverse lookup)?',
+    options: [
+      'A) NS',
+      'B) CNAME',
+      'C) TXT',
+      'D) PTR'
+    ],
+    correctAnswer: 'D) PTR',
+    explanation: {
+      whyCorrect: 'Pointer (PTR) records reside within reverse lookup zones, mapping IP addresses back to hostnames to perform reverse DNS queries.',
+      whyWrong: [
+        { option: 'A) NS', reason: 'Name Server (NS) records designate the authoritative DNS servers for a specific zone layer.' },
+        { option: 'B) CNAME', reason: 'Canonical Name (CNAME) records create aliases pointing to an existing forward looking A record.' },
+        { option: 'C) TXT', reason: 'TXT records hold text data (such as SPF rules for email security), not addressing lookup details.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q12',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.4 DNS Security',
+    question: 'An organization wants to secure DNS queries between its internal clients and the DNS resolver. The goal is to prevent eavesdropping and tampering of DNS traffic. Which two technologies should the organization implement? Choose two.',
+    options: [
+      'A) DNSSEC',
+      'B) DNS over HTTPS (DoH)',
+      'C) RARP',
+      'D) SLIP'
+    ],
+    correctAnswer: ['A) DNSSEC', 'B) DNS over HTTPS (DoH)'],
+    explanation: {
+      whyCorrect: 'DNSSEC signs DNS records cryptographically to prevent tampering and poisoning. DoH encrypts queries using HTTPS (TLS on port 443) to prevent eavesdropping and snooping, satisfying both security requirements.',
+      whyWrong: [
+        { option: 'C) RARP', reason: 'Reverse ARP is an obsolete Layer 2 protocol used by diskless workstations to discover their IP addresses.' },
+        { option: 'D) SLIP', reason: 'Serial Line Internet Protocol is an obsolete encapsulation protocol for serial links.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q13',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.5 Remote Access',
+    question: 'A remote salesperson reports that their company-issued laptop works perfectly at the office but, when connected to a hotel Wi-Fi, cannot access any internal corporate resources. The laptop shows a valid IP address and has internet access. Which type of network access method is most likely being used?',
+    options: [
+      'A) Site-to-site VPN',
+      'B) Client-to-site (remote access) VPN not connected',
+      'C) DirectAccess',
+      'D) Split tunnel VPN'
+    ],
+    correctAnswer: 'B) Client-to-site (remote access) VPN not connected',
+    explanation: {
+      whyCorrect: 'A Client-to-Site (remote access) VPN establishes a secure tunnel from an employee\'s device back to the enterprise network. If local Wi-Fi works but internal files are blocked, it is because the user has not started or connected their client VPN tunnel.',
+      whyWrong: [
+        { option: 'A) Site-to-site VPN', reason: 'A Site-to-Site VPN connects two fixed physical facilities over a gateway, which is not used for individual roaming endpoints.' },
+        { option: 'C) DirectAccess', reason: 'DirectAccess establishes an automatic, always-on Microsoft-specific corporate connection that does not require manual user configuration.' },
+        { option: 'D) Split tunnel VPN', reason: 'Split tunneling is a VPN configuration setting that controls how traffic is routed and does not explain a complete failure to connect when the VPN client is disconnected.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q14',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.5 Diagnostic Tools',
+    question: 'A network engineer is troubleshooting a file server that is inaccessible from a remote office. The network path between the two sites is complex and passes through several routers. Which command-line utility should the engineer use to identify where in the network path the failure is occurring?',
+    options: [
+      'A) netstat',
+      'B) ping',
+      'C) tracert / traceroute',
+      'D) nslookup'
+    ],
+    correctAnswer: 'C) tracert / traceroute',
+    explanation: {
+      whyCorrect: 'Traceroute (tracert on Windows) maps out and prints the full path of router gateways that a packet traverses to reach a destination, showing the latency at each hop and identifying where the connection fails.',
+      whyWrong: [
+        { option: 'A) netstat', reason: 'Netstat displays the local computer\'s active network connections, socket tables, and interface metrics.' },
+        { option: 'B) ping', reason: 'Ping verifies end-to-end connectivity but does not identify the specific router/hop where a failure is occurring.' },
+        { option: 'D) nslookup', reason: 'Nslookup is used to execute name resolution queries against DNS databases, offering no path diagnostics.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q15',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.5 Secure CLI',
+    question: 'A network administrator needs to establish an encrypted CLI session to a router\'s management interface. The router currently has Telnet enabled, but the administrator wants to use a more secure protocol on the same port used for secure SSH communications. Which port does this protocol use?',
+    options: [
+      'A) 22',
+      'B) 23',
+      'C) 443',
+      'D) 3389'
+    ],
+    correctAnswer: 'A) 22',
+    explanation: {
+      whyCorrect: 'SSH (Secure Shell) provides encrypted command-line terminal management, replacing Telnet, and listens on TCP port 22.',
+      whyWrong: [
+        { option: 'B) 23', reason: 'Port 23 is used by Telnet, which operates in plaintext and does not support encryption.' },
+        { option: 'C) 443', reason: 'Port 443 is used by HTTPS for web traffic, not standard interactive terminal shells.' },
+        { option: 'D) 3389', reason: 'Port 3389 is used by Microsoft Remote Desktop Protocol (RDP) for graphical desktop access.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q16',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.1 Baseline Management',
+    question: 'A company is implementing a "golden configuration" standard for all production switches. Before approving any change, the network team must review and track all modifications, and maintain a repository of all previous configuration versions to allow for rollback. Which process is being described?',
+    options: [
+      'A) Life-cycle management',
+      'B) Configuration management',
+      'C) Disaster recovery planning',
+      'D) Change management'
+    ],
+    correctAnswer: 'B) Configuration management',
+    explanation: {
+      whyCorrect: 'Configuration Management manages and tracks systems baseline structures (such as a golden config), monitors system changes, and maintains previous config states to support standardized audits and rollbacks.',
+      whyWrong: [
+        { option: 'A) Life-cycle management', reason: 'Life-cycle management covers the procurement, active usage, and EOL/deprecating of hardware assets.' },
+        { option: 'C) Disaster recovery planning', reason: 'DR planning governs business continuity procedures and operations following outages, not daily device configurations.' },
+        { option: 'D) Change management', reason: 'Change management refers to the administrative review and approval workflow for requested modifications, rather than configuring baseline templates.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q17',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.3 Metrics',
+    question: 'An IT manager is reviewing the disaster recovery plan and notices the MTTR for critical network equipment is 8 hours. What does this value represent?',
+    options: [
+      'A) The average time a device can be expected to operate before failing',
+      'B) The maximum tolerable data loss measured in hours',
+      'C) The average time required to repair a failed component',
+      'D) The total time required to restore network operations after a disaster'
+    ],
+    correctAnswer: 'C) The average time required to repair a failed component',
+    explanation: {
+      whyCorrect: 'Mean Time To Repair (MTTR) represents the average time required to troubleshoot, fix, and restore a failed hardware device or service code line to active deployment.',
+      whyWrong: [
+        { option: 'A) The average time a device can be expected to operate before failing', reason: 'This is Mean Time Between Failures (MTBF).' },
+        { option: 'B) The maximum tolerable data loss measured in hours', reason: 'This is the Recovery Point Objective (RPO).' },
+        { option: 'D) The total time required to restore network operations after a disaster', reason: 'This is the Recovery Time Objective (RTO).' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q18',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.4 Time Protocols',
+    question: 'A network architect is designing a new network and wants to use a protocol that synchronizes clocks accurately to the sub-microsecond level, which is critical for financial trading systems. Which time protocol should the architect choose to achieve this level of precision?',
+    options: [
+      'A) Network Time Protocol (NTP)',
+      'B) Precision Time Protocol (PTP)',
+      'C) Time-to-Live (TTL)',
+      'D) Simple Network Time Protocol (SNTP)'
+    ],
+    correctAnswer: 'B) Precision Time Protocol (PTP)',
+    explanation: {
+      whyCorrect: 'Precision Time Protocol (PTP, IEEE 1588) provides sub-microsecond synchronization accuracy, which is required for critical environments like real-time financial trading systems and industrial plants.',
+      whyWrong: [
+        { option: 'A) Network Time Protocol (NTP)', reason: 'NTP synchronizes clocks over the wider WAN with millisecond-level precision, which is too coarse for sub-microsecond financial needs.' },
+        { option: 'C) Time-to-Live (TTL)', reason: 'TTL is a header field in IP packets used to prevent routing loops by tracking hop counts, completely unrelated to clock synchronization.' },
+        { option: 'D) Simple Network Time Protocol (SNTP)', reason: 'SNTP is a simplified, less accurate implementation of NTP designed for low-power endpoints, lacking microsecond support.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd3_q19',
+    type: 'architect',
+    domain: '3.0 Operations',
+    objective: '3.1 Baseline Management',
+    question: 'During an IT audit, an auditor reviews a network rack diagram created during the initial network deployment three years ago. The diagram is largely inaccurate due to many undocumented changes. Which statement best describes this scenario?',
+    options: [
+      'A) The configuration has drifted from the baseline.',
+      'B) The network suffered a security breach.',
+      'C) The disaster recovery plan is insufficient.',
+      'D) The change management process failed.'
+    ],
+    correctAnswer: 'D) The change management process failed.',
+    explanation: {
+      whyCorrect: 'When network documentation is largely out of sync due to unrecorded modifications and configurations, it indicates that the organizational Change Management process (which mandates testing, approving, and documenting changes) was bypassed or failed.',
+      whyWrong: [
+        { option: 'A) The configuration has drifted from the baseline.', reason: 'Configuration drift describes a device\'s running settings deviating from its golden standard configuration, not documentation errors.' },
+        { option: 'B) The network suffered a security breach.', reason: 'Undocumented network improvements and port allocations are of course administrative operational failures, not security breaches.' },
+        { option: 'C) The disaster recovery plan is insufficient.', reason: 'The DR plan guides recovery exercises following catastrophic failures and doesn\'t dictate daily cabling diagram reviews.' }
+      ]
+    },
+    weight: 10
+  },
+  // --- USER GENERATED DOMAIN 4.0 (Network Security) ---
+  {
+    id: 'd4_q1',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.1 Security Concepts',
+    question: 'A security auditor recommends implementing a solution that makes a network segment attractive to attackers to identify, monitor, and analyze malicious activity before it reaches production systems. Which deception technology should the organization deploy?',
+    options: [
+      'A) Honeypot',
+      'B) Honeynet',
+      'C) Intrusion Detection System (IDS)',
+      'D) Screened subnet (DMZ)'
+    ],
+    correctAnswer: 'A) Honeypot',
+    explanation: {
+      whyCorrect: 'A honeypot is a decoy system or network segment designed to attract attackers, allowing security teams to monitor their activities and analyze attack patterns without exposing production systems. A honeypot is listed under deception technologies in Objective 4.1.',
+      whyWrong: [
+        { option: 'B) Honeynet', reason: 'Honeynets are networks of honeypots, which are more distributed, rather than a single system/host deception decoy described here.' },
+        { option: 'C) Intrusion Detection System (IDS)', reason: 'IDS detects malicious actions rather than explicitly deceiving or attracting attackers.' },
+        { option: 'D) Screened subnet (DMZ)', reason: 'A screened subnet is designed for legitimate public access to corporate web services, not as an attractive attacking decoy.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q2',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.3 Hardening',
+    question: 'A network administrator needs to enforce network access control for all devices connecting to the wired network. The solution must authenticate devices using certificates before granting access to the network. Which IEEE standard and protocol combination should the administrator implement?',
+    options: [
+      'A) MAC filtering with WPA2',
+      'B) Port security with sticky MACs',
+      'C) 802.1X with EAP',
+      'D) 802.11 with WPA3'
+    ],
+    correctAnswer: 'C) 802.1X with EAP',
+    explanation: {
+      whyCorrect: '802.1X is the IEEE standard for port-based network access control (NAC), typically using EAP (Extensible Authentication Protocol) to authenticate devices with certificates before granting network access.',
+      whyWrong: [
+        { option: 'A) MAC filtering with WPA2', reason: 'MAC filtering is less secure, and WPA2 is a wireless security standard, not wired access control.' },
+        { option: 'B) Port security with sticky MACs', reason: 'Port security with sticky MACs limits port access to configured MAC addresses, but does not authenticate devices using certificates.' },
+        { option: 'D) 802.11 with WPA3', reason: '802.11 is a wireless protocol and WPA3 is for wireless security, not wired NAC.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q3',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.1 Security Concepts',
+    question: 'An organization is implementing a security policy requiring users to provide a password and a one-time code from an authenticator app when logging into the corporate VPN. Which two authentication factors are being used?',
+    options: [
+      'A) Something you know + something you are',
+      'B) Something you know + something you have',
+      'C) Something you have + somewhere you are',
+      'D) Something you are + somewhere you are'
+    ],
+    correctAnswer: 'B) Something you know + something you have',
+    explanation: {
+      whyCorrect: 'A password is "something you know" (knowledge factor), and a one-time code from an authenticator app is "something you have" (possession factor). Multifactor authentication (MFA) requires at least two different factor types.',
+      whyWrong: [
+        { option: 'A) Something you know + something you are', reason: '"Something you are" refers to biometrics (e.g., fingerprints), which is not used here.' },
+        { option: 'C) Something you have + somewhere you are', reason: '"Somewhere you are" refers to geolocation, which is not used in this scenario.' },
+        { option: 'D) Something you are + somewhere you are', reason: 'Neither biometric attributes nor geolocation are mentioned in this scenario.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q4',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.1 Security Concepts',
+    question: 'A company wants to implement Single Sign-On (SSO) across multiple cloud applications and on-premises systems. The solution must exchange authentication and authorization data between identity providers and service applications using XML-based assertions. Which protocol should be implemented?',
+    options: [
+      'A) RADIUS',
+      'B) TACACS+',
+      'C) LDAP',
+      'D) SAML (Security Assertion Markup Language)'
+    ],
+    correctAnswer: 'D) SAML (Security Assertion Markup Language)',
+    explanation: {
+      whyCorrect: 'SAML is an XML-based protocol that exchanges authentication and authorization data between identity providers and service providers, commonly used for SSO across applications and systems.',
+      whyWrong: [
+        { option: 'A) RADIUS', reason: 'RADIUS is an authentication protocol typically used for network device administrative access and VPN connections, not XML-based app SSO.' },
+        { option: 'B) TACACS+', reason: 'TACACS+ is a Cisco-proprietary AAA protocol used for administration of network devices (CLI access), not web app SSO.' },
+        { option: 'C) LDAP', reason: 'LDAP is an active directory querying protocol used to query directory services, not XML-based application-level assertions.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q5',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.2 Common Attacks',
+    question: 'A network security analyst detects an attack where an unauthorized device is sending falsified messages to associate its MAC address with a legitimate IP address on the local network. This is causing traffic intended for the legitimate host to be redirected to the attacker\'s machine. Which type of attack is occurring?',
+    options: [
+      'A) ARP poisoning/spoofing',
+      'B) DNS poisoning',
+      'C) VLAN hopping',
+      'D) MAC flooding'
+    ],
+    correctAnswer: 'A) ARP poisoning/spoofing',
+    explanation: {
+      whyCorrect: 'ARP poisoning occurs when an attacker sends falsified ARP messages linking their MAC address to a legitimate IP address, causing traffic to be redirected to the attacker\'s machine.',
+      whyWrong: [
+        { option: 'B) DNS poisoning', reason: 'DNS poisoning attacks the DNS name resolution system to redirect domain requests, not local IP-to-MAC resolution.' },
+        { option: 'C) VLAN hopping', reason: 'VLAN hopping enables an attacker on one VLAN to bypass isolation and access traffic on other VLANs, not rewrite local IP mappings.' },
+        { option: 'D) MAC flooding', reason: 'MAC flooding floods a switch\'s MAC table to turn it into a hub, failing open and letting the attacker sniff all local traffic.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q6',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.3 Hardening',
+    question: 'An organization wants to secure DNS traffic between its internal clients and recursive resolvers to prevent eavesdropping and tampering. The solution must encrypt the entire DNS query and response payload. Which two technologies meet this requirement?',
+    options: [
+      'A) DNSSEC and RARP',
+      'B) DNS over HTTPS (DoH) and DNS over TLS (DoT)',
+      'C) DNSSEC and SLIP',
+      'D) RARP and SLIP'
+    ],
+    correctAnswer: 'B) DNS over HTTPS (DoH) and DNS over TLS (DoT)',
+    explanation: {
+      whyCorrect: 'Both DoH (port 443) and DoT (port 853) encrypt DNS queries and responses to prevent eavesdropping and tampering.',
+      whyWrong: [
+        { option: 'A) DNSSEC and RARP', reason: 'DNSSEC provides integrity/authentication but not transaction encryption, and RARP is an obsolete ARP variant.' },
+        { option: 'C) DNSSEC and SLIP', reason: 'DNSSEC lacks encryption, and SLIP is a historic legacy serial-line encapsulation protocol.' },
+        { option: 'D) RARP and SLIP', reason: 'Both represent legacy unencrypted protocols with nothing to do with DNS security.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q7',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.3 Hardening',
+    question: 'A security administrator is configuring a firewall to protect a screened subnet (DMZ) that contains public-facing web servers. The DMZ network uses private IP addresses, and the firewall translates these to public IPs for internet traffic. The administrator needs to allow HTTPS traffic from the internet to the web server on the DMZ. Which security rule should the administrator configure?',
+    options: [
+      'A) Web Application Proxy routing port 80 to the DMZ web server',
+      'B) Access Control List (ACL) permitting port 443 from any to the DMZ web server IP',
+      'C) Source Network Address Translation (SNAT) mapping port 443',
+      'D) A decoy honeypot filter on the inbound DMZ interface'
+    ],
+    correctAnswer: 'B) Access Control List (ACL) permitting port 443 from any to the DMZ web server IP',
+    explanation: {
+      whyCorrect: 'An ACL on the firewall controls traffic flow. HTTPS uses port 443. The DMZ needs inbound HTTPS access from the internet to the web server.',
+      whyWrong: [
+        { option: 'A) Web Application Proxy routing port 80 to the DMZ web server', reason: 'Port 80 is for HTTP (unencrypted), not HTTPS (encrypted, port 443).' },
+        { option: 'C) Source Network Address Translation (SNAT) mapping port 443', reason: 'SNAT changes the source IP for outbound traffic; it does not authorize inbound traffic to the web server.' },
+        { option: 'D) A decoy honeypot filter on the inbound DMZ interface', reason: 'A honeypot is a decoy deception system, not a firewall filter rule meant for production traffic.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q8',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.2 Common Attacks',
+    question: 'An attacker sets up a rogue access point with a stronger signal than the legitimate corporate access point. When employees\' devices automatically connect to the stronger signal, the attacker captures their credentials. Which type of attack is this?',
+    options: [
+      'A) Evil twin',
+      'B) Denial of service',
+      'C) ARP poisoning',
+      'D) Deauthentication attack'
+    ],
+    correctAnswer: 'A) Evil twin',
+    explanation: {
+      whyCorrect: 'An evil twin attack involves setting up a rogue access point that mimics a legitimate AP, often with a stronger signal, to trick devices into connecting and capture credentials.',
+      whyWrong: [
+        { option: 'B) Denial of service', reason: 'A DoS attack disrupts networks/services but does not actively masquerade as a wireless access point to sniff data.' },
+        { option: 'C) ARP poisoning', reason: 'ARP poisoning is a Layer 2 attack on wired local networks, not a wireless access point spoofing technique.' },
+        { option: 'D) Deauthentication attack', reason: 'A deauthentication attack forces clients off an AP but does not mimic the AP to capture user credentials.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q9',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.2 Common Attacks',
+    question: 'A network engineer is reviewing security logs and notices an unusual pattern of traffic where a single source IP address is sending a flood of UDP packets to random destination ports on a single target server. The server is consuming all its resources trying to process these packets, making it unresponsive to legitimate requests. Which type of attack is occurring?',
+    options: [
+      'A) ARP poisoning',
+      'B) DNS poisoning',
+      'C) DoS (Denial-of-Service) attack',
+      'D) Man-in-the-middle attack'
+    ],
+    correctAnswer: 'C) DoS (Denial-of-Service) attack',
+    explanation: {
+      whyCorrect: 'A DoS attack floods a target with traffic or packets, consuming resources and making the target unresponsive to legitimate requests.',
+      whyWrong: [
+        { option: 'A) ARP poisoning', reason: 'ARP poisoning redirects LAN switch paths, and does not involve flooding a host with high-rate UDP client requests.' },
+        { option: 'B) DNS poisoning', reason: 'DNS poisoning corrupts cache entries of resolving servers to divert names, rather than depleting resources via high-traffic UDP floods.' },
+        { option: 'D) Man-in-the-middle attack', reason: 'A MITM attack intercepts or modifies active data in transit, and represents an interception tactic rather than a service-denying resource depletion flood.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q10',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.1 Security Concepts',
+    question: 'A small business needs to implement network segmentation to separate guest Wi-Fi traffic from internal corporate traffic. The business has a single internet connection and wants to use its existing router/firewall. Which solution should the business implement?',
+    options: [
+      'A) Physical segmentation with redundant switches and dedicated lines',
+      'B) VLAN with separate subnet and firewall rules',
+      'C) SD-WAN with dynamic WAN VPN tunnels',
+      'D) BYOD quarantine group policies'
+    ],
+    correctAnswer: 'B) VLAN with separate subnet and firewall rules',
+    explanation: {
+      whyCorrect: 'VLANs create logical segmentation on a single switch, and firewall rules control traffic between VLANs. This allows guest Wi-Fi to be isolated from internal corporate traffic using existing equipment.',
+      whyWrong: [
+        { option: 'A) Physical segmentation with redundant switches and dedicated lines', reason: 'This is expensive, completely redundant, and unnecessary since existing switches can implement logical isolation.' },
+        { option: 'C) SD-WAN with dynamic WAN VPN tunnels', reason: 'SD-WAN manages branch WAN connections and is not used to partition internal guest WLAN from corporate hosts.' },
+        { option: 'D) BYOD quarantine group policies', reason: 'Device quarantine policies are part of endpoint health evaluations, not general logical LAN routing isolation.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q11',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.1 Security Concepts',
+    question: 'A company is implementing a "zero trust" security model. The principle requires that no user or device is trusted by default, even if they are inside the corporate network. Which access control approach enforces this principle?',
+    options: [
+      'A) Least privilege access',
+      'B) Multi-Factor Authentication (MFA)',
+      'C) Role-Based Access Control (RBAC)',
+      'D) CIA Triad'
+    ],
+    correctAnswer: 'A) Least privilege access',
+    explanation: {
+      whyCorrect: 'The least privilege principle grants users and devices only the minimum permissions necessary to perform their functions, which is a core tenet of zero trust architecture.',
+      whyWrong: [
+        { option: 'B) Multi-Factor Authentication (MFA)', reason: 'MFA validates user identity using multiple credential types but is an authentication tool, not the core access rule itself.' },
+        { option: 'C) Role-Based Access Control (RBAC)', reason: 'RBAC maps permission privileges to static organizational roles, but does not enforce continuous location-independent zero trust rules.' },
+        { option: 'D) CIA Triad', reason: 'The CIA triad is a structural model of security goals (Confidentiality, Integrity, Availability), not an access control mechanism.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q12',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.3 Hardening',
+    question: 'A network administrator is hardening a newly deployed switch. The administrator wants to prevent unauthorized devices from connecting to specific switch ports by limiting the number of MAC addresses allowed per port. Which feature should the administrator configure?',
+    options: [
+      'A) 802.1X',
+      'B) Screened subnet',
+      'C) Port security',
+      'D) MAC filtering'
+    ],
+    correctAnswer: 'C) Port security',
+    explanation: {
+      whyCorrect: 'Port security limits the number of MAC addresses allowed on a switch port, preventing unauthorized devices from connecting.',
+      whyWrong: [
+        { option: 'A) 802.1X', reason: '802.1X provides port-based authentication using certificates/accounts, not basic MAC address number boundaries.' },
+        { option: 'B) Screened subnet', reason: 'A screened subnet is a perimeter DMZ zone for public servers, not a switch-port hardening capability.' },
+        { option: 'D) MAC filtering', reason: 'MAC filtering allows or blocks specific configured MAC addresses, but does not natively enforce port-level concurrent count limits like switchport port-security.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q13',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.1 Security Concepts',
+    question: 'An organization must comply with regulations requiring that all customer payment card data be protected both when stored on servers and when transmitted over networks. The organization deploys encryption solutions. Which two encryption use cases does this scenario describe?',
+    options: [
+      'A) Data at rest and data in transit',
+      'B) Data in use and the CIA triad',
+      'C) Public key infrastructure and symmetric hashing',
+      'D) Symmetric encryption and asymmetric signatures'
+    ],
+    correctAnswer: 'A) Data at rest and data in transit',
+    explanation: {
+      whyCorrect: 'Data at rest is stored data (on servers), protected by disk or database encryption. Data in transit is data moving across networks, protected by TLS, IPsec, or other encryption protocols.',
+      whyWrong: [
+        { option: 'B) Data in use and the CIA triad', reason: 'Data in use represents active CPU-memory operations, and CIA represents general security objectives, not stored/transit data encryption cases.' },
+        { option: 'C) Public key infrastructure and symmetric hashing', reason: 'PKI governs certificate issuance, and symmetric hashing validates integrity; they do not represent stored vs network-transmitted protection targets.' },
+        { option: 'D) Symmetric encryption and asymmetric signatures', reason: 'These represent mathematical cryptographic categories, not data protection status environments.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd4_q14',
+    type: 'architect',
+    domain: '4.0 Security',
+    objective: '4.2 Common Attacks',
+    question: 'A security analyst discovers an employee wrote their password on a sticky note attached to their monitor. Another employee took a photo of that sticky note with their smartphone from across the room. Which social engineering technique did the second employee use?',
+    options: [
+      'A) Phishing',
+      'B) Tailgating',
+      'C) Dumpster diving',
+      'D) Shoulder surfing'
+    ],
+    correctAnswer: 'D) Shoulder surfing',
+    explanation: {
+      whyCorrect: 'Shoulder surfing involves looking over someone\'s shoulder or monitoring their physical screen/surrounds to obtain confidential information, such as passwords or PINs.',
+      whyWrong: [
+        { option: 'A) Phishing', reason: 'Phishing uses fraudulent digital communications (like spoofed emails) to harvest info, not physical surveillance.' },
+        { option: 'B) Tailgating', reason: 'Tailgating is physically following an unauthorized individual through a locked doorway, not visual data harvesting.' },
+        { option: 'C) Dumpster diving', reason: 'Dumpster diving is searching discarded trash bins to find valuable corporate info.' }
+      ]
+    },
+    weight: 10
+  },
+  // --- USER GENERATED DOMAIN 5.0 (Network Troubleshooting) ---
+  {
+    id: 'd5_q1',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.1 Troubleshooting Methodology',
+    question: 'A network technician is following CompTIA\'s troubleshooting methodology. The technician has gathered information, identified symptoms, and determined that nothing has changed on the network. What is the NEXT step the technician should take?',
+    options: [
+      'A) Establish a theory of probable cause',
+      'B) Test the theory to determine cause',
+      'C) Establish a plan of action to resolve the problem',
+      'D) Verify full system functionality'
+    ],
+    correctAnswer: 'A) Establish a theory of probable cause',
+    explanation: {
+      whyCorrect: 'The CompTIA troubleshooting methodology has seven steps. After identifying the problem (gathering information, questioning users, identifying symptoms, and determining changes), the next step is to establish a theory of probable cause.',
+      whyWrong: [
+        { option: 'B) Test the theory to determine cause', reason: 'This is the step after establishing your theory of probable cause.' },
+        { option: 'C) Establish a plan of action to resolve the problem', reason: 'You only establish a plan of action once the theory has been tested and confirmed.' },
+        { option: 'D) Verify full system functionality', reason: 'Verification of stability comes after the solution has been fully implemented.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q2',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.1 Troubleshooting Methodology',
+    question: 'After implementing a solution to resolve a network outage, a technician confirms that all users can now access the required resources. According to CompTIA\'s troubleshooting methodology, what should the technician do NEXT?',
+    options: [
+      'A) Escalate the problem',
+      'B) Establish a plan of action to resolve the problem',
+      'C) Document findings, actions, outcomes, and lessons learned',
+      'D) Test the theory to determine cause'
+    ],
+    correctAnswer: 'C) Document findings, actions, outcomes, and lessons learned',
+    explanation: {
+      whyCorrect: 'After implementing a solution and verifying full system functionality, the final step in CompTIA\'s methodology is documentation. This completes the troubleshooting process and helps build organizational knowledge for future incidents.',
+      whyWrong: [
+        { option: 'A) Escalate the problem', reason: 'Escalation occurs during testing if the solution is unproved or requires external permissions, not after verified success.' },
+        { option: 'B) Establish a plan of action to resolve the problem', reason: 'A plan of action is established before implementing a solution, not after the solution has been resolved.' },
+        { option: 'D) Test the theory to determine cause', reason: 'Testing theories is a precursor step that comes before implementing and verifying a fix.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q3',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.1 Troubleshooting Methodology',
+    question: 'A network administrator is troubleshooting a slow network and compares current throughput test results to documented baseline measurements. In which step of the troubleshooting methodology would this action most likely occur?',
+    options: [
+      'A) Identify the problem',
+      'B) Establish a theory of probable cause',
+      'C) Verify full system functionality',
+      'D) Document findings, actions, and outcomes'
+    ],
+    correctAnswer: 'C) Verify full system functionality',
+    explanation: {
+      whyCorrect: 'In the troubleshooting methodology, verifying full system functionality is the sixth step, after implementing the solution. Comparing current performance to a documented baseline confirms the fix resolved the issue and performance has returned to normal levels.',
+      whyWrong: [
+        { option: 'A) Identify the problem', reason: 'Identifying the problem is the first step where symptoms are gathered, not where post-resolution baseline checks occur.' },
+        { option: 'B) Establish a theory of probable cause', reason: 'Establishing a theory is step two, focusing on determining reasons before testing them.' },
+        { option: 'D) Document findings, actions, and outcomes', reason: 'Documenting findings is the final step, done after verifying functional system operations.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q4',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.5 Command-line Utilities',
+    question: 'A help desk technician receives a report that users cannot access internet URLs. The technician performs ping tests and finds that sites fail when a URL is used but succeed when the IP address is used. Which of the following tools should the technician utilize NEXT?',
+    options: [
+      'A) ping',
+      'B) tracert',
+      'C) netstat',
+      'D) nslookup'
+    ],
+    correctAnswer: 'D) nslookup',
+    explanation: {
+      whyCorrect: 'Since IP-based connections succeed but domain name-based ones fail, the issue is clearly related to DNS resolution. nslookup (or dig) is the appropriate tool to query DNS servers and verify name resolution.',
+      whyWrong: [
+        { option: 'A) ping', reason: 'Ping was already used to verify Layer 3 connectivity. Repeating it will not solve the name resolution issue.' },
+        { option: 'B) tracert', reason: 'Tracert isolates routing hops, but Layer 3 transport to final IPs has already been verified as working.' },
+        { option: 'C) netstat', reason: 'Netstat displays active workstation sockets, which does not troubleshoot recursive DNS name server resolutions.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q5',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.3 Local Network Issues',
+    question: 'A network engineer is installing new PoE wireless access points. The first five APs deploy successfully, but the sixth one fails to power on. Which of the following should the engineer investigate FIRST?',
+    options: [
+      'A) SSID mismatch configuration',
+      'B) Power budget on the switch',
+      'C) Antenna polarization limits',
+      'D) Duplex mismatch errors'
+    ],
+    correctAnswer: 'B) Power budget on the switch',
+    explanation: {
+      whyCorrect: 'When deploying multiple PoE devices, the switch\'s power budget can be exhausted. If the available wattage cannot supply the additional AP, it will fail to power on. This is the most likely cause when previous APs worked but a new one does not.',
+      whyWrong: [
+        { option: 'A) SSID mismatch configuration', reason: 'SSID settings dictate client login negotiations, not low-level physical AP bootup power.' },
+        { option: 'C) Antenna polarization limits', reason: 'Polarization impacts wireless signaling and signal alignment, unrelated to PoE wattage.' },
+        { option: 'D) Duplex mismatch errors', reason: 'Duplex mismatches affect link speeds and packet transmission efficiency, not basic power enablement.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q6',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.2 Cable Issues',
+    question: 'A network administrator installs new cabling to connect new computers and access points. After deploying the equipment, the administrator notices several devices are not connecting properly. Moving the devices to different ports does not resolve the issue. Which of the following should the administrator verify NEXT?',
+    options: [
+      'A) Cable termination',
+      'B) Power budget on the switch',
+      'C) Port duplex settings',
+      'D) DHCP address pools'
+    ],
+    correctAnswer: 'A) Cable termination',
+    explanation: {
+      whyCorrect: 'Since new cabling was installed and moving devices to different ports didn\'t fix the issue, the physical layer is the most likely culprit. Incorrect terminations (bad punchdowns, reversed pairs, split pairs) will cause connectivity issues regardless of port.',
+      whyWrong: [
+        { option: 'B) Power budget on the switch', reason: 'Power budgets affect PoE bootup, not general link transitions on newly run cables.' },
+        { option: 'C) Port duplex settings', reason: 'Duplex settings might degrade speeds, but would not prevent simple link connection states across multiple ports.' },
+        { option: 'D) DHCP address pools', reason: 'Full pools cause IP assignment failures, but physical copper links would still register as connected on the switch ports.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q7',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.3 Local Network Issues',
+    question: 'A database server cannot connect to the network, and the switch interface shows the status as "Administratively down." Which of the following is the most likely reason for this status?',
+    options: [
+      'A) A faulty or disconnected Ethernet cable',
+      'B) An administrator has manually disabled (shutdown) the interface',
+      'C) A mismatch in speed and duplex settings',
+      'D) A broadcast storm has disabled the port'
+    ],
+    correctAnswer: 'B) An administrator has manually disabled (shutdown) the interface',
+    explanation: {
+      whyCorrect: '"Administratively down" is a specific interface status that indicates an administrator has manually disabled the interface using the shutdown command.',
+      whyWrong: [
+        { option: 'A) A faulty or disconnected Ethernet cable', reason: 'Physical disconnection shows as "Down/Down" or "No Link", not "Administratively down".' },
+        { option: 'C) A mismatch in speed and duplex settings', reason: 'Mismatches trigger transmission errors but do not mark interface status as administratively disabled.' },
+        { option: 'D) A broadcast storm has disabled the port', reason: 'A loop-disabled port shows up as "err-disabled", which requires recovery, not administrative shutdown status.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q8',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.2 Cable Issues',
+    question: 'A network technician notices that the interface counters on a switch port show a large number of CRC errors. The port is connected to a server. What is the most likely cause of these errors?',
+    options: [
+      'A) Excessive multicast traffic on the local subnet',
+      'B) An active DoS attack targeting the port',
+      'C) Faulty cabling or improper termination causing signal corruption',
+      'D) Jumbo frames configured with mismatched MTU sizes'
+    ],
+    correctAnswer: 'C) Faulty cabling or improper termination causing signal corruption',
+    explanation: {
+      whyCorrect: 'CRC (Cyclic Redundancy Check) errors indicate that frames are being corrupted during transmission, most commonly due to faulty cabling, improper termination, electromagnetic interference (EMI), or duplex mismatches.',
+      whyWrong: [
+        { option: 'A) Excessive multicast traffic on the local subnet', reason: 'High multicast traffic uses bandwidth but does not alter Frame Check Sequence mathematical validations.' },
+        { option: 'B) An active DoS attack targeting the port', reason: 'DoS floods ports but does not cause hardware-level CRC checksum verification failures.' },
+        { option: 'D) Jumbo frames configured with mismatched MTU sizes', reason: 'Incompatible MTUs cause "giant" packet drops or fragmentation, not cyclic frame errors.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q9',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.3 Local Network Issues',
+    question: 'Users on the same switch but in different VLANs cannot communicate with each other. The switch is a Layer 2 switch only. What is the most likely cause of this issue?',
+    options: [
+      'A) Inter-VLAN routing requires a Layer 3 device, which is not present',
+      'B) Spanning Tree Protocol (STP) is blocking the ports',
+      'C) The ports are configured with mismatched VLAN tags',
+      'D) Ports cannot be assigned to different VLANs on a single Layer 2 switch'
+    ],
+    correctAnswer: 'A) Inter-VLAN routing requires a Layer 3 device, which is not present',
+    explanation: {
+      whyCorrect: 'VLANs operate at Layer 2 and separate broadcast domains. Devices in different VLANs cannot communicate without a Layer 3 device (router or Layer 3 switch) to route traffic between them.',
+      whyWrong: [
+        { option: 'B) Spanning Tree Protocol (STP) is blocking the ports', reason: 'STP blocks ports to prevent switching loops within a VLAN, not inter-VLAN communications.' },
+        { option: 'C) The ports are configured with mismatched VLAN tags', reason: 'Tagging mismatches can cause VLAN dropping, but crossing distinct broadcast domains inherently requires an IP router.' },
+        { option: 'D) Ports cannot be assigned to different VLANs on a single Layer 2 switch', reason: 'Layer 2 switches fully support configuring ports across multiple distinct VLANs.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q10',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.3 Local Network Issues',
+    question: 'A network administrator is troubleshooting an issue where a workstation has been assigned an APIPA address (169.254.x.x). Which service is most likely failing?',
+    options: [
+      'A) DNS (Domain Name System)',
+      'B) DHCP (Dynamic Host Configuration Protocol)',
+      'C) LDAP (Lightweight Directory Access Protocol)',
+      'D) NAT (Network Address Translation)'
+    ],
+    correctAnswer: 'B) DHCP (Dynamic Host Configuration Protocol)',
+    explanation: {
+      whyCorrect: 'APIPA (Automatic Private IP Addressing) assigns addresses in the 169.254.x.x range when a DHCP server is unavailable. The client fails to receive a DHCP lease and self-assigns an APIPA address.',
+      whyWrong: [
+        { option: 'A) DNS (Domain Name System)', reason: 'DNS maps names to IPs and is not involved in assigning client system IP address leases.' },
+        { option: 'C) LDAP (Lightweight Directory Access Protocol)', reason: 'LDAP is an authentication directory service and does not allocate IP address parameters.' },
+        { option: 'D) NAT (Network Address Translation)', reason: 'NAT translates router IPs at the WAN interface, and is irrelevant to local DHCP leasing states.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q11',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.3 Local Network Issues',
+    question: 'A network technician suspects that a switching loop is causing a broadcast storm. Which of the following symptoms would most likely confirm this suspicion?',
+    options: [
+      'A) High packet retransmissions at Layer 4 (TCP)',
+      'B) Heavy traffic on port 53 (DNS)',
+      'C) Constant interface transitions from up to down (flapping)',
+      'D) Rapidly increasing MAC address table entries and high CPU utilization on switches'
+    ],
+    correctAnswer: 'D) Rapidly increasing MAC address table entries and high CPU utilization on switches',
+    explanation: {
+      whyCorrect: 'Switching loops cause broadcast storms where frames loop indefinitely, flooding the MAC address table and consuming switch CPU resources. Spanning Tree Protocol (STP) is designed to prevent loops.',
+      whyWrong: [
+        { option: 'A) High packet retransmissions at Layer 4 (TCP)', reason: 'TCP retransmissions occur due to standard packet loss or congestion, not Layer 2 Ethernet loop storms.' },
+        { option: 'B) Heavy traffic on port 53 (DNS)', reason: 'DNS volume reflects high query traffic but does not affect the physical switching loop environment.' },
+        { option: 'C) Constant interface transitions from up to down (flapping)', reason: 'Flapping links indicate poor physical cables, not frame loops on the local VLAN topology.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q12',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.3 Local Network Issues',
+    question: 'A network administrator notices that the root bridge for Spanning Tree Protocol has changed to a different switch after a recent power outage. Which of the following is the most likely cause?',
+    options: [
+      'A) The previous root bridge had a higher bridge priority value (lower priority) than the new root bridge',
+      'B) The previous root bridge was physically disconnected from all other switches',
+      'C) The new root bridge was configured with a higher MAC address',
+      'D) Spanning Tree Protocol was disabled on the previous root bridge'
+    ],
+    correctAnswer: 'A) The previous root bridge had a higher bridge priority value (lower priority) than the new root bridge',
+    explanation: {
+      whyCorrect: 'STP selects the root bridge based on the lowest bridge priority (numerically smaller = higher priority) and then lowest MAC address. If the previous root bridge had a higher priority value (meaning less priority/less trusted), and came back up after an outage, some other switch with a lower priority value would remain or become the root bridge.',
+      whyWrong: [
+        { option: 'B) The previous root bridge was physically disconnected from all other switches', reason: 'Physical disconnection switches routes, but does not configure priority parameters governing bridge selection.' },
+        { option: 'C) The new root bridge was configured with a higher MAC address', reason: 'Lower MAC addresses are elected as a tiebreaker when bridge priorities are identical.' },
+        { option: 'D) Spanning Tree Protocol was disabled on the previous root bridge', reason: 'Disabling STP stops active loop boundaries but is not a normal cause of controlled root bridge re-election.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q13',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.4 Wireless & WAN Performance',
+    question: 'Users report that videoconferencing applications are experiencing choppy audio and frozen video. The network shows normal bandwidth utilization but high variation in packet arrival times. Which performance issue is most likely causing this problem?',
+    options: [
+      'A) High latency',
+      'B) Packet loss',
+      'C) Jitter',
+      'D) Duplex mismatch'
+    ],
+    correctAnswer: 'C) Jitter',
+    explanation: {
+      whyCorrect: 'Jitter is the variation in packet arrival times, which severely impacts real-time applications like VoIP and videoconferencing, causing choppy audio and frozen video. Bandwidth utilization may appear normal.',
+      whyWrong: [
+        { option: 'A) High latency', reason: 'Latency is a consistent delay in data packet delivery, not the packet-to-packet arrival time variation described.' },
+        { option: 'B) Packet loss', reason: 'Packet loss reflects complete transport delivery failures, rather than variable delivery arrival timing.' },
+        { option: 'D) Duplex mismatch', reason: 'Duplex mismatches cause slow data rates and collides, drastically degrading basic link bandwidth limits.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q14',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.4 Wireless Issues',
+    question: 'A network administrator is troubleshooting a wireless network where users report frequent disconnections even when standing still. The access points are configured to automatically select channels. The logs show APs are frequently changing channels. What is the most likely cause?',
+    options: [
+      'A) Roaming failure',
+      'B) Channel interference',
+      'C) Low signal-to-noise ratio (SNR)',
+      'D) Overloaded AP bandwidth pools'
+    ],
+    correctAnswer: 'B) Channel interference',
+    explanation: {
+      whyCorrect: 'When APs automatically change channels frequently, channel interference from neighboring access points or other RF devices is the likely cause. The logs show APs are changing channels, and the symptom occurs when stationary — not a roaming issue.',
+      whyWrong: [
+        { option: 'A) Roaming failure', reason: 'Roaming failures happen when shifting between cells, not when users are completely stationary.' },
+        { option: 'C) Low signal-to-noise ratio (SNR)', reason: 'Low SNR degrades signal quality but does not cause continuous automated AP channel hopping.' },
+        { option: 'D) Overloaded AP bandwidth pools', reason: 'Congestion slows connections but does not force the AP software logic to shift radio channels.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q15',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.4 Wireless Issues',
+    question: 'A technician is troubleshooting a wireless connectivity issue in a large office building. Users report that when they move from one area to another, their devices disconnect and must manually reconnect to the Wi-Fi network. Which feature is most likely misconfigured?',
+    options: [
+      'A) Roaming',
+      'B) DFS (Dynamic Frequency Selection)',
+      'C) Band steering',
+      'D) MIMO antenna alignment'
+    ],
+    correctAnswer: 'A) Roaming',
+    explanation: {
+      whyCorrect: 'Roaming allows wireless clients to move between APs without disconnecting or re-authenticating. Roaming misconfiguration means when users move, their devices must manually reconnect.',
+      whyWrong: [
+        { option: 'B) DFS (Dynamic Frequency Selection)', reason: 'DFS manages radar channel avoidance, not transit client movement across adjacent AP cells.' },
+        { option: 'C) Band steering', reason: 'Band steering steers devices to 5 GHz from 2.4 GHz, unrelated to physical movement across multiple access points.' },
+        { option: 'D) MIMO antenna alignment', reason: 'MIMO scales maximum single AP link capacities and does not coordinate moving client handshakes.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q16',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.5 Command-line Utilities',
+    question: 'A user cannot access an external server after connecting to the corporate VPN. Which two commands should a support agent use to examine this issue? (Choose two.)',
+    options: [
+      'A) tracert',
+      'B) nslookup',
+      'C) route print',
+      'D) netstat'
+    ],
+    correctAnswer: ['A) tracert', 'C) route print'],
+    explanation: {
+      whyCorrect: 'When a user connects to a VPN and loses access to external sites, two common problems occur: the VPN overwrote the routing table (use route print) or changed DNS servers (use tracert to see where traffic stops). These two commands help diagnose split tunnel vs. full tunnel issues in VPN troubleshooting.',
+      whyWrong: [
+        { option: 'B) nslookup', reason: 'Nslookup validates DNS records but cannot output the local host routing table layers.' },
+        { option: 'D) netstat', reason: 'Netstat lists active ethernet card sockets, which is insufficient for diagnosing full vs. split tunnel routing table entries.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q17',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.5 Command-line Utilities',
+    question: 'A network technician needs to examine the path a packet takes from a workstation to a remote web server, identifying each router hop along the way. Which command-line tool should the technician use?',
+    options: [
+      'A) ping',
+      'B) tracert / traceroute',
+      'C) nslookup',
+      'D) netstat'
+    ],
+    correctAnswer: 'B) tracert / traceroute',
+    explanation: {
+      whyCorrect: 'tracert (Windows) or traceroute (Linux/macOS) traces the path packets take to a destination by sending ICMP packets with incrementing TTL values and reporting each hop\'s response. This tool uses ICMP time to live exceeded messages to map the route.',
+      whyWrong: [
+        { option: 'A) ping', reason: 'Ping measures basic end-to-end host reachability but cannot show intermediate routing paths.' },
+        { option: 'C) nslookup', reason: 'Nslookup queries DNS servers for records, not transit Layer 3 route paths.' },
+        { option: 'D) netstat', reason: 'Netstat displays open ports and networking adapter statistics on the local system.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q18',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.5 Command-line Utilities',
+    question: 'A network administrator needs to view the current MAC address table on a switch to verify which devices are connected to specific ports. Which command should the administrator use?',
+    options: [
+      'A) show interface status',
+      'B) show ip route',
+      'C) show arp',
+      'D) show mac-address-table'
+    ],
+    correctAnswer: 'D) show mac-address-table',
+    explanation: {
+      whyCorrect: 'The show mac-address-table command displays the switch\'s MAC address table, showing which MAC addresses are associated with which ports. This is a basic networking device command listed in Objective 5.5.',
+      whyWrong: [
+        { option: 'A) show interface status', reason: 'This displays physical port activity details, but omits the switch\'s active MAC association mappings.' },
+        { option: 'B) show ip route', reason: 'This outputs Layer 3 router path directories, not Layer 2 switch forwarding tables.' },
+        { option: 'C) show arp', reason: 'This lists local IP-to-MAC resolutions of the router itself, not the switch\'s transparent bridging tables.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q19',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.5 Command-line Utilities',
+    question: 'A technician suspects that a device on the local network has an incorrect or static ARP entry causing connectivity issues. Which command should the technician use to view the current ARP cache?',
+    options: [
+      'A) ipconfig /all',
+      'B) netstat -r',
+      'C) arp -a',
+      'D) route print'
+    ],
+    correctAnswer: 'C) arp -a',
+    explanation: {
+      whyCorrect: 'The arp -a command displays the current ARP cache, showing IP-to-MAC address mappings. This is useful for verifying ARP entries when suspected ARP issues exist.',
+      whyWrong: [
+        { option: 'A) ipconfig /all', reason: 'This lists local adapter IP/DNS parameters rather than showing neighboring LAN ARP caches.' },
+        { option: 'B) netstat -r', reason: 'Netstat -r lists the local host routing table, which is equivalent to route print.' },
+        { option: 'D) route print', reason: 'Route print prints IP routing tables, not local Layer 2 ARP neighbor details.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q20',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.5 Command-line Utilities',
+    question: 'A network engineer is troubleshooting a switch where users in VLAN 20 cannot communicate with the default gateway. The engineer suspects that the VLAN is missing or not properly configured on the switch. Which command should the engineer use to verify which ports are assigned to which VLANs?',
+    options: [
+      'A) show running-config',
+      'B) show ip interface brief',
+      'C) show vlan brief',
+      'D) show interface trunk'
+    ],
+    correctAnswer: 'C) show vlan brief',
+    explanation: {
+      whyCorrect: 'The show vlan brief command displays which switch ports are assigned to which VLANs. This is essential when VLAN separation is suspected as the cause of communication issues.',
+      whyWrong: [
+        { option: 'A) show running-config', reason: 'Running config shows variables in full, but is not a scannable brief layout of current active port-to-VLAN mappings.' },
+        { option: 'B) show ip interface brief', reason: 'This shows interface fast IP addresses and up/down statuses, omitting VLAN mapping configurations.' },
+        { option: 'D) show interface trunk', reason: 'This lists the trunk ports, omitting standard access port VLAN assignments.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q21',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.5 Command-line Utilities',
+    question: 'A technician needs to verify the current IP configuration on a Windows workstation, including the IP address, subnet mask, default gateway, and DNS servers. Which command should the technician use?',
+    options: [
+      'A) ipconfig',
+      'B) ipconfig /all',
+      'C) ifconfig',
+      'D) nslookup'
+    ],
+    correctAnswer: 'B) ipconfig /all',
+    explanation: {
+      whyCorrect: 'On Windows, ipconfig /all displays complete IP configuration including IP address, subnet mask, default gateway, DNS servers, MAC address, and DHCP status. ipconfig alone shows basic settings; /all adds detailed information.',
+      whyWrong: [
+        { option: 'A) ipconfig', reason: 'Standard ipconfig only shows basic IP/subnet parameters, omitting critical primary and secondary DNS server allocations.' },
+        { option: 'C) ifconfig', reason: 'This configures network interfaces on Unix-like operating systems (Linux/macOS), not Windows command prompts.' },
+        { option: 'D) nslookup', reason: 'Nslookup queries name records in DNS tables and does not show local workstation IP profiles.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q22',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.2 Cable Issues',
+    question: 'A network administrator is troubleshooting a link between two switches that is operating at 100 Mbps instead of the expected 1 Gbps. Both switches support gigabit Ethernet. Which of the following is the most likely cause?',
+    options: [
+      'A) A faulty or Category 5 cable that cannot support gigabit speeds',
+      'B) A speed mismatch configured manually on both endpoints',
+      'C) Spanning Tree Protocol blocking the port',
+      'D) High electromagnetic interference (EMI) near the run'
+    ],
+    correctAnswer: 'A) A faulty or Category 5 cable that cannot support gigabit speeds',
+    explanation: {
+      whyCorrect: 'Gigabit Ethernet requires Category 5e or higher cabling. Standard Category 5 cable may only support 100 Mbps. A cable tester or examining the cable category would confirm this issue. Cable issues are a primary focus of Objective 5.2, with "Category 5/6/7/8" listed as a specific cable issue.',
+      whyWrong: [
+        { option: 'B) A speed mismatch configured manually on both endpoints', reason: 'Speed mismatches prevent physical links from connecting (no green light), rather than forcing auto-negotiation down.' },
+        { option: 'C) Spanning Tree Protocol blocking the port', reason: 'STP blocks ports completely to stop loops, causing complete link isolation instead of reducing throughput limits.' },
+        { option: 'D) High electromagnetic interference (EMI) near the run', reason: 'EMI causes packet loss and CRC errors but does not alter physical electrical negotiations of BASE-T standards.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q23',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.5 Hardware Tools',
+    question: 'A technician is troubleshooting intermittent connectivity between two switches connected by fiber optic cable. The link works for hours then fails, then works again. The technician suspects the issue is related to signal loss. Which tool should the technician use to measure the optical signal strength?',
+    options: [
+      'A) OTDR',
+      'B) Visual Fault Locator',
+      'C) Optical power meter',
+      'D) Multimeter'
+    ],
+    correctAnswer: 'C) Optical power meter',
+    explanation: {
+      whyCorrect: 'An optical power meter measures signal strength in fiber optic cabling, which is essential for troubleshooting signal degradation or loss. This is a hardware tool listed in Objective 5.5.',
+      whyWrong: [
+        { option: 'A) OTDR', reason: 'OTDR is used to find faults or estimate fiber length but is more complex than simple optical power signal strength measurement.' },
+        { option: 'B) Visual Fault Locator', reason: 'VFL uses visible light to find severe physical breaks/bends, not to measure power decibels.' },
+        { option: 'D) Multimeter', reason: 'Multimeters measure copper parameters (voltage, resistance) and are not used for fiber optic light signals.' }
+      ]
+    },
+    weight: 10
+  },
+  {
+    id: 'd5_q24',
+    type: 'architect',
+    domain: '5.0 Troubleshooting',
+    objective: '5.3 Local Network Issues',
+    question: 'A network administrator is troubleshooting a user who cannot access a specific internal server. Pinging the server by IP address works, but the user cannot connect using the server\'s hostname. Which of the following is the most likely cause?',
+    options: [
+      'A) The server is configured as Administratively down',
+      'B) The gateway router is discarding ICMP packet types',
+      'C) DNS resolution failure for that hostname',
+      'D) The workstation MAC address was filtered by port security'
+    ],
+    correctAnswer: 'C) DNS resolution failure for that hostname',
+    explanation: {
+      whyCorrect: 'If IP address works but hostname fails, DNS resolution is the most likely cause. The DNS A record for that hostname may be missing or incorrect. This is a classic troubleshooting scenario — when IP works but name fails, the issue is DNS.',
+      whyWrong: [
+        { option: 'A) The server is configured as Administratively down', reason: 'If it were down, pinging the IP address would also fail.' },
+        { option: 'B) The gateway router is discarding ICMP packet types', reason: 'Pinging by IP is working, which confirms ICMP transport is permitted.' },
+        { option: 'D) The workstation MAC address was filtered by port security', reason: 'If MAC filtering occurred, all communication (including ping by IP) would be blocked.' }
+      ]
+    },
+    weight: 10
   }
 ];
+
