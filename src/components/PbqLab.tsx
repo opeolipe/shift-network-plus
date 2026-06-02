@@ -68,38 +68,50 @@ export default function PbqLab({ onBack, onAddXp }: PbqLabProps) {
     else if (id === 8) defaultAnswers = { choice: '', justification: '' };
     else if (id === 9) defaultAnswers = { band: '', standard: '', width: '' };
 
-    setPbqStates(prev => ({
-      ...prev,
-      [id]: {
-        solved: false,
-        attempts: 0,
-        answers: defaultAnswers,
-        feedback: null
-      }
-    }));
+    setPbqStates(prev => {
+      const next = {
+        ...prev,
+        [id]: {
+          solved: false,
+          attempts: 0,
+          answers: defaultAnswers,
+          feedback: null
+        }
+      };
+      localStorage.setItem('shift_pbq_states', JSON.stringify(next));
+      return next;
+    });
   };
 
   const notifySolveSuccess = (id: number, xp: number) => {
-    setPbqStates(prev => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        solved: true,
-        feedback: 'correct'
-      }
-    }));
+    setPbqStates(prev => {
+      const next = {
+        ...prev,
+        [id]: {
+          ...prev[id],
+          solved: true,
+          feedback: 'correct'
+        }
+      };
+      localStorage.setItem('shift_pbq_states', JSON.stringify(next));
+      return next;
+    });
     onAddXp(xp);
   };
 
   const notifySolveFailure = (id: number, message: string) => {
-    setPbqStates(prev => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        attempts: prev[id].attempts + 1,
-        feedback: message || 'incorrect'
-      }
-    }));
+    setPbqStates(prev => {
+      const next = {
+        ...prev,
+        [id]: {
+          ...prev[id],
+          attempts: prev[id].attempts + 1,
+          feedback: message || 'incorrect'
+        }
+      };
+      localStorage.setItem('shift_pbq_states', JSON.stringify(next));
+      return next;
+    });
   };
 
   // --- SOLVER VALIDATION ENGINE ---
@@ -154,7 +166,7 @@ export default function PbqLab({ onBack, onAddXp }: PbqLabProps) {
       'FTP': '21',
       'SFTP': '22',
       'DNS': '53',
-      'DHCP': '68', // Fallback value, custom check below accepts 67 or 68
+      'DHCP': '68', // Accepts 67 or 68
       'HTTPS': '443',
       'RDP': '3389'
     };
@@ -162,6 +174,11 @@ export default function PbqLab({ onBack, onAddXp }: PbqLabProps) {
     for (const key of Object.keys(correctMap)) {
       if (key === 'DHCP') {
         if (answers[key] !== '67' && answers[key] !== '68') {
+          isCorrect = false;
+          break;
+        }
+      } else if (key === 'FTP') {
+        if (answers[key] !== '20' && answers[key] !== '21') {
           isCorrect = false;
           break;
         }
@@ -175,7 +192,7 @@ export default function PbqLab({ onBack, onAddXp }: PbqLabProps) {
     if (isCorrect) {
       notifySolveSuccess(3, 500);
     } else {
-      notifySolveFailure(3, 'One or more protocols are mapped to incorrect physical port layers.');
+      notifySolveFailure(3, 'One or more protocols are mapped to incorrect physical port layers (recheck standard well-known TCP/UDP port mapping assignment requirements).');
     }
   };
 

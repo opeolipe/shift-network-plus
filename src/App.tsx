@@ -126,7 +126,8 @@ export default function App() {
     }
 
     const stats = domains.map(d => {
-      const domainQuestions = questionsPool.filter(q => q.domain.startsWith(d.id));
+      const prefix = d.id.split('.')[0] + '.';
+      const domainQuestions = questionsPool.filter(q => q.domain.startsWith(prefix));
       if (domainQuestions.length === 0) return { ...d, mastery: 0 };
 
       const totalMastery = domainQuestions.reduce((acc, q) => {
@@ -471,7 +472,8 @@ export default function App() {
   };
 
   const pickQuarantineQuestion = (domainId: string): Question => {
-    const domainPool = questionsPool.filter(q => q.domain.startsWith(domainId));
+    const prefix = domainId.split('.')[0] + '.';
+    const domainPool = questionsPool.filter(q => q.domain.startsWith(prefix));
     return domainPool[Math.floor(Math.random() * domainPool.length)];
   };
 
@@ -871,30 +873,32 @@ export default function App() {
             animate={{ opacity: 1 }}
             className="fixed inset-0 bg-white z-[200] flex flex-col p-8"
           >
-            <div className="flex justify-between items-center mb-8">
-              <div className="flex items-center gap-3">
-                <Terminal size={24} className="text-gray-400" />
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+              <div className="flex items-center gap-x-3">
+                <Terminal size={24} className="text-gray-400 shrink-0" />
                 <h2 className="text-xl font-black uppercase tracking-tighter">Braindump Canvas</h2>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
                 <button 
                   onClick={() => setShowReference(!showReference)}
-                  className="px-4 py-2 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors font-bold text-sm"
+                  className="px-4 py-2.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors font-black text-xs uppercase tracking-wider"
                 >
                   {showReference ? 'Hide Cheat Sheet' : 'Show Cheat Sheet'}
                 </button>
-                <div className={`text-2xl font-mono font-black ${braindumpTimer < 60 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
-                  {formatTime(braindumpTimer)}
+                <div className="flex items-center gap-x-3">
+                  <div className={`text-xl font-mono font-black ${braindumpTimer < 60 ? 'text-red-500 animate-pulse' : 'text-gray-900'}`}>
+                    {formatTime(braindumpTimer)}
+                  </div>
+                  <button 
+                    onClick={() => {
+                      setIsBraindumpActive(false);
+                      setView('home');
+                    }}
+                    className="px-4 py-2 rounded-xl bg-gray-100 text-gray-500 font-bold text-sm hover:bg-gray-200 transition-colors"
+                  >
+                    Back
+                  </button>
                 </div>
-                <button 
-                  onClick={() => {
-                    setIsBraindumpActive(false);
-                    setView('home');
-                  }}
-                  className="px-4 py-2 rounded-xl bg-gray-100 text-gray-500 font-bold text-sm"
-                >
-                  Back
-                </button>
               </div>
             </div>
             
