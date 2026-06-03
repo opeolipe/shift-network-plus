@@ -9,6 +9,7 @@ import { Activity, Shield, Hash, LayoutGrid, Server, Globe, AlertCircle, Refresh
 import { questions as initialQuestions } from './data';
 import { Question } from './types';
 import PbqLab from './components/PbqLab';
+import CompTiaFlashcards from './components/CompTiaFlashcards';
 
 const STORAGE_KEY = 'shift_srs_data';
 
@@ -27,7 +28,7 @@ const COMMON_COMMANDS = [
 ];
 
 export default function App() {
-  const [view, setView] = useState<'home' | 'drill' | 'dashboard' | 'mock' | 'braindump' | 'tips' | 'pbqs'>('home');
+  const [view, setView] = useState<'home' | 'drill' | 'dashboard' | 'mock' | 'braindump' | 'tips' | 'pbqs' | 'flashcards'>('home');
   const [questionsPool, setQuestionsPool] = useState<Question[]>([]);
   const [recentQuestionIds, setRecentQuestionIds] = useState<string[]>([]);
   const [sessionHistory, setSessionHistory] = useState<any[]>([]);
@@ -784,6 +785,14 @@ export default function App() {
                   PBQ Lab Simulator
                   <span className="text-[9px] uppercase tracking-widest text-blue-700/60 font-mono font-black mt-0.5">10 Interactive Simulations</span>
                 </button>
+
+                <button 
+                  onClick={() => setView('flashcards')}
+                  className="w-full py-5 bg-emerald-50 text-emerald-900 border-2 border-emerald-100 rounded-[2rem] font-display font-bold text-lg hover:border-emerald-500 hover:bg-emerald-100/50 transition-all active:scale-[0.97] flex flex-col items-center shadow-sm"
+                >
+                  Precision Flashcards
+                  <span className="text-[9px] uppercase tracking-widest text-emerald-700/60 font-mono font-black mt-0.5">7 Custom Weakness Decks • Earn XP</span>
+                </button>
               </div>
             </div>
 
@@ -1080,6 +1089,8 @@ export default function App() {
           </motion.div>
         ) : view === 'pbqs' ? (
           <PbqLab onBack={() => setView('home')} onAddXp={handleAddXp} />
+        ) : view === 'flashcards' ? (
+          <CompTiaFlashcards onBack={() => setView('home')} onAddXp={handleAddXp} />
         ) : (view === 'drill' || view === 'mock') ? (
           <>
             <AnimatePresence mode="wait">
